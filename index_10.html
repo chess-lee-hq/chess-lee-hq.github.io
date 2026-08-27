@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>이채승 — Brand Marketer · Copywriter · Creative Director</title>
+<meta name="description" content="이채승 포트폴리오. 2008년부터 17년+ 카피라이터, 브랜드/콘텐츠 마케터, 크리에이티브 디렉터로 일하며 삼성전자·현대카드·SK텔레콤 등 대기업 캠페인부터 스타트업 브랜드 전략까지 만들어왔습니다.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#DADAD8;
+    --bg-soft:#E7E6E3;
+    --ink:#151514;
+    --red:#E02B20;
+    --gray:#6E6E6C;
+    --white:#FAFAF8;
+    --line: rgba(21,21,20,0.14);
+    --ease: cubic-bezier(.16,.84,.44,1);
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Noto Sans KR", sans-serif;
+    line-height:1.5;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  a{color:inherit; text-decoration:none;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 40px;}
+  .eyebrow{
+    font-family:"Poppins", sans-serif;
+    font-weight:700;
+    font-size:12px;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--red);
+    display:flex; align-items:center; gap:10px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{content:""; width:7px; height:7px; border-radius:50%; background:var(--red); display:inline-block;}
+  section{position:relative;}
+
+  /* ---------------- NAV ---------------- */
+  #nav{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:22px 40px;
+    transition:background .4s var(--ease), padding .4s var(--ease), border-color .4s var(--ease);
+    border-bottom:1px solid transparent;
+  }
+  #nav.scrolled{
+    background:rgba(218,218,216,0.86);
+    backdrop-filter:blur(10px);
+    padding:14px 40px;
+    border-bottom:1px solid var(--line);
+  }
+  .nav-mark{
+    display:flex; align-items:center; gap:9px;
+    font-family:"Poppins", sans-serif; font-weight:700; font-size:16px;
+  }
+  .nav-mark .dot{width:10px; height:10px; border-radius:50%; background:var(--red); display:inline-block;}
+  .nav-links{display:flex; gap:30px; list-style:none;}
+  .nav-links a{
+    font-family:"Poppins", sans-serif; font-size:12.5px; font-weight:600;
+    letter-spacing:0.05em; color:var(--gray);
+    position:relative; padding-bottom:4px;
+    transition:color .25s;
+    display:inline-flex; align-items:center; gap:5px;
+  }
+  .nav-links a .cnt{font-size:10px; color:var(--red); opacity:.85;}
+  .nav-links a::after{
+    content:""; position:absolute; left:0; bottom:0; width:0; height:1.5px; background:var(--red);
+    transition:width .3s var(--ease);
+  }
+  .nav-links a.active, .nav-links a:hover{color:var(--ink);}
+  .nav-links a.active::after{width:100%;}
+  .nav-cta{
+    font-family:"Poppins", sans-serif; font-weight:600; font-size:12.5px;
+    border:1.5px solid var(--ink); border-radius:999px; padding:9px 20px;
+    transition:background .25s, color .25s;
+  }
+  .nav-cta:hover{background:var(--ink); color:var(--white);}
+  @media(max-width:860px){ .nav-links{display:none;} }
+
+  /* ---------------- HERO ---------------- */
+  #hero{
+    min-height:100svh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding:150px 40px 60px;
+    position:relative;
+    overflow:hidden;
+    text-align:center;
+  }
+  /* hero-circle doubles as a "sun/moon" whose position/color track real Seoul sunrise/sunset — see JS below */
+  .hero-circle{
+    --sx:72%; --sy:14%; --sscale:1; --sop:.9;
+    --sc1:#ff5648; --sc2:var(--red); --sc3:#a01f16;
+    --sglow:rgba(255,86,72,.35); --sblur:60px;
+    position:absolute; left:var(--sx); top:var(--sy); z-index:0;
+    width:220px; height:220px; border-radius:50%;
+    transform:translate(-50%,-50%) scale(var(--sscale));
+    background:radial-gradient(circle at 32% 28%, var(--sc1), var(--sc2) 60%, var(--sc3) 100%);
+    opacity:var(--sop);
+    box-shadow:0 0 var(--sblur) var(--sglow);
+    transition:left 1.4s linear, top 1.4s linear, transform 1.4s ease-in-out,
+      opacity 1.4s ease-in-out, box-shadow 1.4s ease-in-out, background 1.4s ease-in-out;
+    animation:sunPulse 6s ease-in-out infinite;
+    will-change:left, top;
+  }
+  @keyframes sunPulse{ 0%,100%{ filter:brightness(1); } 50%{ filter:brightness(1.06); } }
+  @media(prefers-reduced-motion:reduce){
+    .hero-circle{ transition:opacity 1.4s ease-in-out, background 1.4s ease-in-out; animation:none; }
+  }
+  .hero-circle.two{
+    top:auto; bottom:6%; left:4%; right:auto; width:70px; height:70px; opacity:.7;
+  }
+  /* night sky: small twinkling dots, faded in/out around sunrise & sunset — see JS below */
+  .hero-stars{
+    position:absolute; inset:0; z-index:0; overflow:hidden; pointer-events:none;
+    opacity:var(--star-op, 0);
+    transition:opacity 1.4s ease-in-out;
+  }
+  .hero-stars .star{
+    position:absolute; border-radius:50%; background:#fff;
+    box-shadow:0 0 4px 1px rgba(255,255,255,.75);
+    animation:starTwinkle var(--dur, 3s) ease-in-out infinite;
+    animation-delay:var(--delay, 0s);
+  }
+  @keyframes starTwinkle{ 0%, 100%{ opacity:.15; } 50%{ opacity:1; } }
+  @media(prefers-reduced-motion:reduce){
+    .hero-stars .star{ animation:none; opacity:.6; }
+  }
+  .hero-content{position:relative; z-index:2; max-width:880px; margin:0 auto;}
+  @media(max-width:900px){
+    .hero-circle{width:130px; height:130px;}
+    .hero-circle.two{width:46px; height:46px;}
+  }
+  .hero-eyebrow{
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:12.5px;
+    letter-spacing:0.22em; text-transform:uppercase; color:var(--gray);
+    margin-bottom:22px;
+  }
+  .hero-name{
+    font-family:"Poppins",sans-serif; font-weight:800;
+    font-size:clamp(46px, 8.4vw, 108px);
+    line-height:0.98; letter-spacing:-0.03em;
+    color:var(--ink);
+  }
+  .hero-pills{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px;
+    margin-top:28px;
+  }
+  .pill{
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:12.5px;
+    border:1px solid var(--ink); border-radius:999px; padding:7px 16px 7px 12px;
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .pill::before{content:""; width:6px; height:6px; border-radius:50%; background:var(--red); display:inline-block;}
+  .hero-desc{
+    margin:24px auto 0; color:var(--gray); font-size:15.5px; max-width:520px; line-height:1.75;
+  }
+  .hero-progress{
+    max-width:520px; margin:46px auto 0;
+  }
+  .hero-progress .bar{
+    position:relative; height:2px; background:var(--line); border-radius:2px; overflow:visible;
+  }
+  .hero-progress .fill{
+    position:absolute; left:0; top:0; height:100%; background:var(--red); border-radius:2px;
+    width:0%; transition:width 1.4s var(--ease) .3s;
+  }
+  .hero-progress .fill.animate{width:96%;}
+  .hero-progress .fill::after{
+    content:""; position:absolute; right:-4px; top:50%; transform:translateY(-50%);
+    width:8px; height:8px; border-radius:50%; background:var(--red);
+  }
+  .hero-progress .ticks{display:flex; justify-content:space-between; margin-top:10px;}
+  .hero-progress .ticks span{font-family:"Poppins",sans-serif; font-size:10.5px; color:var(--gray); letter-spacing:.04em;}
+  .hero-bottom{
+    display:flex; justify-content:center; align-items:center; gap:10px;
+    margin-top:50px;
+    font-family:"Poppins",sans-serif; font-size:11px; font-weight:600; letter-spacing:0.16em;
+    color:var(--gray); text-transform:uppercase;
+  }
+  .hero-bottom .arrow{
+    width:18px; height:18px; border-radius:50%; border:1px solid var(--gray);
+    display:flex; align-items:center; justify-content:center; font-size:11px;
+    animation:bob 1.8s ease-in-out infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
+
+  /* ---------------- REVEAL ---------------- */
+  .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
+  .reveal.in{opacity:1; transform:translateY(0);}
+  .reveal-stagger > *{opacity:0; transform:translateY(22px); transition:opacity .7s var(--ease), transform .7s var(--ease);}
+  .reveal-stagger.in > *{opacity:1; transform:translateY(0);}
+  .reveal-stagger.in > *:nth-child(1){transition-delay:.02s;}
+  .reveal-stagger.in > *:nth-child(2){transition-delay:.09s;}
+  .reveal-stagger.in > *:nth-child(3){transition-delay:.16s;}
+  .reveal-stagger.in > *:nth-child(4){transition-delay:.23s;}
+  .reveal-stagger.in > *:nth-child(5){transition-delay:.30s;}
+  .reveal-stagger.in > *:nth-child(6){transition-delay:.37s;}
+  .reveal-stagger.in > *:nth-child(7){transition-delay:.44s;}
+  .reveal-stagger.in > *:nth-child(8){transition-delay:.51s;}
+  .reveal-stagger.in > *:nth-child(9){transition-delay:.58s;}
+
+  /* ---------------- SECTION HEAD ---------------- */
+  .sec{padding:120px 0;}
+  .sec-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; gap:24px; flex-wrap:wrap;}
+  .sec-title{
+    font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(38px,5.6vw,64px);
+    line-height:0.98; letter-spacing:-0.02em;
+  }
+  .sec-sub{max-width:360px; color:var(--gray); font-size:14.5px; line-height:1.7;}
+
+  /* ---------------- LATEST ---------------- */
+  #latest{background:var(--bg-soft);}
+  .latest-list{border-top:1px solid var(--line);}
+  .latest-row{
+    display:flex; align-items:baseline; gap:28px; padding:26px 0;
+    border-bottom:1px solid var(--line);
+    transition:padding-left .3s var(--ease), background .3s;
+  }
+  .latest-row:hover{padding-left:10px; background:rgba(224,43,32,0.04);}
+  .latest-date{
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:13px; color:var(--red);
+    width:120px; flex-shrink:0;
+  }
+  .latest-text{font-size:16px; flex:1;}
+  .latest-arrow{font-family:"Poppins",sans-serif; color:var(--gray); font-size:16px; transition:transform .3s var(--ease), color .3s;}
+  .latest-row:hover .latest-arrow{transform:translateX(4px); color:var(--ink);}
+  .latest-more{
+    display:inline-flex; align-items:center; gap:8px; margin-top:30px;
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.06em;
+    color:var(--ink); border-bottom:1.5px solid var(--ink); padding-bottom:3px;
+  }
+
+  /* ---------------- ABOUT ---------------- */
+  #about{background:var(--bg);}
+  .about-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:70px; align-items:start;}
+  .about-bio p{font-size:19px; line-height:1.75; color:var(--ink); margin-bottom:18px; max-width:560px;}
+  .about-bio p:last-child{margin-bottom:0;}
+  .stat-row{display:grid; grid-template-columns:repeat(2,1fr); gap:28px 20px; margin-top:14px;}
+  .stat{border-top:1px solid var(--line); padding-top:16px;}
+  .stat .num{font-family:"Poppins",sans-serif; font-weight:800; font-size:38px; color:var(--red); letter-spacing:-0.02em;}
+  .stat .lbl{font-size:12.5px; color:var(--gray); margin-top:4px;}
+  @media(max-width:900px){ .about-grid{grid-template-columns:1fr;} }
+
+  /* ---------------- CAREER (company sections w/ sticky head + scroll-fill projects) ---------------- */
+  #career{background:var(--bg-soft);}
+  .company-block{
+    padding:64px 0; border-top:1px solid var(--line);
+  }
+  .company-block:first-of-type{border-top:1px solid var(--line);}
+  .company-inner{display:flex; gap:60px; align-items:flex-start;}
+  .company-head{flex:0 0 300px; position:sticky; top:96px;}
+  .company-chp{
+    font-family:"Poppins",sans-serif; font-weight:800; font-size:13px; color:var(--red);
+    letter-spacing:.1em; margin-bottom:12px;
+  }
+  .company-name{
+    font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(24px,2.6vw,32px);
+    line-height:1.15; letter-spacing:-0.01em; display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+  }
+  .company-block.current .company-name{color:var(--red);}
+  .company-role{font-size:14.5px; color:var(--gray); margin-top:8px;}
+  .company-period{font-family:"Poppins",sans-serif; font-size:12px; color:var(--gray); margin-top:5px;}
+  .company-count{
+    font-family:"Poppins",sans-serif; font-size:11px; font-weight:700; letter-spacing:.08em;
+    color:var(--red); margin-top:18px; text-transform:uppercase;
+  }
+  .career-tag{
+    font-family:"Poppins",sans-serif; font-size:10px; font-weight:700; letter-spacing:.06em;
+    color:var(--white); background:var(--red); padding:3px 9px; border-radius:999px;
+  }
+  .company-list{flex:1; min-width:0;}
+  .proj-row{
+    border-bottom:1px solid var(--line);
+    cursor:pointer;
+    transition:background .3s;
+  }
+  .company-list .proj-row:first-child{border-top:1px solid var(--line);}
+  .proj-row:hover{background:rgba(224,43,32,0.04);}
+  .proj-main{
+    display:flex; align-items:center; gap:20px; padding:16px 0;
+    transition:padding-left .3s var(--ease);
+  }
+  .proj-row:hover .proj-main{padding-left:10px;}
+  .proj-thumb{
+    width:60px; height:60px; border-radius:4px; flex-shrink:0;
+    transition:transform .4s var(--ease);
+  }
+  .proj-row:hover .proj-thumb{transform:scale(1.08);}
+  .proj-info{flex:1; min-width:0;}
+  .proj-title{
+    display:inline-flex; align-items:center; flex-wrap:wrap; gap:7px;
+    font-size:15px; font-weight:700; line-height:1.35; transition:font-size .3s var(--ease);
+  }
+  .proj-row:hover .proj-title{font-size:16px;}
+  .proj-video-icon{
+    display:inline-flex; align-items:center; justify-content:center; flex-shrink:0;
+    width:19px; height:19px; border-radius:50%; border:1px solid var(--red); color:var(--red);
+    font-size:8px; transition:background .2s, color .2s, transform .2s, opacity .2s;
+  }
+  a.proj-video-icon{cursor:pointer;}
+  a.proj-video-icon:hover{background:var(--red); color:var(--white); transform:scale(1.1);}
+  span.proj-video-icon{opacity:.4; cursor:default;}
+  .proj-meta{font-family:"Poppins",sans-serif; font-size:11.5px; color:var(--gray); margin-top:5px; letter-spacing:.02em;}
+  .proj-arrow{font-size:15px; color:var(--gray); flex-shrink:0; transition:transform .3s var(--ease), color .3s;}
+  .proj-row:hover .proj-arrow{transform:translateX(4px) rotate(45deg); color:var(--ink);}
+  .proj-empty .proj-title{color:var(--gray); font-weight:500;}
+  .proj-detail{
+    max-height:0; opacity:0; overflow:hidden;
+    padding-left:80px; padding-right:64px;
+    transition:max-height .45s var(--ease), opacity .3s var(--ease), padding-bottom .45s var(--ease);
+  }
+  .proj-row:hover .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
+  .proj-detail .rl{font-family:"Poppins",sans-serif; font-size:11px; color:var(--gray); margin:0 0 14px; letter-spacing:.02em;}
+  .proj-detail .rl b{
+    color:var(--red); font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:10px; margin-right:8px;
+  }
+  .dt-grid{
+    display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px 32px; max-width:860px;
+  }
+  .dt-col{min-width:0; display:flex; flex-direction:column;}
+  .dt-label{
+    font-family:"Poppins",sans-serif; font-size:10px; font-weight:700; letter-spacing:.12em;
+    text-transform:uppercase; color:var(--red); margin:0 0 9px;
+  }
+  .dt-list{list-style:none; margin:0 0 14px; padding:0;}
+  .dt-list li{
+    position:relative; padding-left:13px; font-size:12.5px; line-height:1.6; color:var(--ink); margin-bottom:7px;
+  }
+  .dt-list li:last-child{margin-bottom:0;}
+  .dt-list li::before{content:"–"; position:absolute; left:0; top:0; color:var(--gray);}
+  @media(max-width:1240px){
+    .dt-grid{grid-template-columns:repeat(2,minmax(0,1fr)); max-width:560px;}
+    .proj-row:hover .proj-detail{max-height:1300px;}
+  }
+  @media(max-width:900px){
+    .company-inner{flex-direction:column; gap:26px;}
+    .company-head{position:static; flex:none;}
+    .proj-detail{
+      max-height:none; opacity:1; overflow:visible;
+      padding-left:0; padding-right:0; padding-bottom:16px;
+    }
+    .proj-row:hover .proj-main{padding-left:0;}
+    .dt-grid{grid-template-columns:1fr; max-width:none; gap:16px;}
+  }
+
+  .dt-img-slot{
+    margin-top:auto; aspect-ratio:4/3; border:1.5px dashed var(--line); border-radius:6px;
+    display:flex; align-items:center; justify-content:center; text-align:center;
+    background:rgba(255,255,255,0.4); color:var(--gray);
+    font-family:"Poppins",sans-serif; font-size:10px; letter-spacing:.04em;
+  }
+  /* ---------------- SAMPLE: stacked (horizontal-band) detail layout ---------------- */
+  .dt-stack{display:flex; flex-direction:column; gap:22px; max-width:900px;}
+  .dt-sec .dt-label{margin:0 0 10px;}
+  .dt-sec .dt-list li{font-size:13px; line-height:1.7;}
+  .dt-img-row{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:16px; margin-top:6px;}
+  @media(max-width:640px){
+    .dt-img-row{grid-template-columns:1fr;}
+  }
+
+  .dt-copy-btn{
+    display:inline-flex; align-items:center; gap:7px; margin-top:22px;
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:11.5px; letter-spacing:.04em;
+    color:var(--red); background:none; border:none; border-bottom:1.5px solid var(--red); padding:0 0 3px;
+    cursor:pointer; transition:color .2s, border-color .2s;
+  }
+  .dt-copy-btn:hover{color:var(--ink); border-color:var(--ink);}
+  .dt-copy-btn span{font-size:12px;}
+
+  /* ---------------- COPY MODAL ---------------- */
+  body.modal-open{overflow:hidden;}
+  .copy-modal{
+    position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center;
+    padding:40px; opacity:0; pointer-events:none; transition:opacity .3s var(--ease);
+  }
+  .copy-modal.open{opacity:1; pointer-events:auto;}
+  .copy-modal-backdrop{position:absolute; inset:0; background:rgba(21,21,20,0.55); backdrop-filter:blur(2px);}
+  .copy-modal-panel{
+    position:relative; background:var(--white); border-radius:10px; max-width:640px; width:100%;
+    max-height:82vh; overflow-y:auto; padding:44px 40px 40px;
+    transform:translateY(16px) scale(.98); transition:transform .3s var(--ease);
+    box-shadow:0 30px 80px rgba(0,0,0,.25);
+  }
+  .copy-modal.open .copy-modal-panel{transform:translateY(0) scale(1);}
+  .copy-modal-close{
+    position:absolute; top:18px; right:18px; width:30px; height:30px; border-radius:50%;
+    border:1px solid var(--line); background:none; font-size:13px; color:var(--gray); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; transition:background .2s, color .2s;
+  }
+  .copy-modal-close:hover{background:var(--ink); color:var(--white); border-color:var(--ink);}
+  .copy-modal-eyebrow{
+    font-family:"Poppins",sans-serif; font-weight:700; font-size:11px; letter-spacing:.12em;
+    color:var(--red); text-transform:uppercase; margin-bottom:10px;
+  }
+  .copy-modal-title{
+    font-family:"Poppins",sans-serif; font-weight:800; font-size:24px; margin-bottom:26px; line-height:1.3;
+    padding-right:30px;
+  }
+  .copy-modal-body .copy-h{
+    font-family:"Poppins",sans-serif; font-weight:700; font-size:11.5px; letter-spacing:.06em;
+    color:var(--red); text-transform:uppercase; margin:22px 0 8px;
+  }
+  .copy-modal-body .copy-h:first-child{margin-top:0;}
+  .copy-modal-body p.copy-line{font-size:15px; line-height:1.75; color:var(--ink); margin-bottom:4px;}
+  .copy-modal-body .copy-gap{height:14px;}
+  @media(max-width:640px){
+    .copy-modal{padding:16px;}
+    .copy-modal-panel{padding:32px 22px 28px; max-height:88vh;}
+  }
+
+  /* ---------------- TIMELINE (career-at-a-glance, jumps into CAREER below) ---------------- */
+  #timeline{background:var(--bg-soft);}
+  .tl-list{border-top:1px solid var(--line);}
+  .tl-row{
+    display:flex; align-items:center; gap:22px; padding:22px 0;
+    border-bottom:1px solid var(--line);
+    transition:padding-left .3s var(--ease), background .3s;
+  }
+  .tl-row:hover{padding-left:10px; background:rgba(224,43,32,0.04);}
+  .tl-chp{
+    font-family:"Poppins",sans-serif; font-weight:800; font-size:13px; color:var(--red);
+    width:38px; flex-shrink:0; letter-spacing:.02em;
+  }
+  .tl-main{flex:1; min-width:0; display:flex; flex-direction:column; gap:4px;}
+  .tl-name{font-size:16px; font-weight:700; display:inline-flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .tl-meta{font-family:"Poppins",sans-serif; font-size:12px; color:var(--gray); letter-spacing:.01em;}
+  .tl-count{
+    font-family:"Poppins",sans-serif; font-size:11px; font-weight:700; letter-spacing:.06em;
+    color:var(--gray); flex-shrink:0; text-align:right; width:110px;
+  }
+  .tl-arrow{
+    font-family:"Poppins",sans-serif; color:var(--gray); font-size:16px; flex-shrink:0;
+    transition:transform .3s var(--ease), color .3s;
+  }
+  .tl-row:hover .tl-arrow{transform:translateX(4px); color:var(--ink);}
+  @media(max-width:640px){
+    .tl-row{flex-wrap:wrap; gap:8px 16px;}
+    .tl-count{width:auto; order:3; text-align:left;}
+    .tl-arrow{order:4;}
+  }
+
+  /* ---------------- CAREER RECAP (skills/awards) ---------------- */
+  .recap-grid{display:grid; grid-template-columns:1fr 1fr; gap:70px; padding-top:70px; margin-top:10px; border-top:1px solid var(--line);}
+  .side-block{margin-bottom:0;}
+  .side-h{font-family:"Poppins",sans-serif; font-weight:700; font-size:12px; letter-spacing:.14em; color:var(--red); margin-bottom:16px; text-transform:uppercase;}
+  .side-list li{list-style:none; font-size:14px; color:var(--ink); padding:9px 0; border-bottom:1px dashed var(--line);}
+  .side-list li:last-child{border-bottom:none;}
+  .award-year{font-family:"Poppins",sans-serif; font-weight:700; color:var(--red); margin-right:8px;}
+  @media(max-width:900px){ .recap-grid{grid-template-columns:1fr; gap:40px;} }
+
+  /* ---------------- STATEMENT ---------------- */
+  #statement{
+    background:var(--bg-soft);
+    padding:150px 0; text-align:center;
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  #statement .wrap{padding:0 40px;}
+  .statement-text{
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:clamp(24px,4vw,46px);
+    line-height:1.35; letter-spacing:-0.01em; max-width:900px; margin:0 auto; color:var(--ink);
+  }
+  .statement-text .accent{color:var(--red);}
+  .statement-by{margin-top:30px; font-family:"Poppins",sans-serif; font-size:12.5px; letter-spacing:.14em; color:var(--gray); text-transform:uppercase;}
+
+  /* ---------------- CONTACT ---------------- */
+  #contact{background:var(--bg); padding-top:140px; padding-bottom:90px;}
+  .contact-head{font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(40px,7vw,92px); line-height:1.0; letter-spacing:-0.02em; margin-bottom:44px;}
+  .contact-email{
+    display:inline-flex; align-items:center; gap:16px;
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:clamp(20px,3vw,32px);
+    border-bottom:2px solid var(--ink); padding-bottom:10px;
+    transition:color .3s, border-color .3s, gap .3s;
+  }
+  .contact-email:hover{color:var(--red); border-color:var(--red); gap:22px;}
+  .contact-grid{display:flex; justify-content:space-between; align-items:flex-end; margin-top:90px; padding-top:26px; border-top:1px solid var(--line); flex-wrap:wrap; gap:20px;}
+  .contact-col{font-size:13px; color:var(--gray); line-height:1.8;}
+  .contact-col b{color:var(--ink); display:block; font-family:"Poppins",sans-serif; font-weight:700; font-size:11px; letter-spacing:.12em; margin-bottom:8px; text-transform:uppercase;}
+  footer{
+    padding:26px 40px; display:flex; justify-content:space-between; font-size:11.5px; color:var(--gray);
+    font-family:"Poppins",sans-serif; border-top:1px solid var(--line); flex-wrap:wrap; gap:8px;
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#hero" class="nav-mark"><span class="dot"></span>이채승.</a>
+  <ul class="nav-links">
+    <li><a href="#about" data-nav>About</a></li>
+    <li><a href="#timeline" data-nav>Timeline</a></li>
+    <li><a href="#career" data-nav>Career <span class="cnt">[09]</span></a></li>
+    <li><a href="#contact" data-nav>Contact</a></li>
+  </ul>
+  <a href="#contact" class="nav-cta">CONTACT</a>
+</nav>
+
+<!-- ================= HERO ================= -->
+<section id="hero">
+  <div class="hero-stars" id="heroStars" aria-hidden="true"></div>
+  <div class="hero-circle"></div>
+  <div class="hero-circle two"></div>
+  <div class="hero-content">
+    <div class="hero-eyebrow">Since 2008 · Seoul, Korea</div>
+    <h1 class="hero-name">이채승.</h1>
+    <div class="hero-pills">
+      <span class="pill">Brand Marketer</span>
+      <span class="pill">Copywriter</span>
+      <span class="pill">Creative Director</span>
+      <span class="pill">Storyteller</span>
+    </div>
+    <p class="hero-desc">2008년부터 17년+ 카피라이터, 브랜드/콘텐츠 마케터, 크리에이티브 디렉터로 일하며 삼성전자·현대카드·SK텔레콤 등 대기업 캠페인부터 스타트업 브랜드 전략까지 만들어왔습니다.</p>
+    <div class="hero-progress">
+      <div class="bar"><div class="fill" id="heroFill"></div></div>
+      <div class="ticks"><span>2008</span><span>2013</span><span>2018</span><span>2023</span><span>2026 —</span></div>
+    </div>
+    <div class="hero-bottom"><span class="arrow">↓</span> Scroll</div>
+  </div>
+</section>
+
+<!-- ================= ABOUT ================= -->
+<section id="about" class="sec">
+  <div class="wrap">
+    <div class="eyebrow">01 — About</div>
+    <div class="about-grid">
+      <div class="reveal about-bio">
+        <p>광고를 좋아해서 카피라이터를 꿈꿨지만, AE로 사회생활을 시작했습니다.</p>
+        <p>다시 취업을 준비해 카피라이터가 되었고, 수십 개 브랜드의 캠페인을 만들었습니다.</p>
+        <p>IT 제조업, 글로벌 커머스, 여행 플랫폼, AI 스타트업을 거쳐 e스포츠 비즈니스까지 — 세상에 영향 있는 브랜드를 만드는 일을 좋아합니다.</p>
+      </div>
+      <div class="reveal-stagger stat-row">
+        <div class="stat"><div class="num">17<span style="font-size:22px;">년+</span></div><div class="lbl">BRAND & AD CAREER</div></div>
+        <div class="stat"><div class="num">9</div><div class="lbl">CHAPTERS · COMPANIES</div></div>
+        <div class="stat"><div class="num">46<span style="font-size:22px;">+</span></div><div class="lbl">CAMPAIGNS & PROJECTS</div></div>
+        <div class="stat"><div class="num">7</div><div class="lbl">INDUSTRY AWARDS</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TIMELINE ================= -->
+<section id="timeline" class="sec">
+  <div class="wrap">
+    <div class="eyebrow">02 — Timeline</div>
+    <div class="sec-head reveal">
+      <h2 class="sec-title">CAREER TIMELINE.</h2>
+      <p class="sec-sub">2008년부터 지금까지, 9개의 챕터로 쓰여진 커리어를 한눈에. 최신 챕터가 가장 위에 있고, 클릭하면 아래 해당 챕터의 프로젝트로 바로 이동합니다.</p>
+    </div>
+    <div class="tl-list reveal-stagger">
+      <a href="#chp-09" class="tl-row">
+        <span class="tl-chp">09</span>
+        <span class="tl-main">
+          <span class="tl-name">아하앤컴퍼니 <span class="career-tag">진행중</span></span>
+          <span class="tl-meta">브랜드마케터 · 2024.07 – 현재</span>
+        </span>
+        <span class="tl-count">업데이트 예정</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-08" class="tl-row">
+        <span class="tl-chp">08</span>
+        <span class="tl-main">
+          <span class="tl-name">프리랜서</span>
+          <span class="tl-meta">프리랜서 브랜드 마케터 · 2023.09 – 2024.06</span>
+        </span>
+        <span class="tl-count">3 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-07" class="tl-row">
+        <span class="tl-chp">07</span>
+        <span class="tl-main">
+          <span class="tl-name">SBXG</span>
+          <span class="tl-meta">브랜드마케터 · 2021.02 – 2023.09</span>
+        </span>
+        <span class="tl-count">3 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-06" class="tl-row">
+        <span class="tl-chp">06</span>
+        <span class="tl-main">
+          <span class="tl-name">뤼이드</span>
+          <span class="tl-meta">브랜드마케터 · 2020.10 – 2021.02</span>
+        </span>
+        <span class="tl-count">1 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-05" class="tl-row">
+        <span class="tl-chp">05</span>
+        <span class="tl-main">
+          <span class="tl-name">여기어때</span>
+          <span class="tl-meta">브랜드/컨텐츠마케터 · 2019.06 – 2020.04</span>
+        </span>
+        <span class="tl-count">3 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-04" class="tl-row">
+        <span class="tl-chp">04</span>
+        <span class="tl-main">
+          <span class="tl-name">정글</span>
+          <span class="tl-meta">브랜드/그로스마케터 · 2018.02 – 2019.06</span>
+        </span>
+        <span class="tl-count">2 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-03" class="tl-row">
+        <span class="tl-chp">03</span>
+        <span class="tl-main">
+          <span class="tl-name">제일기획</span>
+          <span class="tl-meta">카피라이터(디지털본부) · 2016.11 – 2018.02</span>
+        </span>
+        <span class="tl-count">8 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-02" class="tl-row">
+        <span class="tl-chp">02</span>
+        <span class="tl-main">
+          <span class="tl-name">이노션</span>
+          <span class="tl-meta">공채 카피라이터(ATL/BTL) · 2011.01 – 2016.08</span>
+        </span>
+        <span class="tl-count">24 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+      <a href="#chp-01" class="tl-row">
+        <span class="tl-chp">01</span>
+        <span class="tl-main">
+          <span class="tl-name">오리콤</span>
+          <span class="tl-meta">공채 AE · 2008.11 – 2010.08</span>
+        </span>
+        <span class="tl-count">2 PROJECTS</span>
+        <span class="tl-arrow">&#8599;</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- ================= CAREER ================= -->
+<section id="career" class="sec">
+  <div class="wrap">
+    <div class="eyebrow">03 — Career</div>
+    <div class="sec-head reveal">
+      <h2 class="sec-title">CAREER.</h2>
+      <p class="sec-sub">2008년 AE로 시작해 카피라이터, 브랜드/그로스 마케터를 거쳐 지금에 이르기까지 — 9개의 챕터로 쓰여진 17년+입니다. 최신 챕터부터 거슬러 올라가며, 각 챕터를 스크롤하면 그 시기에 만든 프로젝트들이 아래로 채워집니다.</p>
+    </div>
+
+<div class="company-block current" id="chp-09">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 09</div>
+      <div class="company-name">아하앤컴퍼니 <span class="career-tag">진행중</span></div>
+      <div class="company-role">브랜드마케터</div>
+      <div class="company-period">2024.07 – 현재</div>
+      <div class="company-count">업데이트 예정</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row proj-empty">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#d8d6d1,#b5b2ab 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">아직 공개된 프로젝트가 없습니다 — 업데이트 예정</div>
+            <div class="proj-meta">아하앤컴퍼니 · 2024–</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-08">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 08</div>
+      <div class="company-name">프리랜서</div>
+      <div class="company-role">프리랜서 브랜드 마케터</div>
+      <div class="company-period">2023.09 – 2024.06</div>
+      <div class="company-count">3 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">발로란트 겨울방학 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">라이엇게임즈 · 2024</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>캠페인 총괄 디렉팅</p>
+          <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>발로란트 PC방 점유율 증대 목적</li>
+              <li>겨울방학 시즌 오프라인 접객수 증대 캠페인 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>캠페인 전체 디렉팅(컨셉·컨텐츠 방향성·미디어 플랜·프로모션 상품 기획)</li>
+              <li>오프라인 이벤트 인테리어 및 이벤트 설계</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>유튜브 컨텐츠 조회수 기존 대비 5-10배 증대</li>
+              <li>오프라인 이벤트 참여자 1,029명</li>
+              <li>PC방 게임 점유율 5%→20% 상승(이벤트 기간)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">e스포츠팀 리브랜딩.</div>
+            <div class="proj-meta">피어엑스(구 SBXG) · 2023</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>프리랜서 브랜드 디렉터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>메인스폰서 변경에 따른 독립 스포츠팀 브랜딩 필요</li>
+              <li>사업 다각화에 따른 PR/HR/IR 관점의 기업 사이트 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>24년 시작될 브랜딩 전략 방향성 제시 및 리드(스포츠팀다운 엠블럼·마스코트 구축)</li>
+              <li>PR/HR/IR에 집중한 기업사이트 구조 컴팩트화</li>
+              <li>퇴사 후에도 프리랜서 브랜드 디렉터로 프로젝트 지속 참여</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>e스포츠 커뮤니티에서 긍정적인 반응</li>
+              <li>기업 브랜드 사이트 구축 완료(2023)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">프립 캠페인. <a class="proj-video-icon" href="https://www.youtube.com/watch?v=hi_l98G0LQ4" target="_blank" rel="noopener noreferrer" title="영상 보기" onclick="event.stopPropagation()">&#9654;</a></div>
+            <div class="proj-meta">프립 · 2020</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>프리랜서 CD·카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>취미 중개 플랫폼의 취약한 브랜드 이미지 개선 필요</li>
+              <li>혜택 노출보다 취미의 가치를 브랜드화할 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>프리랜서 크리에이티브 디렉터 겸 카피라이터로 메인 캠페인 컨셉 도출</li>
+              <li>제작비 절감을 위해 크리에이터 직접 섭외 및 인터뷰 진행</li>
+              <li>시리즈별(Long/Short 각 6편) 광고안 카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>광고와 함께 연 특별 클래스 조기 완판</li>
+              <li>이후 프립의 브랜드 레이아웃으로 정착화</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-07">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 07</div>
+      <div class="company-name">SBXG</div>
+      <div class="company-role">브랜드마케터</div>
+      <div class="company-period">2021.02 – 2023.09</div>
+      <div class="company-count">3 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">PORTAL &amp; 마우스포테이토.</div>
+            <div class="proj-meta">SBXG · 2022–23</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드 디렉터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>e스포츠만으로는 수익구조 개선에 한계, 문화 비즈니스로서 새 수익모델 필요</li>
+              <li>게이머들을 위한 오프라인 대안 공간 제시</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>신논현 PC방 '포탈', 종각 편집샵 '마우스포테이토' 브랜드 개발 및 매뉴얼 구축</li>
+              <li>게이밍 패션 브랜드 '모니터그룹' 런칭 기획</li>
+              <li>브랜드 행사 컨셉 도출 및 월간 행사 기획</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>게임사 런칭행사 공간 대관(피파, 스파이더맨 등)</li>
+              <li>컨텐츠 누적 조회수 2억뷰 이상 추정(23.4Q 기준)</li>
+              <li>유명 크리에이터들의 자연 유입 촬영 컨텐츠 다수 발생</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">발란사 × 아우프글렛 브랜드 협업.</div>
+            <div class="proj-meta">SBXG · 2022</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드 디렉터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>게임=오덕 이미지 개선, 게임과 타 문화의 융합으로 이미지 제고</li>
+              <li>유니폼 등 한정된 굿즈를 넘어 스포츠 패션으로 관점 확장</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>브랜드 디렉팅 및 행사(팝업스토어) 디렉팅 전체 총괄(자체 기획·운영)</li>
+              <li>발란사·아우프글렛 콜라보 굿즈·화보·스토리라인 기획</li>
+              <li>더현대서울 PEER 팝업 개최 기획</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>e스포츠 미디어를 넘어 패션 블로그 등 다양한 미디어 노출</li>
+              <li>굿즈 일부 품목 완판</li>
+              <li>이후 다양한 콜라보 제안이 역으로 들어오는 계기 마련</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">CI&amp;BI 및 e스포츠팀 브랜드 리뉴얼.</div>
+            <div class="proj-meta">SBXG · 2021</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드 디렉터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>e스포츠가 '스포츠답다'는 인식 부족, 제한된 팬덤 안에서 유치한 이미지가 고착화된 상황</li>
+              <li>급조된 종목 특성상 브랜드 스트럭처가 불명확해 내부 혼선 존재</li>
+              <li>메인스폰서 체제 안에서 지속가능한 브랜드·팀컬러 전략 수립 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>브랜드 디렉터로 CI&amp;BI 정립 및 비즈니스 재정의 전략 덱 전체 디렉팅</li>
+              <li>YELLOW 팀컬러 확립, 부산 연고지 전략 수립부터 부산아이파트·롯데자이언츠 MOU 체결까지 실행</li>
+              <li>e스포츠를 문화 비즈니스로 확장하는 신사업(리테일 BM·브랜드 콜라보) 전략 제시</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>e스포츠 굿즈 매출 매년 100% 성장</li>
+              <li>e스포츠 최초 지역 연고 전략 실행(2022), 리그 내 팀컬러 마케팅 확산</li>
+              <li>기업 VISION &amp; MISSION 재정의로 이어짐</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-06">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 06</div>
+      <div class="company-name">뤼이드</div>
+      <div class="company-role">브랜드마케터</div>
+      <div class="company-period">2020.10 – 2021.02</div>
+      <div class="company-count">1 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">산타토익 겨울 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">뤼이드(산타토익) · 2020–21</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드마케팅 팀장</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>인지도 낮은 산타토익 브랜드를 토익 성수기에 알릴 필요</li>
+              <li>취업 타겟에게 소구할 신규 유튜브 채널 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>브랜드 마케팅 팀장으로 캠페인 대행사 선정·PT 주관</li>
+              <li>원슈타인·마미손 등 화제성 모델 긴급 섭외 및 캠페인 방향성 설정</li>
+              <li>'영끌취업' 채널 목적·컨텐츠 방향성 수립</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>성수기 앱스토어 다운로드 교육 부문 5위권 진입</li>
+              <li>영끌취업 채널 단일 컨텐츠 100만뷰 돌파</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-05">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 05</div>
+      <div class="company-name">여기어때</div>
+      <div class="company-role">브랜드/컨텐츠마케터</div>
+      <div class="company-period">2019.06 – 2020.04</div>
+      <div class="company-count">3 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">여기어때 리브랜딩.</div>
+            <div class="proj-meta">여기어때 · 2019–20</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드 지표 조사</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>모텔 앱 이미지 고착화 탈피 필요</li>
+              <li>액티비티·고급숙박 등 서비스 다각화에 맞는 이미지 제고 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>2020 사명 변경을 위한 U&amp;A 조사 리서치 항목 설계</li>
+              <li>브랜드 컨설팅 에이전시와 협업해 브랜드 커뮤니케이션 DO&amp;DON'TS 수립</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>2020년 사명 변경 성사</li>
+              <li>숙박앱→여행앱 브랜드로 초기 이미지 정립</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">여기어때 여름 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">여기어때 · 2019</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드컨텐츠 팀장</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>모텔 중개 이미지 탈피 필요</li>
+              <li>호텔까지 확장된 상품을 여행 메시지로 전달할 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>브랜드 컨텐츠팀 팀장으로 대행사 PT 주관 및 제작안 선정</li>
+              <li>지역별 사투리 버전 등 디테일 카피라이팅 검수</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>캠페인 35일만에 총 1억 5천만 뷰 달성</li>
+              <li>7-8월 월단위 역대 최고 매출액 기록</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">컨텐츠 채널 전략 리빌딩.</div>
+            <div class="proj-meta">여기어때 · 2019</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>브랜드컨텐츠 팀장</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>파편화된 소셜 채널을 일관되고 목표 지향적으로 개선할 필요</li>
+              <li>컨텐츠를 통한 매출 기여도 트래킹 구조 부재</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>브랜드 컨텐츠팀 팀장으로 채널 전략 구조 및 채널별·타겟별 가이드 수립</li>
+              <li>채널별 쿠폰 프로모션 및 매출 트래킹 구조 설계</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>전체채널 앱유입 월 5천→4-5만 유지</li>
+              <li>컨텐츠를 통한 매출 월 1천만→1-2억 유지(성수기 주 1억)</li>
+              <li>블랙 인스타그램 최단기 10만 팔로워 달성</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-04">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 04</div>
+      <div class="company-name">정글</div>
+      <div class="company-role">브랜드/그로스마케터</div>
+      <div class="company-period">2018.02 – 2019.06</div>
+      <div class="company-count">2 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">Affiliate 판매 전략.</div>
+            <div class="proj-meta">정글 · 2019</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>마케팅 기획</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>리뷰 컨텐츠 부재로 판매량 급감</li>
+              <li>자연발생적 홍보 컨텐츠 전략 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>수익 쉐어 기반 어필리에이트 매출 구조 기획 및 인플루언서 모집</li>
+              <li>글로벌 IT 유튜버 리뷰 컨텐츠 제휴 제작</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>자사몰 100%였던 매출에서 어필리에이트 채널 비율 30% 확보</li>
+              <li>이탈리아 지역 매출 500% 증대</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">정글바이퍼 런칭 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">정글 · 2018</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>마케팅 기획</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>골전도 사운드 선글라스 후속작 컨셉 필요</li>
+              <li>미투 상품 범람 속 유니크한 차별화 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>마케팅 기획 전반(프리오더 컨셉·음악 선정·3D영상 스토리라인) 리드</li>
+              <li>리액션 영상 시놉시스·촬영 컨셉 기획 및 퍼포먼스 마케팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>프리오더 초도물량 완판</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-03">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 03</div>
+      <div class="company-name">제일기획</div>
+      <div class="company-role">카피라이터(디지털본부)</div>
+      <div class="company-period">2016.11 – 2018.02</div>
+      <div class="company-count">8 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">갤럭시 A8 TVC. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2018</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>듀얼 카메라 셀피 기능을 중심으로 소구할 캠페인 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>광고 컨셉 제시 및 카피라이팅(여자 편/남자 편)</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>제시한 컨셉으로 PT 승리</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="cheil_a8">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">갤럭시 S9 TVC. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2018</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>저조도 카메라 기능을 중심으로 소구할 TVC 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>광고 컨셉 제시 및 카피라이팅(티저/본 편)</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="cheil_s9">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">갤럭시 S8 큐브무비 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>캠페인 카피라이터·키맨</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>TV광고를 넘어서는 온라인 홍보 방안 필요</li>
+              <li>최다 기능 개선 상품을 TV만으로 보여주기 어려운 한계 극복 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>캠페인 카피라이터 겸 프로젝트 키맨으로 핵심 컨셉·매커니즘 최초 제안</li>
+              <li>전화번호 4자리로 1만 가지 조합의 '큐브 무비' 40개 스토리 직접 참여</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>스파익스 아시아 브론즈, 대한민국광고대상 은상 등 국내외 4개 어워드 수상</li>
+              <li>온라인 예산만으로 TV급 효과를 입증해 광고주 만족도 높았던 프로젝트</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">갤럭시 노트8 온라인 스튜디오. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>실물을 직접 보지 않고도 기능을 잘 보여줘야 하는 과제</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>사이트·튜토리얼 카피라이팅</li>
+              <li>소비자 경험 로직 웹 스토리보드 기획</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>이후 온라인 체험 스튜디오 포맷의 초석 마련</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">노트 FE 인터랙티브 언박싱. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>컨텐츠 기획</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>국내 최초 모바일 전용(세로형) 언박싱 광고 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>컨텐츠 아이디어 제시</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>국내 최초 모바일 전용 세로형 광고 제작</li>
+              <li>방송매체 없이 페이스북 모바일에만 집행</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">갤럭시 S8 스낵비디오. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">삼성전자 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>기능별로 짧게 소구하는 '스낵' 형태 컨텐츠 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>기능 컨텐츠 컨셉·카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>총 6가지 기능 히스토리 컨텐츠 제작</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">QLED TV 4K 리테일 영상.</div>
+            <div class="proj-meta">삼성전자 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>TV 신기술(QLED)을 리테일/온라인에서 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="cheil_qled">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">볼트EV. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">쉐보레 · 2017</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>100% 전기차 발매, 기능보다 일상 속 전기차 인식 전달 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>빅모델 전략 대신 일상 밀착형 컨셉 기획</li>
+              <li>스토리라인 기획, 녹음·음악 부분 디렉팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>광고 라이브 3일만에 사전예약대수 완판</li>
+              <li>해외 전문지에서 '가장 잘 만든 글로벌 쉐보레 광고'로 평가</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="cheil_boltev">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-02">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 02</div>
+      <div class="company-name">이노션</div>
+      <div class="company-role">공채 카피라이터(ATL/BTL)</div>
+      <div class="company-period">2011.01 – 2016.08</div>
+      <div class="company-count">24 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">채널현대카드 프로젝트. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>캠페인 카피라이터·키맨</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>TV광고를 넘어서는 '브랜드 저널리즘' 캠페인 필요</li>
+              <li>방송국 시스템에 준하는 자체 컨텐츠 제작/생산 체계 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>캠페인 카피라이터 겸 프로젝트 키맨으로 영상 카피라이팅·프로그램 기획·시놉시스 총괄</li>
+              <li>톰하디 출연 브랜드필름, 라이브러리 카툰, Inspiration Talk 기획·제작 참여</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>2016 대한민국광고대상 온라인 부문 금상 수상</li>
+              <li>2017 에피어워드코리아 서비스 부문 동상 수상</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">현대카드 브랜드 필름 Ⅰ. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터·톰하디 녹음 감수</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>브랜드 저널리즘 프로젝트의 핵심 시리즈로 톰하디 출연 브랜드필름 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>Travel 편·남자의 철듦 편 카피라이팅</li>
+              <li>톰하디 녹음 및 영문 카피 감수</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음 — 채널현대카드 프로젝트 전체 성과에 포함, 위 항목 참고)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm1">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">현대카드 브랜드 필름 Ⅱ. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>브랜드 저널리즘 시리즈 후속편으로 현대카드의 태도(이데올로기)를 담은 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>Ideology 편·Music 편 카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음 — 채널현대카드 프로젝트 전체 성과에 포함, 위 항목 참고)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm2">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">생활플랫폼 TVC Ⅰ. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">SKT · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>통신사에서 '플랫폼'으로 도약하는 캠페인 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>'폼(form)' 컨셉 카피라이팅 및 모델별 스토리라인 개발</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>1년간 가용될 정도의 캠페인 테마 확립</li>
+              <li>조진웅 모델이 후속 캠페인까지 이어지도록 확립</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt1">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">생활플랫폼 TVC Ⅱ. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">SKT · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>다양한 '폼(모델)'으로 메시지를 확장하는 후속 시리즈 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>진경 NA 버전·조진웅의 폼 편 카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음 — 위 조진웅 NA 편과 동일 캠페인 성과 공유)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt2">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">Inspiration Talk. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2014–16</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>'영감'이라는 브랜드 정신을 담은 신뢰도 구축형 컨텐츠 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>셀럽별 인터뷰 소재 개발 및 인터뷰 진행</li>
+              <li>현장 디렉팅 및 편집 디렉팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>광고 없이 찾아보는 현대카드 대표 컨텐츠로 부상</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">현대카드 마이메뉴. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>카드 사용 통계 기반 파인다이닝 큐레이션 컨텐츠 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>톨스토이·쇼송 인용을 활용한 카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcmymenu">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">현대카드 X카드 TVC. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2016</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>X시리즈 할인 혜택을 소구할 캠페인 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>광고 컨셉 제시 및 카피라이팅(명세서 편/M VS X 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>제시한 컨셉으로 PT 승리</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardtvc">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">현대카드 PRINT.</div>
+            <div class="proj-meta">현대카드 · 2011–16</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>(원문에 상세 배경 정보 없음 — 브랜드 캠페인 인쇄물)</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>비주얼 아이디어</li>
+              <li>카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">피키캐스트 런칭 캠페인. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">피키캐스트 · 2015</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>신규 미디어 피키캐스트의 매스 광고 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>캠페인 컨셉 수립</li>
+              <li>TVC/OOH 광고 아이디어·카피라이팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>ATL 광고 집행 3달만에 1,000만 다운로드 대세앱 등극</li>
+              <li>2015 대한민국 PR협회 대상 수상</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">뮤직라이브러리 &amp; 카드팩토리. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2015</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>두 복합 문화공간의 아이덴티티를 압축 전달할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(뮤직라이브러리 편/카드팩토리 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_musiclib">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">CJ오쇼핑 Ⅱ (다나한). <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">CJ오쇼핑 · 2015</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>피부 탄력('요요') 케어 제품의 문제 해결형 소구 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_cj2015">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">만화로 보는 라이브러리 걸작선.</div>
+            <div class="proj-meta">현대카드 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>라이브러리 소장 도서 홍보 및 공간 인지도 제고 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>도서·라이브러리 맥락 서머리 작성</li>
+              <li>최종 원고 시안 검수</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>애니메이션으로도 확장 제작</li>
+              <li>현카 라이브러리 내 홍보 유인물로 활용</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">X카드 시즌캐시백. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>시즌 한정 캐시백 혜택을 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardcashback">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">슈퍼콘서트 21 시티브레이크. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대카드 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>뮤직페스티벌에 대한 기대감을 압축한 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_superconcert">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">다이렉트론. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">현대캐피탈 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>신용대출 상품의 신뢰도('클래스')를 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_hcapital">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">베가 아이언2. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">팬택(베가) · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>메탈 소재 스마트폰의 개인화된 감성을 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(레드 편/클래스 편, 컬러별 시리즈 총 4편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_vega">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">씽크U수학. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">웅진씽크빅 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>개인 맞춤형 수학 학습 서비스의 차별점을 소구할 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(샘 편/문제 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_woongjin">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">하나은행. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">하나은행 · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>생애주기별(전세자금/노후) 금융 니즈를 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(전세자금 편/노후 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_hanabank">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">0914 PRINT.</div>
+            <div class="proj-meta">시몬느(0914) · 2014</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>(원문에 상세 배경 정보 없음 — 브랜드 캠페인 인쇄물)</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>비주얼 아이디어</li>
+              <li>카피라이팅</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">찰떡빙수 송. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">파리바게뜨 · 2013</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>신상품 출시에 맞는 새로운 커뮤니케이션 개발 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>악뮤 음악 개발 의뢰 및 상품 소구 포인트 전달</li>
+              <li>최종 가사 검수</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>여름 대세 송으로 음원 차트 상위권 기록</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">레이OK 하이브리드. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">불스원 · 2013</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>계절별(겨울/여름) 와이퍼 기능을 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(겨울 편/여름 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_bullsone">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">CJ오쇼핑 Ⅰ. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">CJ오쇼핑 · 2012</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>패션·리빙 카테고리를 감성적으로 소구할 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅(패션 편/리빙 편)</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_cj2012">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">브라질리언 쌈바 스테이크. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">빕스 · 2012</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>카피라이터</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>신메뉴 출시에 맞는 이국적 소구 카피 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>카피라이팅</li>
+              <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>보그 잡지 화보 촬영과 동시 진행</li>
+              <li>김수현 화보 컷으로 대중에게 확산</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="innocean_vips">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="company-block" id="chp-01">
+  <div class="company-inner">
+    <div class="company-head reveal">
+      <div class="company-chp">CHP. 01</div>
+      <div class="company-name">오리콤</div>
+      <div class="company-role">공채 AE</div>
+      <div class="company-period">2008.11 – 2010.08</div>
+      <div class="company-count">2 PROJECTS</div>
+    </div>
+    <div class="company-list reveal-stagger">
+      <div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">“사람이 미래다” 기업 PR. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">두산그룹 · 2009–10</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>AE / 캠페인 기획</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>기업의 미래 가치를 '사람' 중심으로 재정의하는 캠페인 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>AE로서 캠페인 전략(광고기획·컨셉 기획) 참여</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>수년간 지속된 '사람이 미래다' 캠페인의 포맷을 처음 세팅</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_corp">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+<div class="proj-row">
+        <div class="proj-main">
+          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-info">
+            <div class="proj-title">“사람이 미래다” 공익 PR. <span class="proj-video-icon" title="영상 링크 준비 중">&#9654;</span></div>
+            <div class="proj-meta">두산그룹 · 2009</div>
+          </div>
+          <div class="proj-arrow">↗</div>
+        </div>
+                <div class="proj-detail">
+          <p class="rl"><b>Role</b>AE / 캠페인 기획</p>
+                    <div class="dt-stack">
+            <div class="dt-sec">
+              <p class="dt-label">배경 &amp; 목적</p>
+              <ul class="dt-list">
+              <li>2군 선수·시골학교 아이들 등 소외된 인재상을 통한 공익 메시지 필요</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">역할 및 업무</p>
+              <ul class="dt-list">
+              <li>AE로서 캠페인 전략(광고기획·컨셉 기획) 참여</li>
+              </ul>
+            </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>(별도 result 없음 — 위 기업 PR과 함께 캠페인 포맷 정착에 기여)</li>
+              </ul>
+            </div>
+            <div class="dt-img-row">
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 4:3</div>
+            </div>
+          </div>
+          <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_public">카피 전문 보기 <span>&#8599;</span></button>
+        
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <div class="recap-grid">
+      <div class="side-block reveal">
+        <div class="side-h">Skills</div>
+        <ul class="side-list">
+          <li>카피라이팅 · 네이밍 · 컨셉팅 · 브랜드전략</li>
+          <li>ATL·BTL·SNS 광고/콘텐츠 제작</li>
+          <li>시장분석·타겟팅·매체플랜·광고집행·성과분석</li>
+          <li>Full-funnel 마케팅 실행</li>
+          <li>MS Office 상급 · Keynote 상급 · Premiere 중급</li>
+          <li>영어 OPIc IM · 일본어 중급</li>
+        </ul>
+      </div>
+      <div class="side-block reveal">
+        <div class="side-h">Awards</div>
+        <ul class="side-list">
+          <li><span class="award-year">2015</span>대한민국 PR협회 대상 (피키캐스트)</li>
+          <li><span class="award-year">2016</span>대한민국광고대상 온라인 금상 (채널현대카드)</li>
+          <li><span class="award-year">2017</span>스파이크스 아시아 브론즈 (큐브무비)</li>
+          <li><span class="award-year">2017</span>대한민국광고대상 은상·동상 (큐브무비)</li>
+          <li><span class="award-year">2017</span>에피어워드코리아 동상 (채널현대카드)</li>
+          <li><span class="award-year">2018</span>Webby Awards (큐브무비)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= STATEMENT ================= -->
+<section id="statement">
+  <div class="wrap reveal">
+    <p class="statement-text">브랜드는 결국 <span class="accent">태도</span>로 기억됩니다.<br>한 줄의 카피, 하나의 전략이<br>사람의 마음을 움직일 수 있다고 믿고<br>17년째, 9개의 챕터를 쓰고 있습니다.</p>
+    <p class="statement-by">— 이채승</p>
+  </div>
+</section>
+
+<!-- ================= CONTACT ================= -->
+<section id="contact">
+  <div class="wrap">
+    <div class="eyebrow">04 — Contact</div>
+    <h2 class="contact-head reveal">LET'S MAKE<br>SOMETHING.</h2>
+    <a href="mailto:adflash14@gmail.com" class="contact-email reveal">adflash14@gmail.com <span>↗</span></a>
+    <div class="contact-grid">
+      <div class="contact-col"><b>Based in</b>Seoul, Korea</div>
+      <div class="contact-col"><b>Currently</b>Chapter 09 — 아하앤컴퍼니 · 브랜드마케터</div>
+      <div class="contact-col"><b>Status</b>새로운 프로젝트 제안 환영</div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2026 이채승. All rights reserved.</span>
+  <span>Demo build v3 — reference layout by glukhovsky.com</span>
+</footer>
+
+<!-- ================= COPY MODAL ================= -->
+<div class="copy-modal" id="copyModal" aria-hidden="true">
+  <div class="copy-modal-backdrop" data-copy-close></div>
+  <div class="copy-modal-panel" role="dialog" aria-modal="true" aria-labelledby="copyModalTitle">
+    <button class="copy-modal-close" data-copy-close type="button" aria-label="닫기">&#10005;</button>
+    <div class="copy-modal-eyebrow" id="copyModalEyebrow"></div>
+    <h3 class="copy-modal-title" id="copyModalTitle"></h3>
+    <div class="copy-modal-body" id="copyModalBody"></div>
+  </div>
+</div>
+<script type="application/json" id="copyData">{"cheil_qled": {"eyebrow": "삼성전자 · COPYWRITING · 2017", "title": "QLED TV 4K 리테일 영상.", "role": "카피라이터", "html": "<p class=\"copy-line\">TV의 기술이 완성되면 TV의 예술이 시작된다</p><p class=\"copy-line\">공간을 완성하는 TV</p><p class=\"copy-line\">이것은 새로운 TV가 아니라 새로운 시대의 시작</p><p class=\"copy-line\">100% TV, QLED TV</p>"}, "cheil_a8": {"eyebrow": "삼성전자 · COPYWRITING · 2018", "title": "갤럭시 A8 TVC.", "role": "카피라이터", "html": "<p class=\"copy-h\">여자 편</p><p class=\"copy-line\">100장을 찍어도 맘에 안드는 셀피</p><p class=\"copy-line\">마침내 셀피를 위한 전면 듀얼 카메라, 갤럭시 A8</p><p class=\"copy-line\">단 한장만 찍어도 셀피종결자</p><p class=\"copy-line\">이기적인 A컷의 탄생, 갤럭시 A8</p><div class=\"copy-gap\"></div><p class=\"copy-h\">남자 편</p><p class=\"copy-line\">셀피를 위한 전면 듀얼 카메라, 갤럭시 A8</p><p class=\"copy-line\">골목인증샷이 파리인증샷으로, 단체사진이 커플사진으로</p><p class=\"copy-line\">수족관이 아쿠아리움이 되는 셀피종결자</p><p class=\"copy-line\">이기적인 A컷의 탄생, 갤럭시 A8</p>"}, "cheil_s9": {"eyebrow": "삼성전자 · COPYWRITING · 2018", "title": "갤럭시 S9 TVC.", "role": "카피라이터", "html": "<p class=\"copy-line\">[티저 편] 갤럭시 S9</p><div class=\"copy-gap\"></div><p class=\"copy-h\">본 편</p><p class=\"copy-line\">어두워도 더 밝고 선명한 슈퍼 저조도</p><p class=\"copy-line\">세상을 열다, 다시 새롭게, 갤럭시 S9</p>"}, "cheil_boltev": {"eyebrow": "쉐보레 · COPYWRITING · 2017", "title": "볼트EV.", "role": "카피라이터", "html": "<p class=\"copy-line\">볼트EV가 갖고 싶은 수식어는</p><p class=\"copy-line\">미래를 바꾸는 전기자동차가 아닙니다</p><p class=\"copy-line\">현재를 살아가는 사람들에게</p><p class=\"copy-line\">주말사용법을 바꾸는 자동차</p><p class=\"copy-line\">100%의 아침을 만드는 자동차</p><p class=\"copy-line\">새벽의 공기도 상쾌하게 만드는 자동차</p><p class=\"copy-line\">드라이브를 취미로 바꾸는 자동차</p><p class=\"copy-line\">숨소리가 음악이 되는 자동차</p><p class=\"copy-line\">위시리스트를 늘리는 자동차</p><p class=\"copy-line\">그 정도면 충분한 것이죠</p><p class=\"copy-line\">오늘을 바꿀 수 없다면 기술은 그저 상상 속에나 있을 뿐이니까요</p><p class=\"copy-line\">EV LIFE를 열다, BOLT EV</p>"}, "innocean_hdcfilm1": {"eyebrow": "현대카드 · COPYWRITING · 2016", "title": "현대카드 브랜드 필름 Ⅰ.", "role": "카피라이터·톰하디 녹음 감수", "html": "<p class=\"copy-h\">Travel 편</p><p class=\"copy-line\">지금부터 나는 무용한 존재다</p><p class=\"copy-line\">자의적으로 나는 쓸모없는 사람이 된다</p><p class=\"copy-line\">이곳에서 나는 배우도 아니고 영국인도 아니고</p><p class=\"copy-line\">누구의 남편도 아니며 38살 성인 남자도 아니다</p><p class=\"copy-line\">그냥 아무런 이유 없이, 목적 없이, 쓸모도 없이 존재한다</p><p class=\"copy-line\">그렇게 내가 나에게 낯설어진다</p><p class=\"copy-line\">세상에서 가장 하찮은 존재가 된다</p><p class=\"copy-line\">세상 모든 것을 존경하게 된다</p><p class=\"copy-line\">견고한 일상에 불현듯 이것이 끼어들어 아름다운 균열을 내고 있다</p><p class=\"copy-line\">나는 여행을 하고 있다</p><div class=\"copy-gap\"></div><p class=\"copy-h\">남자의 철듦 편</p><p class=\"copy-line\">열정이 안정을 이기기를</p><p class=\"copy-line\">감성이 숫자를, 고민이 정답을 기어이 이기기를</p><p class=\"copy-line\">시간에 져준다는 것은 철든다는 것</p><p class=\"copy-line\">남자가 철든다는 것은 죽어간다는 것</p><p class=\"copy-line\">나이답다, 라는 무게를 지지 않은 채</p><p class=\"copy-line\">절대 철들지 않기를</p>"}, "innocean_hdcfilm2": {"eyebrow": "현대카드 · COPYWRITING · 2016", "title": "현대카드 브랜드 필름 Ⅱ.", "role": "카피라이터", "html": "<p class=\"copy-h\">Ideology 편</p><p class=\"copy-line\">목적은 없었다, 주어진 세계에 의문을 가졌을 뿐</p><p class=\"copy-line\">여기서 달라질 수 있는가, 나아질 수 있는가, 더 무엇이 가능한가</p><p class=\"copy-line\">그들의 행보는 잔잔한 세상에 크고 작은 물결을 일으켰다</p><p class=\"copy-line\">이것은 다른 길을 가는 한 카드 브랜드의 선천적 태도</p><p class=\"copy-line\">이 태도의 궤적은 결국 그들의 이데올로기가 되었다</p><p class=\"copy-line\">브랜드가 이데올로기를 갖는다는 것</p><div class=\"copy-gap\"></div><p class=\"copy-h\">Music 편</p><p class=\"copy-line\">세계 차트를 휩쓴 음악은 위대한가, 시대를 풍미했던 천재 뮤지션은 위대한가</p><p class=\"copy-line\">그럼, 거리 연주자들의 기타소리는 어떤가</p><p class=\"copy-line\">곡을 알 수 없는 누군가의 휘파람은 음악인가 아닌가</p><p class=\"copy-line\">어느 노인이 흥얼거리는 벤치, 그것은 무대인가 아닌가</p><p class=\"copy-line\">그럼, 소소한 연주를 즐기는 누군가는 뮤지션인가 아닌가</p><p class=\"copy-line\">경계는 허물어진다</p><p class=\"copy-line\">음악이 있는 삶과 그렇지 않은 삶이 있을 뿐이다</p>"}, "innocean_skt1": {"eyebrow": "SKT · COPYWRITING · 2016", "title": "생활플랫폼 TVC Ⅰ.", "role": "카피라이터", "html": "<p class=\"copy-line\">우리가 태어나서 처음 배우는 게 뭡니까?</p><p class=\"copy-line\">걷는 폼 인사하는 폼 자전거 타는 폼까지 바로 이 폼이라는걸 배우죠</p><p class=\"copy-line\">그리고 어른이 되어서도 일어나는 폼</p><p class=\"copy-line\">먹는 폼 기다리는 폼 공부하는 폼 일하는 폼</p><p class=\"copy-line\">마시는 폼 던지는 폼 춤추는 폼 연습하는 폼</p><p class=\"copy-line\">노는 폼 쉬는 폼 자는 폼</p><p class=\"copy-line\">알고 보면 우리 생활이 다 폼에서 폼으로 이어지는 것은 아닐까요?</p><p class=\"copy-line\">만약 그 폼이라는 게 말이죠 또 새로워지면 우리 생활은 어떻게 변할까요?</p><p class=\"copy-line\">누군가에게는 새로운 폼이 생기고 누군가의 폼은 더 놀라워지는 그런 세상이 이제 시작될 겁니다</p><p class=\"copy-line\">아마도 지금보다 훨씬 폼 나는 생활이 되지 않을까 싶습니다</p><p class=\"copy-line\">폼나니까, 생활의 플랫폼이 바뀐다, 생활플랫폼 SK텔레콤</p>"}, "innocean_skt2": {"eyebrow": "SKT · COPYWRITING · 2016", "title": "생활플랫폼 TVC Ⅱ.", "role": "카피라이터", "html": "<p class=\"copy-h\">진경 NA 편</p><p class=\"copy-line\">SK텔레콤이 폼 좀 찾겠습니다</p><p class=\"copy-line\">당신이 전혀 듣도 보도 못한 새로운 폼을 말이죠, 왠 폼이냐구요?</p><p class=\"copy-line\">자 상상을 해보죠, 집에 폼도 이렇게 새로워지구요</p><p class=\"copy-line\">커피 한잔을 마셔도 더 폼나게</p><p class=\"copy-line\">어머 저건 회의하는 폼인가요? 멋지네요!</p><p class=\"copy-line\">생활의 폼이 바뀐다, 생활플랫폼, SK텔레콤</p><div class=\"copy-gap\"></div><p class=\"copy-h\">조진웅의 폼 편</p><p class=\"copy-line\">어릴 때부터 내 좌우명은 딱 하나, 폼 나게 살자</p><p class=\"copy-line\">해서 배우로 살고 싶었다, 왜? 폼 나니까~</p><p class=\"copy-line\">뭔가 하고 싶고 되고 싶은 건 더 폼 나게 살기 위한 거니까</p><p class=\"copy-line\">모든 건 폼에서 시작, 폼 잡고 살자</p><p class=\"copy-line\">생활플랫폼, SK텔레콤</p><div class=\"copy-gap\"></div><p class=\"copy-line\">그 외: 설현 편 / 김광현 편 / 캐논 편 / T페이 편</p>"}, "innocean_hdcmymenu": {"eyebrow": "현대카드 · COPYWRITING · 2016", "title": "현대카드 마이메뉴.", "role": "카피라이터", "html": "<p class=\"copy-h\">톨스토이 편</p><p class=\"copy-line\">톨스토이가 말했다</p><p class=\"copy-line\">“신은 인간에게 먹을 것을 보냈고 악마는 요리사를 보냈다”</p><p class=\"copy-line\">그 요리사, 지금은 어디에 있을까?</p><p class=\"copy-line\">카드 사용 통계로 분석한 Fine Dining, 현대카드 마이메뉴</p><div class=\"copy-gap\"></div><p class=\"copy-h\">쇼송 편</p><p class=\"copy-line\">작곡가 쇼송이 남긴 말</p><p class=\"copy-line\">“음식에 대한 사랑보다 더 숨길 수 없는 사랑은 없다”</p><p class=\"copy-line\">그래요 다이어트는 원래 내일부터 하는 겁니다</p><p class=\"copy-line\">카드 사용 통계로 분석한 Fine Dining, 현대카드 마이메뉴</p><div class=\"copy-gap\"></div><p class=\"copy-line\">국내 최초 모바일 전용(세로형) 사이즈 광고 — 방송매체 없이 페이스북 모바일에만 집행, 총 6편 제작.</p>"}, "innocean_xcardtvc": {"eyebrow": "현대카드 · COPYWRITING · 2016", "title": "현대카드 X카드 TVC.", "role": "카피라이터", "html": "<p class=\"copy-h\">명세서 편</p><p class=\"copy-line\">누군가의 카드명세서입니다, 만약 이분이 현대카드 X를 썼다면</p><p class=\"copy-line\">일단 기본, 다~ 할인되고, 100만원 이상 쓴 달은 기본할인 2배</p><p class=\"copy-line\">그리고 여기, 여기, 여기, 여기는 자주 쓰는 곳이니까 5퍼센트 더 할인 받게 됩니다</p><p class=\"copy-line\">자 그러면, 결제금액이 이렇게 줄어들게 됩니다</p><p class=\"copy-line\">쓸수록 할인이 커지는 현대카드 X시리즈</p><div class=\"copy-gap\"></div><p class=\"copy-h\">M VS X 편</p><p class=\"copy-line\">야 M! 한판 붙자, 그 정도면 오래했잖아</p><p class=\"copy-line\">현대카드에 너만 있는 줄 아니? X로 부터</p><p class=\"copy-line\">현대카드 X시리즈</p><div class=\"copy-gap\"></div><p class=\"copy-line\">그 외: 디지털용 M VS X 시리즈 4편 제작</p>"}, "innocean_musiclib": {"eyebrow": "현대카드 · COPYWRITING · 2015", "title": "뮤직라이브러리 &amp; 카드팩토리.", "role": "카피라이터", "html": "<p class=\"copy-h\">뮤직라이브러리 편</p><p class=\"copy-line\">현대카드와 문화 큐레이터 그룹이 선별한 공연을 소개, 교류하는 공간</p><p class=\"copy-line\">현대카드, 또 한번 음악을 확장하다, 현대카드</p><div class=\"copy-gap\"></div><p class=\"copy-h\">카드팩토리 편</p><p class=\"copy-line\">모든 이슈의 시작은 이 곳으로부터.</p><p class=\"copy-line\">Machines of Finance, 현대카드 CARD FACTORY</p>"}, "innocean_xcardcashback": {"eyebrow": "현대카드 · COPYWRITING · 2014", "title": "X카드 시즌캐시백.", "role": "카피라이터", "html": "<p class=\"copy-line\">내가 아직도 그냥 X캐시백으로 보이나</p><p class=\"copy-line\">7 8 9월에는 쓸 때마다 받던 X캐시백에</p><p class=\"copy-line\">무섭게 돌려주는 시즌 X캐시백까지</p><p class=\"copy-line\">현대카드</p>"}, "innocean_superconcert": {"eyebrow": "현대카드 · COPYWRITING · 2014", "title": "슈퍼콘서트 21 시티브레이크.", "role": "카피라이터", "html": "<p class=\"copy-line\">CITYBREAK가 뮤직페스티벌에 대한 기대를 너무 높여놨다</p><p class=\"copy-line\">감당할 수 있는 것도 CITYBREAK뿐</p><p class=\"copy-line\">현대카드 CITYBREAK 2014</p>"}, "innocean_hcapital": {"eyebrow": "현대캐피탈 · COPYWRITING · 2014", "title": "다이렉트론.", "role": "카피라이터", "html": "<p class=\"copy-h\">클래스 편</p><p class=\"copy-line\">세상 모든 것에는 클래스가 존재 한다</p><p class=\"copy-line\">신용대출도 클래스를 따져라</p><p class=\"copy-line\">현대캐피탈인지 아닌지</p><p class=\"copy-line\">현대캐피탈 다이렉트론</p>"}, "innocean_vega": {"eyebrow": "팬택 · COPYWRITING · 2014", "title": "베가 아이언2.", "role": "카피라이터", "html": "<p class=\"copy-h\">레드 편</p><p class=\"copy-line\">RED is the King of color — 괴테</p><p class=\"copy-line\">이 강렬함을 메탈에 담아, 단언컨대 가장 개인적인 메탈, VEGA IRON2</p><div class=\"copy-gap\"></div><p class=\"copy-h\">클래스 편</p><p class=\"copy-line\">어떤 것도 장미의 사랑스러움을 대신 할 수 없다 — 셰익스피어</p><p class=\"copy-line\">이 사랑스러운 힘을 메탈에 담아, 단언컨대 가장 개인적인 메탈, VEGA IRON2</p><div class=\"copy-gap\"></div><p class=\"copy-line\">그 외: 컬러별 시리즈 4편 제작</p>"}, "innocean_woongjin": {"eyebrow": "웅진씽크빅 · COPYWRITING · 2014", "title": "씽크U수학.", "role": "카피라이터", "html": "<p class=\"copy-h\">샘 편</p><p class=\"copy-line\">씽크빅 샘 한 명 뒤에는 창의수학 대비 자격, 그룹 튜터링, 교사멘토제가 있습니다</p><p class=\"copy-line\">바뀐 수학에도 씽크U수학이 강한 이유입니다, 생각이 점수다</p><div class=\"copy-gap\"></div><p class=\"copy-h\">문제 편</p><p class=\"copy-line\">같은 문제를 틀려도 아이마다 이유는 다릅니다</p><p class=\"copy-line\">씽크빅쌤은 틀린 원인에 따라 취약부분을 재학습시킵니다</p><p class=\"copy-line\">바뀐 수학에도 씽크U수학이 강한 이유, 생각이 점수다</p>"}, "innocean_hanabank": {"eyebrow": "하나은행 · COPYWRITING · 2014", "title": "하나은행.", "role": "카피라이터", "html": "<p class=\"copy-h\">전세자금 편</p><p class=\"copy-line\">월급 올랐다, 전세금 올린다, 작전 타임</p><p class=\"copy-line\">작은 태클은 아주 갑작스럽게 들어옵니다</p><p class=\"copy-line\">자, 당황하지 말고 하나은행 긴급자금으로 신속히 대처하는 기술에 들어가야 합니다</p><p class=\"copy-line\">힘이 된다 하나은행</p><div class=\"copy-gap\"></div><p class=\"copy-h\">노후 편</p><p class=\"copy-line\">해외여행 꼭 가야 된다, 막아야 된다, 작전 타임</p><p class=\"copy-line\">은퇴 후엔 위기가 굉장히 많습니다</p><p class=\"copy-line\">노후자금에 여행자금까지 완벽히 준비해서 수비반경을 최대한 넓혀야 합니다</p><p class=\"copy-line\">힘이 된다 하나은행</p>"}, "innocean_cj2012": {"eyebrow": "CJ오쇼핑 · COPYWRITING · 2012", "title": "CJ오쇼핑 Ⅰ.", "role": "카피라이터", "html": "<p class=\"copy-h\">패션 편</p><p class=\"copy-line\">모든걸 다 가졌다고 생각해요, 그렇게 믿고 싶은 거겠죠</p><p class=\"copy-line\">당신은 이거 있어요, 그녀의 비밀 내게로 오다</p><p class=\"copy-line\">TRENDY LIFESTYLE SHOPPER, CJ O SHOPPING</p><div class=\"copy-gap\"></div><p class=\"copy-h\">리빙 편</p><p class=\"copy-line\">사람들은 알고 싶어하죠, 내가 어떻게 사는지, 아이는 어떻게 키우는지</p><p class=\"copy-line\">조금은 알 수 있겠죠, 이것만 갖는다면</p><p class=\"copy-line\">그녀의 비밀 내게로 오다, TRENDY LIFESTYLE SHOPPER, CJ O SHOPPING</p>"}, "innocean_cj2015": {"eyebrow": "CJ오쇼핑 · COPYWRITING · 2015", "title": "CJ오쇼핑 Ⅱ (다나한).", "role": "카피라이터", "html": "<p class=\"copy-line\">좀 좋아지나 싶더니 몇 일 안 발랐다고 금방 다시 깊어졌네</p><p class=\"copy-line\">당신은 이미 피부요요 진행 중입니다</p><p class=\"copy-line\">다나한 본연진 에센스, 요요에센스</p><p class=\"copy-line\">요요에센스가 근본부터 힘을 채워 피부요요를 막아줍니다</p><p class=\"copy-line\">주름관리, 요요없이, 다나한</p>"}, "innocean_vips": {"eyebrow": "빕스 · COPYWRITING · 2012", "title": "브라질리언 쌈바 스테이크.", "role": "카피라이터", "html": "<p class=\"copy-line\">브라질의 맛은 이런 것, 다양한 스테이크를 다양한 소스에</p><p class=\"copy-line\">VIPS 브라질리언 쌈바 스테이크</p><p class=\"copy-line\">빕스에 왔다, 브라질로 떠났다, 빕스</p><p class=\"copy-line\">결과: 보그 잡지 화보 촬영과 동시 진행, 김수현 화보 컷으로 대중에게 확산.</p>"}, "innocean_bullsone": {"eyebrow": "불스원 · COPYWRITING · 2013", "title": "레이OK 하이브리드.", "role": "카피라이터", "html": "<p class=\"copy-h\">겨울 편</p><p class=\"copy-line\">제동력 좋은 타이어, 첨단 브레이크, 밀리지 않는 ABS</p><p class=\"copy-line\">보이지 않는다면 소용없는 기술입니다</p><p class=\"copy-line\">4개의 관절구조로 쌓인 눈도 싹싹, 겨울엔 더 안전하게</p><p class=\"copy-line\">Rain OK 하이브리드 와이퍼</p><div class=\"copy-gap\"></div><p class=\"copy-h\">여름 편</p><p class=\"copy-line\">빗길 첨단시스템 안전제동 브레이크 ABS</p><p class=\"copy-line\">와이퍼 때문에 안 보인다면 빗길은 위험할 뿐입니다</p><p class=\"copy-line\">4개의 관절 구조로 선명하게 싹싹, 빗길엔 더 안전하게</p><p class=\"copy-line\">Rain OK 하이브리드 와이퍼</p>"}, "origicom_doosan_corp": {"eyebrow": "두산그룹 · COPYWRITING · 2009–10", "title": "“사람이 미래다” 기업 PR.", "role": "AE / 캠페인 기획", "html": "<p class=\"copy-h\">2009 런칭 편</p><p class=\"copy-line\">기업의 궁극적인 목표는 무엇일까요? 사업확장, 매출증대, 주가상승</p><p class=\"copy-line\">우리의 생각은 조금 다릅니다</p><p class=\"copy-line\">사업을 키우는 것은 기업의 현재를 보장하지만, 사람을 키우는 것은 기업의 미래를 보장합니다</p><p class=\"copy-line\">사람이 미래다, 두산</p><div class=\"copy-gap\"></div><p class=\"copy-h\">2010 사람 편</p><p class=\"copy-line\">처음엔 당신에게 어떤 말로 용기를 줘야할지 고민했습니다</p><p class=\"copy-line\">하지만 우리는 한마디도 찾을 수 없었습니다</p><p class=\"copy-line\">지금 이미 당신은 최선을 다하고 있고 지금 그대로 멋지기 때문입니다</p><p class=\"copy-line\">당신은 지금까지 그랬던 것처럼 최선을 다 하면 됩니다</p><p class=\"copy-line\">사람이 미래다, 두산</p>"}, "origicom_doosan_public": {"eyebrow": "두산그룹 · COPYWRITING · 2009", "title": "“사람이 미래다” 공익 PR.", "role": "AE / 캠페인 기획", "html": "<p class=\"copy-h\">2군 편</p><p class=\"copy-line\">함성도 없고 박수도 없는 이 그라운드에서</p><p class=\"copy-line\">국가대표 4번타자가 크고 있습니다, 괴물투수가 자라고 있습니다</p><p class=\"copy-line\">영광보다 상처가 더 많은 날들이지만 아직 순서가 오지 않았을 뿐이죠</p><p class=\"copy-line\">누군가 희망을 묻거든 말없이 이 곳을 가르켜 주십시오</p><p class=\"copy-line\">내일은 가득찬 함성일 것입니다</p><p class=\"copy-line\">사람을 키우는 것은 미래를 예약하는 것, 이 캠페인은 두산과 함께합니다</p><div class=\"copy-gap\"></div><p class=\"copy-h\">시인 편</p><p class=\"copy-line\">시처럼 아름다운 이곳에 동요처럼 맑은 아이들이 있습니다</p><p class=\"copy-line\">찬식이는 꾀보라서 만들기를 좋아하고, 울보 희정이는 노래를 참 좋아하고</p><p class=\"copy-line\">느림보 성진이는 관찰력이 뛰어납니다</p><p class=\"copy-line\">이 곳에서는 섬진강처럼 넉넉히 아이들을 지켜봐 줄뿐</p><p class=\"copy-line\">가장 적은 학교에 다니지만 가장 크게 자라고 있습니다</p><p class=\"copy-line\">사람을 키우는 것은 미래를 아름답게 만드는 것, 이 캠페인은 두산과 함께합니다</p>"}}</script>
+
+<script>
+  // active-section nav highlight + scrolled nav bg
+  const nav = document.getElementById('nav');
+  const navLinks = document.querySelectorAll('[data-nav]');
+  const sections = ['about','timeline','career','contact'].map(id => document.getElementById(id));
+
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 40);
+  }, { passive:true });
+
+  const navObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        navLinks.forEach(l => l.classList.remove('active'));
+        const link = document.querySelector(`[data-nav][href="#${entry.target.id}"]`);
+        if(link) link.classList.add('active');
+      }
+    });
+  }, { rootMargin:'-45% 0px -45% 0px', threshold:0 });
+  sections.forEach(s => s && navObserver.observe(s));
+
+  // reveal on scroll
+  const revealEls = document.querySelectorAll('.reveal, .reveal-stagger');
+  const revealObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        entry.target.classList.add('in');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold:0.15 });
+  revealEls.forEach(el => revealObserver.observe(el));
+
+  // ---------------- copy modal ----------------
+  const copyData = JSON.parse(document.getElementById('copyData').textContent);
+  const copyModal = document.getElementById('copyModal');
+  const copyModalEyebrow = document.getElementById('copyModalEyebrow');
+  const copyModalTitle = document.getElementById('copyModalTitle');
+  const copyModalBody = document.getElementById('copyModalBody');
+  let lastCopyTrigger = null;
+
+  function openCopyModal(key, trigger){
+    const d = copyData[key];
+    if(!d) return;
+    copyModalEyebrow.textContent = d.eyebrow;
+    copyModalTitle.textContent = d.title + ' — ' + d.role;
+    copyModalBody.innerHTML = d.html;
+    copyModal.classList.add('open');
+    copyModal.setAttribute('aria-hidden', 'false');
+    document.body.classList.add('modal-open');
+    lastCopyTrigger = trigger || null;
+  }
+  function closeCopyModal(){
+    copyModal.classList.remove('open');
+    copyModal.setAttribute('aria-hidden', 'true');
+    document.body.classList.remove('modal-open');
+    if(lastCopyTrigger) lastCopyTrigger.focus();
+  }
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.dt-copy-btn');
+    if(btn){
+      e.preventDefault();
+      e.stopPropagation();
+      openCopyModal(btn.dataset.copyKey, btn);
+      return;
+    }
+    if(e.target.closest('[data-copy-close]')){
+      closeCopyModal();
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && copyModal.classList.contains('open')) closeCopyModal();
+  });
+
+    // hero progress bar fill (triggers once on load)
+  requestAnimationFrame(() => {
+    setTimeout(() => document.getElementById('heroFill').classList.add('animate'), 400);
+  });
+
+  // ---------------- hero "sun/moon": position + color synced to real time, Seoul sunrise/sunset ----------------
+  (function(){
+    const sunEl = document.querySelector('.hero-circle');
+    if(!sunEl) return;
+
+    // Seoul coordinates — the site's subject is based in Seoul, so day/night always follows Seoul's
+    // actual sunrise/sunset for "today" (by season), regardless of the visitor's own timezone.
+    const SEOUL_LAT = 37.5665, SEOUL_LON = 126.9780;
+
+    // ---- compact sunrise/sunset astronomical calculation (standard solar-position equations) ----
+    const RAD = Math.PI / 180;
+    const DAY_MS = 1000 * 60 * 60 * 24;
+    const J1970 = 2440588, J2000 = 2451545;
+    const OBLIQUITY = RAD * 23.4397;
+    const toJulian = date => date.valueOf() / DAY_MS - 0.5 + J1970;
+    const fromJulian = j => new Date((j + 0.5 - J1970) * DAY_MS);
+    const toDays = date => toJulian(date) - J2000;
+    const declination = l => Math.asin(Math.sin(l) * Math.sin(OBLIQUITY));
+    const solarMeanAnomaly = d => RAD * (357.5291 + 0.98560028 * d);
+    const eclipticLongitude = M => {
+      const C = RAD * (1.9148 * Math.sin(M) + 0.02 * Math.sin(2 * M) + 0.0003 * Math.sin(3 * M));
+      return M + C + RAD * 102.9372 + Math.PI;
+    };
+    const julianCycle = (d, lw) => Math.round(d - 0.0009 - lw / (2 * Math.PI));
+    const approxTransit = (Ht, lw, n) => 0.0009 + (Ht + lw) / (2 * Math.PI) + n;
+    const solarTransitJ = (ds, M, L) => J2000 + ds + 0.0053 * Math.sin(M) - 0.0069 * Math.sin(2 * L);
+    const hourAngle = (h, phi, d) => Math.acos((Math.sin(h) - Math.sin(phi) * Math.sin(d)) / (Math.cos(phi) * Math.cos(d)));
+
+    function getSunTimes(date, lat, lon){
+      const lw = RAD * -lon, phi = RAD * lat;
+      const d = toDays(date);
+      const n = julianCycle(d, lw);
+      const ds = approxTransit(0, lw, n);
+      const M = solarMeanAnomaly(ds);
+      const L = eclipticLongitude(M);
+      const dec = declination(L);
+      const Jnoon = solarTransitJ(ds, M, L);
+      const w = hourAngle(RAD * -0.833, phi, dec);
+      const Jset = solarTransitJ(approxTransit(w, lw, n), M, L);
+      const Jrise = Jnoon - (Jset - Jnoon);
+      return { sunrise: fromJulian(Jrise), sunset: fromJulian(Jset) };
+    }
+
+    // read an absolute instant back out as an Asia/Seoul decimal hour (works regardless of visitor tz)
+    function seoulDecimalHour(date){
+      const parts = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Seoul', hour12: false, hour: 'numeric', minute: 'numeric',
+      }).formatToParts(date);
+      const h = Number(parts.find(p => p.type === 'hour').value) % 24;
+      const m = Number(parts.find(p => p.type === 'minute').value);
+      return h + m / 60;
+    }
+
+    // day arc (sun): rises at DAWN on the left, peaks at noon top-center, sets at DUSK on the right.
+    // night arc (moon): continues seamlessly from DUSK back across to DAWN, on a lower, gentler arc.
+    // Both arcs share their endpoints (same x/y at DAWN and DUSK) so the body never jumps or teleports —
+    // it's one continuous path that's "sun" by day and "moon" by night. DAWN/DUSK are today's real
+    // Seoul sunrise/sunset (recomputed every tick from the current date — shifts with the seasons).
+    const HORIZON_Y = 66, DAY_PEAK_Y = 8, NIGHT_PEAK_Y = 34;
+    const LEFT_X = 8, RIGHT_X = 92;
+
+    function sunPosition(hour, DAWN, DUSK){
+      if(hour >= DAWN && hour <= DUSK){
+        const t = (hour - DAWN) / (DUSK - DAWN);
+        return {
+          x: lerp(LEFT_X, RIGHT_X, t),
+          y: HORIZON_Y - (HORIZON_Y - DAY_PEAK_Y) * Math.sin(t * Math.PI),
+        };
+      }
+      const nightSpan = (24 - DUSK) + DAWN;
+      const h = hour < DAWN ? hour + 24 : hour;
+      const t = (h - DUSK) / nightSpan;
+      return {
+        x: lerp(RIGHT_X, LEFT_X, t),
+        y: HORIZON_Y - (HORIZON_Y - NIGHT_PEAK_Y) * Math.sin(t * Math.PI),
+      };
+    }
+
+    // color/scale/opacity stops, expressed as hours *since today's sunrise* (0 = dawn, dayLen = dusk,
+    // 24 = tomorrow's dawn) so the whole palette re-anchors itself automatically as sunrise/sunset
+    // shift with the seasons. [hourSinceDawn, scale, opacity, c1, c2, c3, glow-rgba, glow-blur-px]
+    function buildColorStops(dayLen){
+      const noonOff = dayLen / 2;
+      const afternoonOff = Math.max(noonOff + 1, dayLen - 3);
+      return [
+        [0,             .65, .55, '#ff9d6b', '#ff5648', '#a01f16', 'rgba(255,140,90,.30)',  50],
+        [2,             .92, .85, '#ffb37a', '#ff5648', '#a01f16', 'rgba(255,120,70,.35)',  60],
+        [noonOff,      1.05, .95, '#ffe3c4', '#ff5648', '#a01f16', 'rgba(255,110,60,.40)',  75],
+        [afternoonOff, 1.00, .92, '#ffb37a', '#ff5648', '#a01f16', 'rgba(255,110,60,.38)',  70],
+        [dayLen,        .88, .78, '#ff7c52', '#c73424', '#7a160f', 'rgba(230,90,50,.35)',   55],
+        [dayLen + 1,    .80, .70, '#e89878', '#a86a55', '#674a5f', 'rgba(210,150,170,.30)', 52],
+        [dayLen + 2,    .70, .62, '#cfd9ea', '#96a8c9', '#5a6a8c', 'rgba(190,200,225,.28)', 50],
+        [22,            .60, .55, '#eef3fa', '#b9c9e0', '#6d7fa0', 'rgba(170,190,225,.30)', 48],
+        [23,            .62, .50, '#e8b9a8', '#c98a7c', '#6f6580', 'rgba(210,170,180,.28)', 48],
+        [24,            .65, .55, '#ff9d6b', '#ff5648', '#a01f16', 'rgba(255,140,90,.30)',  50],
+      ];
+    }
+
+    // night-sky stars fade in/out over a ±1h window around sunrise & sunset (0 = full day, 1 = full night)
+    function starOpacity(hour, DAWN, DUSK){
+      const FW = 1;
+      const dawnFadeStart = DAWN - FW, dawnFadeEnd = DAWN + FW;
+      const duskFadeStart = DUSK - FW, duskFadeEnd = DUSK + FW;
+      if(hour <= dawnFadeStart || hour >= duskFadeEnd) return 1;
+      if(hour >= dawnFadeEnd && hour <= duskFadeStart) return 0;
+      if(hour < dawnFadeEnd) return 1 - (hour - dawnFadeStart) / (2 * FW);
+      return (hour - duskFadeStart) / (2 * FW);
+    }
+
+    function hexToRgb(hex){
+      const n = parseInt(hex.slice(1), 16);
+      return [(n>>16)&255, (n>>8)&255, n&255];
+    }
+    function lerp(a, b, t){ return a + (b - a) * t; }
+    function lerpColor(hexA, hexB, t){
+      const a = hexToRgb(hexA), b = hexToRgb(hexB);
+      const r = Math.round(lerp(a[0], b[0], t));
+      const g = Math.round(lerp(a[1], b[1], t));
+      const bl = Math.round(lerp(a[2], b[2], t));
+      return `rgb(${r}, ${g}, ${bl})`;
+    }
+    function lerpRgba(strA, strB, t){
+      const parse = s => s.match(/[\d.]+/g).map(Number);
+      const a = parse(strA), b = parse(strB);
+      const vals = a.map((v,i) => i < 3 ? Math.round(lerp(v, b[i], t)) : lerp(v, b[i], t).toFixed(2));
+      return `rgba(${vals[0]}, ${vals[1]}, ${vals[2]}, ${vals[3]})`;
+    }
+
+    // ---- night-sky stars: generated once, faded in/out via a CSS var on the container ----
+    const starsContainer = document.getElementById('heroStars');
+    if(starsContainer){
+      const STAR_COUNT = 55;
+      const frag = document.createDocumentFragment();
+      for(let i = 0; i < STAR_COUNT; i++){
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = (1 + Math.random() * 1.6).toFixed(2);
+        star.style.left = (Math.random() * 100).toFixed(2) + '%';
+        star.style.top = (Math.random() * 100).toFixed(2) + '%';
+        star.style.width = size + 'px';
+        star.style.height = size + 'px';
+        star.style.setProperty('--dur', (2.2 + Math.random() * 2.3).toFixed(2) + 's');
+        star.style.setProperty('--delay', (Math.random() * 4).toFixed(2) + 's');
+        frag.appendChild(star);
+      }
+      starsContainer.appendChild(frag);
+    }
+
+    function applySunState(date){
+      const { sunrise, sunset } = getSunTimes(date, SEOUL_LAT, SEOUL_LON);
+      const DAWN = seoulDecimalHour(sunrise);
+      const DUSK = seoulDecimalHour(sunset);
+      const hour = seoulDecimalHour(date);
+      const dayLen = DUSK - DAWN;
+
+      const pos = sunPosition(hour, DAWN, DUSK);
+
+      const solarHour = ((hour - DAWN) % 24 + 24) % 24; // 0 at today's dawn, rising through day+night to 24
+      const STOPS = buildColorStops(dayLen);
+      let i = 0;
+      while(i < STOPS.length - 2 && STOPS[i+1][0] <= solarHour) i++;
+      const s0 = STOPS[i], s1 = STOPS[i+1];
+      const span = s1[0] - s0[0];
+      const t = span === 0 ? 0 : (solarHour - s0[0]) / span;
+
+      sunEl.style.setProperty('--sx', pos.x + '%');
+      sunEl.style.setProperty('--sy', pos.y + '%');
+      sunEl.style.setProperty('--sscale', lerp(s0[1], s1[1], t).toFixed(3));
+      sunEl.style.setProperty('--sop', lerp(s0[2], s1[2], t).toFixed(3));
+      sunEl.style.setProperty('--sc1', lerpColor(s0[3], s1[3], t));
+      sunEl.style.setProperty('--sc2', lerpColor(s0[4], s1[4], t));
+      sunEl.style.setProperty('--sc3', lerpColor(s0[5], s1[5], t));
+      sunEl.style.setProperty('--sglow', lerpRgba(s0[6], s1[6], t));
+      sunEl.style.setProperty('--sblur', lerp(s0[7], s1[7], t).toFixed(1) + 'px');
+
+      if(starsContainer){
+        starsContainer.style.setProperty('--star-op', starOpacity(hour, DAWN, DUSK).toFixed(3));
+      }
+    }
+
+    applySunState(new Date());
+    setInterval(() => applySunState(new Date()), 60 * 1000);
+  })();
+</script>
+</body>
+</html>
