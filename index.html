@@ -115,8 +115,13 @@
   @media(prefers-reduced-motion:reduce){
     .hero-circle{ transition:opacity 1.4s ease-in-out, background 1.4s ease-in-out; animation:none; }
   }
-  .hero-circle.two{
-    top:auto; bottom:6%; left:4%; right:auto; width:70px; height:70px; opacity:.7;
+  /* mouse-reactive dot field: subtle ambient grid across the hero background that highlights and
+     occasionally "shatters" into scattering particles near the cursor — see JS below */
+  .hero-dotfield{
+    position:absolute; inset:0; z-index:0; pointer-events:none; display:block;
+  }
+  @media(prefers-reduced-motion:reduce){
+    .hero-dotfield{ display:none; }
   }
   /* night sky: small twinkling dots, faded in/out around sunrise & sunset — see JS below */
   .hero-stars{
@@ -137,8 +142,68 @@
   .hero-content{position:relative; z-index:2; max-width:880px; margin:0 auto;}
   @media(max-width:900px){
     .hero-circle{width:130px; height:130px;}
-    .hero-circle.two{width:46px; height:46px;}
   }
+
+  /* ---------------- HERO CLOCK WIDGET (top-left: Seoul time/date + mini sunrise-sunset progress) ---------------- */
+  .hero-clock{
+    position:absolute; top:104px; left:40px; z-index:2;
+    font-family:"Poppins",sans-serif; text-align:left;
+    background:rgba(250,250,248,0.55); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
+    border:1px solid var(--line); border-radius:14px;
+    padding:16px 20px; min-width:150px;
+  }
+  .hc-time{font-weight:700; font-size:23px; letter-spacing:-0.01em; color:var(--ink);}
+  .hc-date{font-size:11px; color:var(--gray); margin-top:3px; letter-spacing:.04em;}
+  .hc-sun{display:flex; align-items:center; gap:8px; margin-top:14px;}
+  .hc-sun-label{font-size:9.5px; color:var(--gray); flex-shrink:0; letter-spacing:.02em; font-variant-numeric:tabular-nums;}
+  .hc-sun-track{position:relative; flex:1; height:2px; background:var(--line); border-radius:2px;}
+  .hc-sun-dot{
+    position:absolute; top:50%; left:0%; width:7px; height:7px; border-radius:50%;
+    background:var(--red); transform:translate(-50%,-50%); transition:left 1.4s linear;
+  }
+  @media(max-width:640px){
+    .hero-clock{top:74px; left:18px; padding:11px 15px; min-width:120px; border-radius:11px;}
+    .hc-time{font-size:17px;}
+    .hc-sun{margin-top:10px;}
+  }
+
+  /* ---------------- HERO ROLLING QUOTE (independent absolute block in the empty gap above the eyebrow —
+     positioned so it never affects the existing name/pills/desc layout or their centering) ---------------- */
+  .hero-quote{
+    position:absolute; top:196px; left:50%; z-index:2; transform:translateX(-50%);
+    width:100%; max-width:680px; padding:0 40px;
+    display:flex; flex-direction:column; align-items:center; gap:9px;
+    text-align:center; pointer-events:none;
+  }
+  .hq-text{
+    font-family:"Poppins",sans-serif; font-weight:500; font-size:15px; font-style:italic;
+    color:var(--gray); letter-spacing:.01em;
+  }
+  .hq-source{
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:10.5px;
+    color:var(--red); letter-spacing:.06em; text-transform:uppercase;
+  }
+  .hq-char{display:inline-block; will-change:transform, opacity, filter;}
+  @keyframes hqDissolve{
+    0%{opacity:1; transform:translate(0,0) rotate(0deg); filter:blur(0px);}
+    100%{opacity:0; transform:translate(var(--dx),var(--dy)) rotate(var(--dr)); filter:blur(5px);}
+  }
+  @keyframes hqForm{
+    0%{opacity:0; transform:translate(var(--dx),var(--dy)) rotate(var(--dr)); filter:blur(5px);}
+    100%{opacity:1; transform:translate(0,0) rotate(0deg); filter:blur(0px);}
+  }
+  .hq-char.out{animation:hqDissolve .9s var(--ease) forwards; animation-delay:var(--stagger,0s);}
+  .hq-char.in{animation:hqForm .9s var(--ease) forwards; animation-delay:var(--stagger,0s);}
+  @media(prefers-reduced-motion:reduce){
+    .hq-char.out, .hq-char.in{animation:none !important;}
+  }
+  @media(max-width:640px){
+    /* not enough headroom between the clock card and the name block on small screens —
+       anchor the quote near the bottom of the hero instead, clear of the scroll indicator */
+    .hero-quote{top:auto; bottom:30px; padding:0 24px;}
+    .hq-text{font-size:13.5px;}
+  }
+
   .hero-eyebrow{
     font-family:"Poppins",sans-serif; font-weight:600; font-size:12.5px;
     letter-spacing:0.22em; text-transform:uppercase; color:var(--gray);
@@ -505,9 +570,22 @@
 
 <!-- ================= HERO ================= -->
 <section id="hero">
+  <canvas class="hero-dotfield" id="heroDotfield" aria-hidden="true"></canvas>
   <div class="hero-stars" id="heroStars" aria-hidden="true"></div>
   <div class="hero-circle"></div>
-  <div class="hero-circle two"></div>
+  <div class="hero-clock" id="heroClock" aria-hidden="true">
+    <div class="hc-time" id="hcTime">--:--</div>
+    <div class="hc-date" id="hcDate">----.--.--</div>
+    <div class="hc-sun">
+      <span class="hc-sun-label" id="hcSunrise">--:--</span>
+      <div class="hc-sun-track"><div class="hc-sun-dot" id="hcSunDot"></div></div>
+      <span class="hc-sun-label" id="hcSunset">--:--</span>
+    </div>
+  </div>
+  <div class="hero-quote" aria-live="off">
+    <span class="hq-text" id="hqText"></span>
+    <span class="hq-source" id="hqSource"></span>
+  </div>
   <div class="hero-content">
     <div class="hero-eyebrow">Since 2008 · Seoul, Korea</div>
     <h1 class="hero-name">이채승.</h1>
@@ -2812,6 +2890,22 @@
     const sunEl = document.querySelector('.hero-circle');
     if(!sunEl) return;
 
+    // hero clock widget refs (top-left: Seoul time/date + mini sunrise→sunset progress dot)
+    const clockTimeEl = document.getElementById('hcTime');
+    const clockDateEl = document.getElementById('hcDate');
+    const sunriseLabelEl = document.getElementById('hcSunrise');
+    const sunsetLabelEl = document.getElementById('hcSunset');
+    const sunDotEl = document.getElementById('hcSunDot');
+
+    function seoulTimeLabel(date){
+      const parts = new Intl.DateTimeFormat('en-GB', {
+        timeZone: 'Asia/Seoul', hour: '2-digit', minute: '2-digit', hour12: false,
+      }).formatToParts(date);
+      const h = parts.find(p => p.type === 'hour').value;
+      const m = parts.find(p => p.type === 'minute').value;
+      return `${h}:${m}`;
+    }
+
     // Seoul coordinates — the site's subject is based in Seoul, so day/night always follows Seoul's
     // actual sunrise/sunset for "today" (by season), regardless of the visitor's own timezone.
     const SEOUL_LAT = 37.5665, SEOUL_LON = 126.9780;
@@ -2860,7 +2954,10 @@
       return h + m / 60;
     }
 
-    // day arc (sun): rises at DAWN on the left, peaks at noon top-center, sets at DUSK on the right.
+    // day arc (sun): rises at DAWN on the right, peaks at noon top-center, sets at DUSK on the left —
+    // and the night arc (moon) mirrors it back from left to right. Together this reads as one
+    // continuous counter-clockwise sweep (matching how the sun/moon actually track east→west overhead)
+    // instead of the clockwise sweep the first version used.
     // night arc (moon): continues seamlessly from DUSK back across to DAWN, on a lower, gentler arc.
     // Both arcs share their endpoints (same x/y at DAWN and DUSK) so the body never jumps or teleports —
     // it's one continuous path that's "sun" by day and "moon" by night. DAWN/DUSK are today's real
@@ -2872,7 +2969,7 @@
       if(hour >= DAWN && hour <= DUSK){
         const t = (hour - DAWN) / (DUSK - DAWN);
         return {
-          x: lerp(LEFT_X, RIGHT_X, t),
+          x: lerp(RIGHT_X, LEFT_X, t),
           y: HORIZON_Y - (HORIZON_Y - DAY_PEAK_Y) * Math.sin(t * Math.PI),
         };
       }
@@ -2880,7 +2977,7 @@
       const h = hour < DAWN ? hour + 24 : hour;
       const t = (h - DUSK) / nightSpan;
       return {
-        x: lerp(RIGHT_X, LEFT_X, t),
+        x: lerp(LEFT_X, RIGHT_X, t),
         y: HORIZON_Y - (HORIZON_Y - NIGHT_PEAK_Y) * Math.sin(t * Math.PI),
       };
     }
@@ -2897,8 +2994,8 @@
         [noonOff,      1.05, .95, '#ffe3c4', '#ff5648', '#a01f16', 'rgba(255,110,60,.40)',  75],
         [afternoonOff, 1.00, .92, '#ffb37a', '#ff5648', '#a01f16', 'rgba(255,110,60,.38)',  70],
         [dayLen,        .88, .78, '#ff7c52', '#c73424', '#7a160f', 'rgba(230,90,50,.35)',   55],
-        [dayLen + 1,    .80, .70, '#e89878', '#a86a55', '#674a5f', 'rgba(210,150,170,.30)', 52],
-        [dayLen + 2,    .70, .62, '#cfd9ea', '#96a8c9', '#5a6a8c', 'rgba(190,200,225,.28)', 50],
+        [dayLen + .25,  .80, .70, '#e89878', '#a86a55', '#674a5f', 'rgba(210,150,170,.30)', 52],
+        [dayLen + .5,   .70, .62, '#cfd9ea', '#96a8c9', '#5a6a8c', 'rgba(190,200,225,.28)', 50],
         [22,            .60, .55, '#eef3fa', '#b9c9e0', '#6d7fa0', 'rgba(170,190,225,.30)', 48],
         [23,            .62, .50, '#e8b9a8', '#c98a7c', '#6f6580', 'rgba(210,170,180,.28)', 48],
         [24,            .65, .55, '#ff9d6b', '#ff5648', '#a01f16', 'rgba(255,140,90,.30)',  50],
@@ -2985,10 +3082,238 @@
       if(starsContainer){
         starsContainer.style.setProperty('--star-op', starOpacity(hour, DAWN, DUSK).toFixed(3));
       }
+
+      // clock widget: Seoul time/date + a simple daytime-progress dot (0% at sunrise, 100% at sunset;
+      // pinned to the nearer edge overnight) — a separate, literal "what time is it" read next to the
+      // more atmospheric sun/moon visual.
+      if(clockTimeEl){
+        clockTimeEl.textContent = date.toLocaleTimeString('ko-KR', { timeZone:'Asia/Seoul', hour:'numeric', minute:'2-digit', hour12:true });
+      }
+      if(clockDateEl){
+        const dParts = new Intl.DateTimeFormat('ko-KR', {
+          timeZone:'Asia/Seoul', year:'numeric', month:'2-digit', day:'2-digit', weekday:'short',
+        }).formatToParts(date);
+        const y = dParts.find(p=>p.type==='year').value;
+        const mo = dParts.find(p=>p.type==='month').value;
+        const da = dParts.find(p=>p.type==='day').value;
+        const wd = dParts.find(p=>p.type==='weekday').value;
+        clockDateEl.textContent = `${y}.${mo}.${da} ${wd}`;
+      }
+      if(sunriseLabelEl) sunriseLabelEl.textContent = seoulTimeLabel(sunrise);
+      if(sunsetLabelEl) sunsetLabelEl.textContent = seoulTimeLabel(sunset);
+      if(sunDotEl){
+        const dayT = Math.min(1, Math.max(0, (hour - DAWN) / dayLen));
+        sunDotEl.style.left = (dayT * 100).toFixed(2) + '%';
+      }
     }
 
     applySunState(new Date());
     setInterval(() => applySunState(new Date()), 60 * 1000);
+  })();
+
+  // ---------------- hero rolling quote: swaps every ~7s with a per-character "dust" dissolve/reform ----------------
+  (function(){
+    const textEl = document.getElementById('hqText');
+    const sourceEl = document.getElementById('hqSource');
+    if(!textEl) return;
+
+    // 데모용 더미 문구(게임 명언 세트) — text/source 둘 다 더미이며, 이 배열만 통째로 교체하면 문구+출처가 바뀝니다.
+    // 나중에 직군별로 다른 버전을 보내고 싶으면, 이 배열만 그 직군용 문구로 바꾼 index.html을 따로 저장해두면 됩니다.
+    const QUOTES = [
+      { text: '죽음은 끝이 아니라 리스폰이다.', source: '— 던전 크로니클' },
+      { text: '레벨업은 실패의 총합이다.', source: '— 아케인 워리어즈' },
+      { text: '보스전에서 진짜 실력이 드러난다.', source: '— 레이드 마스터' },
+      { text: '세이브 포인트는 포기하지 않은 자의 것.', source: '— 이터널 퀘스트' },
+      { text: '히든 스테이지는 노력한 자에게만 열린다.', source: '— 노바 프로토콜' },
+      { text: '체력바가 줄어도 정신력은 채워진다.', source: '— 스틸 배틀그라운드' },
+      { text: '진짜 플레이어는 튜토리얼을 건너뛰지 않는다.', source: '— 크림슨 태틱스' },
+      { text: '최고의 아이템은 함께한 팀원이다.', source: '— 길드 워페어' },
+      { text: '패치는 계속되고, 성장도 계속된다.', source: '— 넥서스 온라인' },
+      { text: '게임 오버는 새로운 시작 버튼일 뿐.', source: '— 픽셀 오디세이' },
+      { text: '히든 보스는 준비된 자에게만 나타난다.', source: '— 섀도우 리전' },
+      { text: '랭킹보다 중요한 건 오늘의 플레이.', source: '— 아레나 챔피언스' },
+    ];
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let current = -1;
+
+    function nextIndex(){
+      if(QUOTES.length === 1) return 0;
+      let i;
+      do { i = Math.floor(Math.random() * QUOTES.length); } while(i === current);
+      return i;
+    }
+
+    function splitChars(container, text, mode){
+      container.innerHTML = '';
+      const frag = document.createDocumentFragment();
+      [...text].forEach((ch, idx) => {
+        const span = document.createElement('span');
+        span.className = 'hq-char ' + mode;
+        span.textContent = ch === ' ' ? ' ' : ch;
+        span.style.setProperty('--dx', (Math.random() * 60 - 30).toFixed(1) + 'px');
+        span.style.setProperty('--dy', (Math.random() * 26 - 13).toFixed(1) + 'px');
+        span.style.setProperty('--dr', (Math.random() * 40 - 20).toFixed(1) + 'deg');
+        span.style.setProperty('--stagger', (idx * 0.014).toFixed(3) + 's');
+        frag.appendChild(span);
+      });
+      container.appendChild(frag);
+    }
+
+    function renderQuote(q, mode){
+      splitChars(textEl, q.text, mode);
+      if(sourceEl) splitChars(sourceEl, q.source || '', mode);
+    }
+
+    function dissolveOut(container){
+      const chars = container.querySelectorAll('.hq-char');
+      chars.forEach((span, i) => {
+        span.className = 'hq-char out';
+        span.style.setProperty('--stagger', (i * 0.012).toFixed(3) + 's');
+      });
+    }
+
+    function rotate(){
+      const idx = nextIndex();
+      if(reduceMotion){
+        current = idx;
+        textEl.textContent = QUOTES[idx].text;
+        if(sourceEl) sourceEl.textContent = QUOTES[idx].source || '';
+        return;
+      }
+      dissolveOut(textEl);
+      if(sourceEl) dissolveOut(sourceEl);
+      setTimeout(() => {
+        current = idx;
+        renderQuote(QUOTES[idx], 'in');
+      }, 1150);
+    }
+
+    // first quote on load
+    current = nextIndex();
+    if(reduceMotion){
+      textEl.textContent = QUOTES[current].text;
+      if(sourceEl) sourceEl.textContent = QUOTES[current].source || '';
+    } else {
+      renderQuote(QUOTES[current], 'in');
+    }
+
+    setInterval(rotate, 7000);
+  })();
+
+  // ---------------- hero dot field: ambient grid that highlights + "shatters" near the cursor ----------------
+  (function(){
+    const hero = document.getElementById('hero');
+    const canvas = document.getElementById('heroDotfield');
+    if(!hero || !canvas) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return; // purely decorative — just skip it
+
+    const ctx = canvas.getContext('2d');
+    const GAP = 34;              // grid spacing (px)
+    const HOVER_R = 130, HOVER_R2 = HOVER_R * HOVER_R;   // radius where dots start glowing
+    const BREAK_R = 46, BREAK_R2 = BREAK_R * BREAK_R;    // inner radius where dots can shatter
+    const RESPAWN_MS = 650;      // how long a shattered dot stays gone before reforming
+
+    let W = 0, H = 0, DPR = 1;
+    let dots = [];
+    let fragments = [];
+    const mouse = { x: -9999, y: -9999 };
+
+    function resize(){
+      const rect = hero.getBoundingClientRect();
+      W = rect.width; H = rect.height;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round(W * DPR));
+      canvas.height = Math.max(1, Math.round(H * DPR));
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      buildGrid();
+    }
+
+    function buildGrid(){
+      dots = [];
+      const cols = Math.ceil(W / GAP) + 1;
+      const rows = Math.ceil(H / GAP) + 1;
+      for(let iy = 0; iy < rows; iy++){
+        for(let ix = 0; ix < cols; ix++){
+          dots.push({ x: ix * GAP, y: iy * GAP, baseR: 1.3, hidden: false, respawnAt: 0 });
+        }
+      }
+    }
+
+    function shatter(dot, now){
+      dot.hidden = true;
+      dot.respawnAt = now + RESPAWN_MS;
+      const n = 5 + Math.floor(Math.random() * 3);
+      for(let i = 0; i < n; i++){
+        const ang = Math.random() * Math.PI * 2;
+        const speed = 40 + Math.random() * 70;
+        fragments.push({
+          x: dot.x, y: dot.y,
+          vx: Math.cos(ang) * speed, vy: Math.sin(ang) * speed,
+          r: 0.6 + Math.random() * 1.1,
+          born: now, life: 500 + Math.random() * 300,
+        });
+      }
+    }
+
+    hero.addEventListener('pointermove', (e) => {
+      const rect = hero.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+    });
+    hero.addEventListener('pointerleave', () => { mouse.x = -9999; mouse.y = -9999; });
+
+    let prevT = 0;
+    function frame(t){
+      const dt = prevT ? Math.min(40, t - prevT) : 16;
+      prevT = t;
+      ctx.clearRect(0, 0, W, H);
+
+      for(const dot of dots){
+        if(dot.hidden){
+          if(t >= dot.respawnAt) dot.hidden = false;
+          continue;
+        }
+        const dx = dot.x - mouse.x, dy = dot.y - mouse.y;
+        const d2 = dx * dx + dy * dy;
+        let r = dot.baseR, alpha = 0.16;
+        if(d2 < HOVER_R2){
+          const k = 1 - Math.sqrt(d2) / HOVER_R;
+          r = dot.baseR + k * 2.4;
+          alpha = 0.16 + k * 0.55;
+          if(d2 < BREAK_R2 && Math.random() < 0.045){
+            shatter(dot, t);
+            continue;
+          }
+        }
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(110,110,108,${alpha})`; // ~ var(--gray)
+        ctx.fill();
+      }
+
+      for(let i = fragments.length - 1; i >= 0; i--){
+        const f = fragments[i];
+        const age = t - f.born;
+        if(age > f.life){ fragments.splice(i, 1); continue; }
+        const k = dt / 1000;
+        f.x += f.vx * k; f.y += f.vy * k;
+        f.vx *= 0.92; f.vy *= 0.92;
+        const alpha = (1 - age / f.life) * 0.8;
+        ctx.beginPath();
+        ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(224,43,32,${alpha})`; // ~ var(--red), ties back to the brand accent
+        ctx.fill();
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(frame);
   })();
 </script>
 </body>
