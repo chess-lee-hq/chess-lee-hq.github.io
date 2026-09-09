@@ -278,7 +278,9 @@
 
   /* ---------------- SECTION HEAD ---------------- */
   .sec{padding:120px 0;}
-  .sec-head{display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:56px; gap:24px; flex-wrap:wrap;}
+  /* top-aligned, not bottom: the CAREER intro copy runs ~7 lines, and flex-end used to shove the
+     big title all the way down to sit level with the last line of it */
+  .sec-head{display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:56px; gap:24px; flex-wrap:wrap;}
   .sec-title{
     font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(38px,5.6vw,64px);
     line-height:0.98; letter-spacing:-0.02em;
@@ -2518,7 +2520,7 @@
 <section id="statement">
   <div class="wrap reveal">
     <p class="statement-text">브랜드는 결국 <span class="accent">태도</span>로 기억됩니다.<br>단어 하나의 힘, 기획 하나의 무게가<br>판을 바꿀 수 있다는 것을 증명하며<br>16년의 시간 동안 9개의 챕터를 완성해 왔습니다.</p>
-    <p class="statement-by">— 이채승</p>
+    <p class="statement-by">- 이채승 -</p>
   </div>
 </section>
 
@@ -2531,14 +2533,14 @@
     <div class="contact-grid">
       <div class="contact-col"><b>Based in</b>Seoul, Korea</div>
       <div class="contact-col"><b>Currently</b>Chapter 09 — 아하앤컴퍼니 / 브랜드마케터</div>
-      <div class="contact-col"><b>Status</b>새로운 프로젝트 제안 환영</div>
+      <div class="contact-col"><b>Status</b>Continue</div>
     </div>
   </div>
 </section>
 
 <footer>
   <span>© 2026 이채승. All rights reserved.</span>
-  <span>Demo build v3 — reference layout by glukhovsky.com</span>
+  <span>Demo build v3</span>
 </footer>
 
 <!-- ================= COPY MODAL ================= -->
