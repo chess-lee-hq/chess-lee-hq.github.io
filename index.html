@@ -171,15 +171,16 @@
   /* ---------------- HERO ROLLING QUOTE (independent absolute block in the empty gap above the eyebrow —
      positioned so it never affects the existing name/pills/desc layout or their centering) ---------------- */
   .hero-quote{
-    /* `top` is set by JS: as high as the nav↔"Since 2009" midpoint allows, but never so high that
-       the block would ride into the sun at its solar-noon peak. 196px is only the pre-JS fallback. */
-    position:absolute; top:196px; left:50%; z-index:2; transform:translateX(-50%);
+    /* `top` is set by JS to the exact midpoint between the nav row and the "Since 2009" line;
+       translate(-50%,-50%) keeps the block centred on it however many lines the quote wraps to.
+       Overlapping the sun is fine (the quote sits above it at z-index 2). 196px = pre-JS fallback. */
+    position:absolute; top:196px; left:50%; z-index:2; transform:translate(-50%,-50%);
     width:100%; max-width:680px; padding:0 40px;
     display:flex; flex-direction:column; align-items:center; gap:9px;
     text-align:center; pointer-events:none;
   }
   .hq-text{
-    font-family:"Poppins",sans-serif; font-weight:500; font-size:18px; font-style:italic;
+    font-family:"Poppins",sans-serif; font-weight:500; font-size:16px; font-style:italic;
     color:var(--gray); letter-spacing:.01em;
   }
   .hq-source{
@@ -203,8 +204,8 @@
   @media(max-width:640px){
     /* not enough headroom between the clock card and the name block on small screens —
        anchor the quote near the bottom of the hero instead, clear of the scroll indicator */
-    .hero-quote{top:auto; bottom:30px; padding:0 24px;}
-    .hq-text{font-size:15.5px;}
+    .hero-quote{top:auto; bottom:30px; padding:0 24px; transform:translateX(-50%);}
+    .hq-text{font-size:13.5px;}
   }
 
   .hero-eyebrow{
@@ -248,19 +249,6 @@
   }
   .hero-progress .ticks{display:flex; justify-content:space-between; margin-top:10px;}
   .hero-progress .ticks span{font-family:"Poppins",sans-serif; font-size:10.5px; color:var(--gray); letter-spacing:.04em;}
-  .hero-bottom{
-    display:flex; justify-content:center; align-items:center; gap:10px;
-    margin-top:50px;
-    font-family:"Poppins",sans-serif; font-size:11px; font-weight:600; letter-spacing:0.16em;
-    color:var(--gray); text-transform:uppercase;
-  }
-  .hero-bottom .arrow{
-    width:18px; height:18px; border-radius:50%; border:1px solid var(--gray);
-    display:flex; align-items:center; justify-content:center; font-size:11px;
-    animation:bob 1.8s ease-in-out infinite;
-  }
-  @keyframes bob{0%,100%{transform:translateY(0);}50%{transform:translateY(4px);}}
-
   /* ---------------- REVEAL ---------------- */
   .reveal{opacity:0; transform:translateY(28px); transition:opacity .8s var(--ease), transform .8s var(--ease);}
   .reveal.in{opacity:1; transform:translateY(0);}
@@ -623,7 +611,6 @@
       <div class="bar"><div class="fill" id="heroFill"></div></div>
       <div class="ticks"><span>2009</span><span>2013</span><span>2018</span><span>2023</span><span>2026 —</span></div>
     </div>
-    <div class="hero-bottom"><span class="arrow">↓</span> Scroll</div>
   </div>
 </section>
 
@@ -3077,36 +3064,24 @@
     requestAnimationFrame(frame);
   })();
 
-  // ---------------- place the rolling quote as high as the sun allows ----------------
-  // ideal spot = midway between the nav row and the "Since 2009" line, but the sun disc reaches its
-  // highest point at solar noon and its underside sits below that midpoint on most screens — so the
-  // block is clamped to just under the disc instead of overlapping it. The hero is a vertically
-  // centred flex column, so both references move with viewport height: measure, don't hardcode.
+  // ---------------- centre the rolling quote between the nav row and the "Since 2009" line ----------------
+  // the hero is a vertically centred flex column, so the eyebrow moves with viewport height and a
+  // hardcoded `top` would only be centred at one window size. Measure and place instead.
   (function(){
     const quote = document.querySelector('.hero-quote');
     const nav = document.getElementById('nav');
     const hero = document.getElementById('hero');
     const eyebrow = document.querySelector('.hero-eyebrow');
-    const circle = document.querySelector('.hero-circle');
-    if(!quote || !nav || !hero || !eyebrow || !circle) return;
-
-    const SUN_PEAK_RATIO = 0.08;   // DAY_PEAK_Y in the sun-arc code: disc centre at solar noon, as a % of hero height
-    const SUN_MAX_SCALE  = 1.05;   // the largest --sscale in the midday colour stop
-    const SUN_GAP        = 8;      // breathing room under the disc
+    if(!quote || !nav || !hero || !eyebrow) return;
 
     function place(){
       if(window.innerWidth <= 640){ quote.style.top = ''; return; }  // mobile keeps the bottom-anchored rule
       if(nav.classList.contains('scrolled')) return;                 // compact nav ≠ the geometry we measure against
-      const heroRect = hero.getBoundingClientRect();
-      const heroTop = heroRect.top + window.scrollY;
+      const heroTop = hero.getBoundingClientRect().top + window.scrollY;
       const navCenter = nav.offsetHeight / 2;                        // nav is fixed at top:0, links are centred in it
       const eyeRect = eyebrow.getBoundingClientRect();
       const eyeCenter = eyeRect.top + window.scrollY + eyeRect.height / 2;
-
-      // offsetHeight ignores the transform, so this is the disc's unscaled layout size
-      const sunBottom = heroRect.height * SUN_PEAK_RATIO + (circle.offsetHeight * SUN_MAX_SCALE) / 2;
-      const balancedTop = (navCenter + eyeCenter) / 2 - quote.offsetHeight / 2;
-      quote.style.top = (Math.max(balancedTop, sunBottom + SUN_GAP) - heroTop) + 'px';
+      quote.style.top = ((navCenter + eyeCenter) / 2 - heroTop) + 'px';
     }
 
     place();
