@@ -171,13 +171,15 @@
   /* ---------------- HERO ROLLING QUOTE (independent absolute block in the empty gap above the eyebrow —
      positioned so it never affects the existing name/pills/desc layout or their centering) ---------------- */
   .hero-quote{
+    /* `top` is set by JS: as high as the nav↔"Since 2009" midpoint allows, but never so high that
+       the block would ride into the sun at its solar-noon peak. 196px is only the pre-JS fallback. */
     position:absolute; top:196px; left:50%; z-index:2; transform:translateX(-50%);
     width:100%; max-width:680px; padding:0 40px;
     display:flex; flex-direction:column; align-items:center; gap:9px;
     text-align:center; pointer-events:none;
   }
   .hq-text{
-    font-family:"Poppins",sans-serif; font-weight:500; font-size:22px; font-style:italic;
+    font-family:"Poppins",sans-serif; font-weight:500; font-size:18px; font-style:italic;
     color:var(--gray); letter-spacing:.01em;
   }
   .hq-source{
@@ -202,7 +204,7 @@
     /* not enough headroom between the clock card and the name block on small screens —
        anchor the quote near the bottom of the hero instead, clear of the scroll indicator */
     .hero-quote{top:auto; bottom:30px; padding:0 24px;}
-    .hq-text{font-size:18.5px;}
+    .hq-text{font-size:15.5px;}
   }
 
   .hero-eyebrow{
@@ -427,6 +429,10 @@
     background:rgba(255,255,255,0.4); color:var(--gray);
     font-family:"Poppins",sans-serif; font-size:10px; letter-spacing:.04em;
   }
+  /* a slot with a real image needs no placeholder frame: the dashed border sat OVER the photo and,
+     because the background painting area extends under the border, the gaps between dashes showed a
+     wrapped-around sliver of the opposite edge of the same image (hence `no-repeat` on each slot too) */
+  .dt-img-slot.has-img{ border:none; overflow:hidden; }
   /* ---------------- SAMPLE: stacked (horizontal-band) detail layout ---------------- */
   .dt-stack{display:flex; flex-direction:column; gap:22px; max-width:900px;}
   .dt-sec .dt-label{margin:0 0 10px;}
@@ -554,9 +560,23 @@
     padding:26px 40px; display:flex; justify-content:space-between; font-size:11.5px; color:var(--gray);
     font-family:"Poppins",sans-serif; border-top:1px solid var(--line); flex-wrap:wrap; gap:8px;
   }
+
+  /* ---------------- red pixel follower + pencil trail: the native mouse cursor is left alone;
+     a red square pixel lags behind it and its path is what draws the trail. Full-viewport
+     overlay; the pencil stroke is drawn only OUTSIDE the hero (which keeps its own
+     dot-shatter effect instead) — see JS below */
+  #cursorTrail{
+    position:fixed; inset:0; width:100%; height:100%;
+    pointer-events:none; z-index:99999;
+  }
+  @media(prefers-reduced-motion:reduce){
+    #cursorTrail{ display:none; }
+  }
 </style>
 </head>
 <body>
+
+<canvas id="cursorTrail" aria-hidden="true"></canvas>
 
 <nav id="nav">
   <a href="#hero" class="nav-mark"><span class="dot"></span>이채승.</a>
@@ -618,7 +638,7 @@
       <div class="reveal-stagger stat-row">
         <div class="stat"><div class="num">16<span style="font-size:22px;">년+</span></div><div class="lbl">BRAND & AD CAREER</div></div>
         <div class="stat"><div class="num">9</div><div class="lbl">CHAPTERS / COMPANIES</div></div>
-        <div class="stat"><div class="num">46<span style="font-size:22px;">+</span></div><div class="lbl">CAMPAIGNS & PROJECTS</div></div>
+        <div class="stat"><div class="num">41<span style="font-size:22px;">+</span></div><div class="lbl">CAMPAIGNS & PROJECTS</div></div>
         <div class="stat"><div class="num">8</div><div class="lbl">INDUSTRY AWARDS</div></div>
       </div>
     </div>
@@ -725,7 +745,7 @@
     <div class="eyebrow">03 — Career</div>
     <div class="sec-head reveal">
       <h2 class="sec-title">CAREER.</h2>
-      <p class="sec-sub">"현재 명함 속에서 저는 브랜드 마케터입니다. 머릿속의 저는 카피라이터이자 스토리텔러입니다. 하지만 제 마음속의 저는 언제나 게이머입니다."<br>2009년 AE로 시작해 지금에 이르기까지, 9개의 챕터로 기록된 16년+의 플레이 타임입니다. 최신 챕터부터 거슬러 올라가며, 스크롤을 내릴 때마다 그 시기에 클리어한 프로젝트들이 아래로 채워집니다.</p>
+      <p class="sec-sub">"현재 명함 속에서 저는 브랜드 마케터입니다. 머릿속의 저는 카피라이터이자 스토리텔러입니다. 하지만 제 마음속의 저는 언제나 게이머입니다."<br>2009년 AE로 시작해 지금에 이르기까지, 9개의 챕터로 기록된 16년+의 플레이 타임입니다. 최신 챕터부터 거슬러 올라가며, 스크롤을 내릴 때마다 그 시기에 클리어한 프로젝트들이 아래로 채워집니다.<br><br>*기간내 주요 프로젝트만 정리했음을 참고바랍니다.</p>
     </div>
 
 <div class="company-block current" id="chp-09">
@@ -740,7 +760,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e0453f,#7a1d16 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/01_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">2026년 앱설치 캠페인 (앱테크 리포지셔닝). <a class="proj-link-badge" href="https://tvcf.co.kr/play/bi1777-1016277" target="_blank" rel="noopener noreferrer" title="https://tvcf.co.kr/play/bi1777-1016277" onclick="event.stopPropagation()">26년 아하광고</a></div>
             <div class="proj-meta">아하앤컴퍼니 / 2026</div>
@@ -776,14 +796,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/01_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3f3f3d,#181816 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/02_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">2026년 인플루언서 마케팅. <a class="proj-link-badge" href="https://www.youtube.com/shorts/egBYOyhuTj0" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/shorts/egBYOyhuTj0" onclick="event.stopPropagation()">양태영변호사</a> <a class="proj-link-badge" href="https://www.instagram.com/reel/DVapu4TAc7w/" target="_blank" rel="noopener noreferrer" title="https://www.instagram.com/reel/DVapu4TAc7w/" onclick="event.stopPropagation()">동은부부</a></div>
             <div class="proj-meta">아하앤컴퍼니 / 2026</div>
@@ -817,14 +837,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/02_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#8a877e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/03_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">2025년 브랜드 매스캠페인. <a class="proj-link-badge" href="https://tvcf.co.kr/play/bh15678-980863" target="_blank" rel="noopener noreferrer" title="https://tvcf.co.kr/play/bh15678-980863" onclick="event.stopPropagation()">25년 아하광고</a></div>
             <div class="proj-meta">아하앤컴퍼니 / 2025</div>
@@ -861,14 +881,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/03_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/04_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">아하 브랜드 아이덴티티 정립 (미션/비전 수립).</div>
             <div class="proj-meta">아하앤컴퍼니 / 2025</div>
@@ -876,7 +896,7 @@
           <div class="proj-arrow">↗</div>
         </div>
                 <div class="proj-detail">
-          <p class="rl"><b>Role</b>브랜드 전략 / 아이덴티티 수립 총괄</p>
+          <p class="rl"><b>Role</b>브랜드 전략 / PR 매니저</p>
                     <div class="dt-stack">
             <div class="dt-sec">
               <p class="dt-label">배경 &amp; 목적</p>
@@ -902,7 +922,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/04_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -923,7 +943,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/05_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">발로란트 겨울방학 캠페인. <a class="proj-link-badge" href="https://youtu.be/NwykkwqBliE?si=lHTby-eeF3Nc1Udp" target="_blank" rel="noopener noreferrer" title="https://youtu.be/NwykkwqBliE?si=lHTby-eeF3Nc1Udp" onclick="event.stopPropagation()">케미폭VAL EP1</a> <a class="proj-link-badge" href="https://youtu.be/3c-HEHCMlAY?si=skvq10VL4AVtBUiL" target="_blank" rel="noopener noreferrer" title="https://youtu.be/3c-HEHCMlAY?si=skvq10VL4AVtBUiL" onclick="event.stopPropagation()">EP2</a> <a class="proj-link-badge" href="https://youtu.be/UY92mjNP80U?si=v7UAXPyW5kfdXbs1" target="_blank" rel="noopener noreferrer" title="https://youtu.be/UY92mjNP80U?si=v7UAXPyW5kfdXbs1" onclick="event.stopPropagation()">EP3</a></div>
             <div class="proj-meta">라이엇게임즈 / 2024</div>
@@ -956,14 +976,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/05_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/06_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">e스포츠팀 리브랜딩.</div>
             <div class="proj-meta">피어엑스(구 SBXG) / 2023</div>
@@ -996,14 +1016,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/06_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/07_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">프립 캠페인. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=hi_l98G0LQ4" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=hi_l98G0LQ4" onclick="event.stopPropagation()">프립광고</a></div>
             <div class="proj-meta">프립 / 2020</div>
@@ -1036,7 +1056,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/07_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1057,7 +1077,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/08_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">PORTAL &amp; 마우스포테이토. <a class="proj-link-badge" href="https://www.inven.co.kr/webzine/news/?news=273119&amp;site=it" target="_blank" rel="noopener noreferrer" title="https://www.inven.co.kr/webzine/news/?news=273119&amp;site=it" onclick="event.stopPropagation()">포탈</a> <a class="proj-link-badge" href="https://www.instagram.com/mousepotatoseoul/reels/" target="_blank" rel="noopener noreferrer" title="https://www.instagram.com/mousepotatoseoul/reels/" onclick="event.stopPropagation()">마우스포테이토</a></div>
             <div class="proj-meta">샌드박스네트워크(SBXG) / 2022–23</div>
@@ -1091,14 +1111,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/08_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/09_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">발란사 × 아우프글렛 브랜드 협업. <a class="proj-link-badge" href="https://www.instagram.com/p/CoQ8xzcrKGZ/?utm_source=ig_web_copy_link&amp;img_index=5" target="_blank" rel="noopener noreferrer" title="https://www.instagram.com/p/CoQ8xzcrKGZ/?utm_source=ig_web_copy_link&amp;img_index=5" onclick="event.stopPropagation()">LSBX발란사</a></div>
             <div class="proj-meta">샌드박스네트워크(SBXG) / 2022</div>
@@ -1133,14 +1153,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/09_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#5b5b58,#201f1c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/10_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">CI&amp;BI 및 e스포츠팀 브랜드 리뉴얼.</div>
             <div class="proj-meta">샌드박스네트워크(SBXG) / 2021</div>
@@ -1175,7 +1195,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/10_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1196,7 +1216,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/11_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">산타토익 겨울 캠페인. <a class="proj-link-badge" href="https://m.blog.naver.com/runlab/222197005362" target="_blank" rel="noopener noreferrer" title="https://m.blog.naver.com/runlab/222197005362" onclick="event.stopPropagation()">뤼이드 광고</a></div>
             <div class="proj-meta">뤼이드(산타토익) / 2020–21</div>
@@ -1229,7 +1249,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/11_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1250,7 +1270,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/12_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">여기어때 리브랜딩. <a class="proj-link-badge" href="https://thewatermelon.com/work/278" target="_blank" rel="noopener noreferrer" title="https://thewatermelon.com/work/278" onclick="event.stopPropagation()">여기어때 리브랜딩</a></div>
             <div class="proj-meta">여기어때 / 2019–20</div>
@@ -1282,14 +1302,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/12_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/13_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">여기어때 여름 캠페인. <a class="proj-link-badge" href="https://m.blog.naver.com/stussyblog/221600268620" target="_blank" rel="noopener noreferrer" title="https://m.blog.naver.com/stussyblog/221600268620" onclick="event.stopPropagation()">여기어때 광고</a></div>
             <div class="proj-meta">여기어때 / 2019</div>
@@ -1321,14 +1341,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/13_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/14_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">컨텐츠 채널 전략 리빌딩. <a class="proj-link-badge" href="https://www.instagram.com/black_goodchoice/" target="_blank" rel="noopener noreferrer" title="https://www.instagram.com/black_goodchoice/" onclick="event.stopPropagation()">여기어때 블랙</a></div>
             <div class="proj-meta">여기어때 / 2019</div>
@@ -1361,7 +1381,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/14_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1382,7 +1402,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/15_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">Affiliate 판매 전략.</div>
             <div class="proj-meta">정글 / 2019</div>
@@ -1414,14 +1434,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/15_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/16_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">정글바이퍼 런칭 캠페인. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=ZGp8NvkMEWo" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=ZGp8NvkMEWo" onclick="event.stopPropagation()">정글 브랜드영상</a></div>
             <div class="proj-meta">정글 / 2018</div>
@@ -1452,7 +1472,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/16_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1473,7 +1493,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/17_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">갤럭시 A8 TVC. <a class="proj-link-badge" href="https://youtu.be/iev3iTG-rzY" target="_blank" rel="noopener noreferrer" title="https://youtu.be/iev3iTG-rzY" onclick="event.stopPropagation()">갤럭시 A8 TVC - 여자편</a> <a class="proj-link-badge" href="https://youtu.be/LoThossKnMg" target="_blank" rel="noopener noreferrer" title="https://youtu.be/LoThossKnMg" onclick="event.stopPropagation()">갤럭시 A8 TVC - 남자편</a></div>
             <div class="proj-meta">삼성전자 / 2018</div>
@@ -1495,8 +1515,14 @@
               <li>광고 컨셉 제시 및 카피라이팅(여자 편/남자 편)</li>
               </ul>
             </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>-</li>
+              </ul>
+            </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/17_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_a8">카피 전문 보기 <span>&#8599;</span></button>
@@ -1505,7 +1531,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/18_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">갤럭시 S9 TVC. <a class="proj-link-badge" href="https://youtu.be/0zgVAftDi8U" target="_blank" rel="noopener noreferrer" title="https://youtu.be/0zgVAftDi8U" onclick="event.stopPropagation()">갤럭시 S9 TVC - 티저편</a> <a class="proj-link-badge" href="https://youtu.be/3E_4leH8p5g" target="_blank" rel="noopener noreferrer" title="https://youtu.be/3E_4leH8p5g" onclick="event.stopPropagation()">갤럭시 S9 TVC - 본편</a></div>
             <div class="proj-meta">삼성전자 / 2018</div>
@@ -1534,7 +1560,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/18_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_s9">카피 전문 보기 <span>&#8599;</span></button>
@@ -1543,9 +1569,9 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/19_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
-            <div class="proj-title">갤럭시 S8 큐브무비 캠페인. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=cUCcV2beWTU" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=cUCcV2beWTU" onclick="event.stopPropagation()">갤럭시 큐브무비</a> <a class="proj-link-badge" href="https://blog.cheil.com/magazine/24706?t=%ED%81%90%EB%B8%8C%EB%AC%B4%EB%B9%84" target="_blank" rel="noopener noreferrer" title="https://blog.cheil.com/magazine/24706?t=%ED%81%90%EB%B8%8C%EB%AC%B4%EB%B9%84" onclick="event.stopPropagation()">큐브무비 사내기사</a></div>
+            <div class="proj-title">갤럭시 S8 큐브무비 캠페인. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=cUCcV2beWTU" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=cUCcV2beWTU" onclick="event.stopPropagation()">갤럭시 큐브무비</a> <a class="proj-link-badge" href="https://blog.cheil.com/magazine/24706?t=%ED%81%90%EB%B8%8C%EB%AC%B4%EB%B9%84" target="_blank" rel="noopener noreferrer" title="https://blog.cheil.com/magazine/24706?t=%ED%81%90%EB%B8%8C%EB%AC%B4%EB%B9%84" onclick="event.stopPropagation()">사내기사</a> <a class="proj-link-badge" href="https://news.samsung.com/kr/%ED%81%90%EB%B8%8C-%EB%AC%B4%EB%B9%84%EB%A1%9C-%EB%A7%8C%EB%93%9C%EB%8A%94-1%EB%A7%8C-%EA%B0%80%EC%A7%80-%EA%B0%A4%EB%9F%AD%EC%8B%9C-s8-%EC%8A%A4%ED%86%A0%EB%A6%AC" target="_blank" rel="noopener noreferrer" title="https://news.samsung.com/kr/%ED%81%90%EB%B8%8C-%EB%AC%B4%EB%B9%84%EB%A1%9C-%EB%A7%8C%EB%93%9C%EB%8A%94-1%EB%A7%8C-%EA%B0%80%EC%A7%80-%EA%B0%A4%EB%9F%AD%EC%8B%9C-s8-%EC%8A%A4%ED%86%A0%EB%A6%AC" onclick="event.stopPropagation()">삼성뉴스룸</a></div>
             <div class="proj-meta">삼성전자 / 2017</div>
           </div>
           <div class="proj-arrow">↗</div>
@@ -1575,14 +1601,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/19_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/20_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">갤럭시 노트8 온라인 스튜디오. <a class="proj-link-badge" href="https://youtu.be/E5MyUO84c38" target="_blank" rel="noopener noreferrer" title="https://youtu.be/E5MyUO84c38" onclick="event.stopPropagation()">노트8 온라인 스튜디오</a></div>
             <div class="proj-meta">삼성전자 / 2017</div>
@@ -1612,7 +1638,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/20_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -1622,7 +1648,7 @@
 
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/21_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">볼트EV. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=j-9syIOCOBE" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=j-9syIOCOBE" onclick="event.stopPropagation()">쉐보레 볼트 EV</a></div>
             <div class="proj-meta">쉐보레 / 2017</div>
@@ -1653,7 +1679,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/21_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_boltev">카피 전문 보기 <span>&#8599;</span></button>
@@ -1676,7 +1702,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/22_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">채널현대카드 프로젝트. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=Tak5o3dbBPM" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=Tak5o3dbBPM" onclick="event.stopPropagation()">현대카드 톰하디 브랜드필름 트래블 편</a></div>
             <div class="proj-meta">현대카드 / 2016</div>
@@ -1708,14 +1734,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/22_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/23_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">현대카드 브랜드 필름 Ⅰ. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=nUMleT5aS28" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=nUMleT5aS28" onclick="event.stopPropagation()">현대카드 - 나이답다 편</a></div>
             <div class="proj-meta">현대카드 / 2016</div>
@@ -1741,11 +1767,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음 — 채널현대카드 프로젝트 전체 성과에 포함, 위 항목 참고)</li>
+              <li>톰하디 국내외 촬영을 통한 광고 이슈화</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/23_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm1">카피 전문 보기 <span>&#8599;</span></button>
@@ -1754,7 +1780,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/24_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">현대카드 브랜드 필름 Ⅱ. <a class="proj-link-badge" href="https://youtu.be/iXqD8ZfDivI" target="_blank" rel="noopener noreferrer" title="https://youtu.be/iXqD8ZfDivI" onclick="event.stopPropagation()">현대카드이데올로기편</a></div>
             <div class="proj-meta">현대카드 / 2016</div>
@@ -1779,11 +1805,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음 — 채널현대카드 프로젝트 전체 성과에 포함, 위 항목 참고)</li>
+              <li>광고촬영지인 라이브러리에 대한 인지도 향상</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/24_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm2">카피 전문 보기 <span>&#8599;</span></button>
@@ -1792,7 +1818,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/25_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">생활플랫폼 TVC Ⅰ. <a class="proj-link-badge" href="https://youtu.be/S74QY6sUibI" target="_blank" rel="noopener noreferrer" title="https://youtu.be/S74QY6sUibI" onclick="event.stopPropagation()">SKT 생활플랫폼 TVC</a></div>
             <div class="proj-meta">SKT / 2016</div>
@@ -1823,7 +1849,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/25_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt1">카피 전문 보기 <span>&#8599;</span></button>
@@ -1832,7 +1858,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/26_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">생활플랫폼 TVC Ⅱ. <a class="proj-link-badge" href="https://youtu.be/_XZCK461_DE" target="_blank" rel="noopener noreferrer" title="https://youtu.be/_XZCK461_DE" onclick="event.stopPropagation()">생활플랫폼 진경편</a> <a class="proj-link-badge" href="https://youtu.be/KPMrrz4tLCo" target="_blank" rel="noopener noreferrer" title="https://youtu.be/KPMrrz4tLCo" onclick="event.stopPropagation()">생활플랫폼 조진웅편</a></div>
             <div class="proj-meta">SKT / 2016</div>
@@ -1857,11 +1883,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음 — 위 조진웅 NA 편과 동일 캠페인 성과 공유)</li>
+              <li>-</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/26_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt2">카피 전문 보기 <span>&#8599;</span></button>
@@ -1870,9 +1896,9 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/27_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
-            <div class="proj-title">Inspiration Talk. <a class="proj-link-badge" href="https://youtu.be/jvN1TlWGS_A" target="_blank" rel="noopener noreferrer" title="https://youtu.be/jvN1TlWGS_A" onclick="event.stopPropagation()">현대카드 Inspiration Talk</a></div>
+            <div class="proj-title">Inspiration Talk. <a class="proj-link-badge" href="https://www.youtube.com/watch?v=Ick3EALY8Z0" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=Ick3EALY8Z0" onclick="event.stopPropagation()">런칭광고</a> <a class="proj-link-badge" href="https://youtu.be/jvN1TlWGS_A" target="_blank" rel="noopener noreferrer" title="https://youtu.be/jvN1TlWGS_A" onclick="event.stopPropagation()">현대카드 Inspiration Talk</a></div>
             <div class="proj-meta">현대카드 / 2014–16</div>
           </div>
           <div class="proj-arrow">↗</div>
@@ -1900,14 +1926,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/27_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/28_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">현대카드 마이메뉴. <a class="proj-link-badge" href="https://youtu.be/8LkgXYF320k" target="_blank" rel="noopener noreferrer" title="https://youtu.be/8LkgXYF320k" onclick="event.stopPropagation()">현대카드 마이메뉴 - 톨스토이편</a> <a class="proj-link-badge" href="https://youtu.be/5I7XJ1jvess" target="_blank" rel="noopener noreferrer" title="https://youtu.be/5I7XJ1jvess" onclick="event.stopPropagation()">현대카드 마이메뉴 - 쇼송편</a></div>
             <div class="proj-meta">현대카드 / 2016</div>
@@ -1932,11 +1958,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>국내 최초 세로형으로만 송출한 광고로 이슈</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/28_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcmymenu">카피 전문 보기 <span>&#8599;</span></button>
@@ -1945,7 +1971,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/29_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">현대카드 X카드 TVC. <a class="proj-link-badge" href="https://youtu.be/uOIcwbBpTCM" target="_blank" rel="noopener noreferrer" title="https://youtu.be/uOIcwbBpTCM" onclick="event.stopPropagation()">현대카드 X 카드 TVC</a></div>
             <div class="proj-meta">현대카드 / 2016</div>
@@ -1968,8 +1994,14 @@
               <li>영상 제작 디렉팅 및 프로덕션 핸들링</li>
               </ul>
             </div>
+            <div class="dt-sec">
+              <p class="dt-label">결과</p>
+              <ul class="dt-list">
+              <li>저예산 제작물로 M VS X 시리즈 4편 시리즈 제작</li>
+              </ul>
+            </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/29_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardtvc">카피 전문 보기 <span>&#8599;</span></button>
@@ -1978,7 +2010,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/30_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">현대카드 PRINT.</div>
             <div class="proj-meta">현대카드 / 2011–16</div>
@@ -1998,20 +2030,20 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>장폴고티에전은 애드버토리얼도 작성</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/30_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/31_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
-            <div class="proj-title">피키캐스트 런칭 캠페인. <a class="proj-link-badge" href="https://youtu.be/paDL47jwHt0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/paDL47jwHt0" onclick="event.stopPropagation()">피키캐스트 런칭 광고1</a> <a class="proj-link-badge" href="https://youtu.be/iWVhxvhvWe0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/iWVhxvhvWe0" onclick="event.stopPropagation()">광고2</a> <a class="proj-link-badge" href="https://youtu.be/gvfKgsH-Qas" target="_blank" rel="noopener noreferrer" title="https://youtu.be/gvfKgsH-Qas" onclick="event.stopPropagation()">광고3</a></div>
+            <div class="proj-title">피키캐스트 런칭 캠페인. <a class="proj-link-badge" href="https://youtu.be/paDL47jwHt0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/paDL47jwHt0" onclick="event.stopPropagation()">피키캐스트 런칭 광고1</a> <a class="proj-link-badge" href="https://youtu.be/iWVhxvhvWe0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/iWVhxvhvWe0" onclick="event.stopPropagation()">광고2</a> <a class="proj-link-badge" href="https://blog.naver.com/dcube3335/220298905540" target="_blank" rel="noopener noreferrer" title="https://blog.naver.com/dcube3335/220298905540" onclick="event.stopPropagation()">블로그</a></div>
             <div class="proj-meta">피키캐스트 / 2015</div>
           </div>
           <div class="proj-arrow">↗</div>
@@ -2040,14 +2072,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/31_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#4a4a48,#151514 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/32_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">뮤직라이브러리 &amp; 카드팩토리. <a class="proj-link-badge" href="https://youtu.be/dNw46wmELCQ" target="_blank" rel="noopener noreferrer" title="https://youtu.be/dNw46wmELCQ" onclick="event.stopPropagation()">현대카드 뮤직라이브러리</a> <a class="proj-link-badge" href="https://youtu.be/9Zbe2ccZly0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/9Zbe2ccZly0" onclick="event.stopPropagation()">현대카드 카드팩토리</a></div>
             <div class="proj-meta">현대카드 / 2015</div>
@@ -2073,11 +2105,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>현대카드 실제 제작하는 팩토리 모습 최초 공개로 이슈</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/32_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_musiclib">카피 전문 보기 <span>&#8599;</span></button>
@@ -2087,7 +2119,7 @@
 
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/33_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">만화로 보는 라이브러리 걸작선. <a class="proj-link-badge" href="https://youtu.be/2fU3IMKc_1o" target="_blank" rel="noopener noreferrer" title="https://youtu.be/2fU3IMKc_1o" onclick="event.stopPropagation()">현대카드 라이브러리 카툰</a></div>
             <div class="proj-meta">현대카드 / 2014</div>
@@ -2118,16 +2150,16 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/33_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/34_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
-            <div class="proj-title">X카드 시즌캐시백. <a class="proj-link-badge" href="https://youtu.be/am2ZfeNRctE" target="_blank" rel="noopener noreferrer" title="https://youtu.be/am2ZfeNRctE" onclick="event.stopPropagation()">현대카드 X카드</a></div>
+            <div class="proj-title">X카드 시즌캐시백. <a class="proj-link-badge" href="https://youtu.be/am2ZfeNRctE" target="_blank" rel="noopener noreferrer" title="https://youtu.be/am2ZfeNRctE" onclick="event.stopPropagation()">현대카드 X카드</a> <a class="proj-link-badge" href="https://www.youtube.com/watch?v=Nd3OuVNQ7NU" target="_blank" rel="noopener noreferrer" title="https://www.youtube.com/watch?v=Nd3OuVNQ7NU" onclick="event.stopPropagation()">메이킹영상</a></div>
             <div class="proj-meta">현대카드 / 2014</div>
           </div>
           <div class="proj-arrow">↗</div>
@@ -2151,11 +2183,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>스톱모션 메이킹영상까지 광고 소재로 활용</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/34_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardcashback">카피 전문 보기 <span>&#8599;</span></button>
@@ -2165,7 +2197,7 @@
 
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/35_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">다이렉트론. <a class="proj-link-badge" href="https://youtu.be/hu3UBLfRyvg" target="_blank" rel="noopener noreferrer" title="https://youtu.be/hu3UBLfRyvg" onclick="event.stopPropagation()">현대캐피탈 다이렉트론</a></div>
             <div class="proj-meta">현대캐피탈 / 2014</div>
@@ -2191,11 +2223,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>독특한 광고 구조와 음악으로 패러디 광고를 이끔</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/35_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hcapital">카피 전문 보기 <span>&#8599;</span></button>
@@ -2204,7 +2236,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#b7b4ac,#54524d 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/36_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">베가 아이언2. <a class="proj-link-badge" href="https://youtu.be/kbTwRz4NyGg" target="_blank" rel="noopener noreferrer" title="https://youtu.be/kbTwRz4NyGg" onclick="event.stopPropagation()">베가 아이언2</a></div>
             <div class="proj-meta">팬택(베가) / 2014</div>
@@ -2230,11 +2262,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>-</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/36_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_vega">카피 전문 보기 <span>&#8599;</span></button>
@@ -2243,7 +2275,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/37_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">씽크U수학. <a class="proj-link-badge" href="https://youtu.be/LMnbRP-i5r0" target="_blank" rel="noopener noreferrer" title="https://youtu.be/LMnbRP-i5r0" onclick="event.stopPropagation()">웅진씽크빅 씽크U수학</a></div>
             <div class="proj-meta">웅진씽크빅 / 2014</div>
@@ -2269,11 +2301,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>-</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/37_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_woongjin">카피 전문 보기 <span>&#8599;</span></button>
@@ -2283,9 +2315,9 @@
 
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#ff5a4c,#8f1810 70%);"></div>
+          <div class="proj-thumb" style="background:url('images/38_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
-            <div class="proj-title">0914 PRINT.</div>
+            <div class="proj-title">0914 PRINT/포스터</div>
             <div class="proj-meta">시몬느(0914) / 2014</div>
           </div>
           <div class="proj-arrow">↗</div>
@@ -2309,18 +2341,18 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음)</li>
+              <li>높은 퀄리티의 광고로 잡지사에서 우선 배정</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/38_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#e07a6d,#a0281c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/39_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">콩떡빙수 송. <a class="proj-link-badge" href="https://youtu.be/unutIfYsPwM" target="_blank" rel="noopener noreferrer" title="https://youtu.be/unutIfYsPwM" onclick="event.stopPropagation()">파리바게뜨 콩떡빙수송</a></div>
             <div class="proj-meta">파리바게뜨 / 2013</div>
@@ -2346,11 +2378,12 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
+              <li>냉면, 팥빙수에 이어</li>
               <li>여름 대세 송으로 음원 차트 상위권 기록</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/39_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
         </div>
@@ -2374,7 +2407,7 @@
     <div class="company-list reveal-stagger">
       <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#c9c6bf,#6e6e6c 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/40_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">“사람이 미래다” 기업 PR. <a class="proj-link-badge" href="https://youtu.be/NZXspNd6szw" target="_blank" rel="noopener noreferrer" title="https://youtu.be/NZXspNd6szw" onclick="event.stopPropagation()">두산그룹 “사람이 미래다”기업 PR</a></div>
             <div class="proj-meta">두산그룹 / 2009–10</div>
@@ -2403,7 +2436,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/40_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_corp">카피 전문 보기 <span>&#8599;</span></button>
@@ -2412,7 +2445,7 @@
       </div>
 <div class="proj-row">
         <div class="proj-main">
-          <div class="proj-thumb" style="background:linear-gradient(135deg,#3a3a38,#0f0f0e 75%);"></div>
+          <div class="proj-thumb" style="background:url('images/41_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
             <div class="proj-title">“사람이 미래다” 공익 PR. <a class="proj-link-badge" href="https://youtu.be/INAELjozP4o" target="_blank" rel="noopener noreferrer" title="https://youtu.be/INAELjozP4o" onclick="event.stopPropagation()">“사람이 미래다”공익 PR</a></div>
             <div class="proj-meta">두산그룹 / 2009</div>
@@ -2437,11 +2470,11 @@
             <div class="dt-sec">
               <p class="dt-label">결과</p>
               <ul class="dt-list">
-              <li>(별도 result 없음 — 위 기업 PR과 함께 캠페인 포맷 정착에 기여)</li>
+              <li>두산그룹의 첫 CSR 캠페인으로서 이슈</li>
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot" aria-hidden="true">이미지 예정 · 32:9</div>
+              <div class="dt-img-slot has-img" style="background:url('images/41_wide.jpg') center/cover no-repeat;"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_public">카피 전문 보기 <span>&#8599;</span></button>
@@ -2846,18 +2879,18 @@
     // 데모용 더미 문구(게임 명언 세트) — text/source 둘 다 더미이며, 이 배열만 통째로 교체하면 문구+출처가 바뀝니다.
     // 나중에 직군별로 다른 버전을 보내고 싶으면, 이 배열만 그 직군용 문구로 바꾼 index.html을 따로 저장해두면 됩니다.
     const QUOTES = [
-      { text: '죽음은 끝이 아니라 리스폰이다.', source: '— 던전 크로니클' },
-      { text: '레벨업은 실패의 총합이다.', source: '— 아케인 워리어즈' },
-      { text: '보스전에서 진짜 실력이 드러난다.', source: '— 레이드 마스터' },
-      { text: '세이브 포인트는 포기하지 않은 자의 것.', source: '— 이터널 퀘스트' },
-      { text: '히든 스테이지는 노력한 자에게만 열린다.', source: '— 노바 프로토콜' },
-      { text: '체력바가 줄어도 정신력은 채워진다.', source: '— 스틸 배틀그라운드' },
-      { text: '진짜 플레이어는 튜토리얼을 건너뛰지 않는다.', source: '— 크림슨 태틱스' },
-      { text: '최고의 아이템은 함께한 팀원이다.', source: '— 길드 워페어' },
-      { text: '패치는 계속되고, 성장도 계속된다.', source: '— 넥서스 온라인' },
-      { text: '게임 오버는 새로운 시작 버튼일 뿐.', source: '— 픽셀 오디세이' },
-      { text: '히든 보스는 준비된 자에게만 나타난다.', source: '— 섀도우 리전' },
-      { text: '랭킹보다 중요한 건 오늘의 플레이.', source: '— 아레나 챔피언스' },
+      { text: '우리는 소니와 마이크로소프트와 경쟁하지 않는다. 우리는 게임에 흥미를 느끼지 못 하는 사람들의 무관심과 싸운다', source: '- 이와타 사토루 -' },
+      { text: '정말로 중요한 건... 어떻게 끝으로 가는가.', source: '- 산나비 -' },
+      { text: '미안해하지 마라. 더 나아져라.', source: '- 갓오브워 -' },
+      { text: '어려움을 위한 어려움을 만들고 싶지 않습니다. 플레이어가 무언가를 극복하고 성취감을 느낄 수 있도록 만들고 싶을 뿐입니다.', source: '- 미야자키 히데타카 -' },
+      { text: '내가 게임을 만드는 이유는 돈을 벌기 위해서가 아닙니다. 게임이라는 매체를 통해 세상에 존재하는 보이지 않는 진리와 아름다움을 표현하고 싶기 때문입니다.', source: '- 조나단 블로우 -' },
+      { text: '잘못된 장소에 있는 올바른 사람이 세상의 모든 것을 바꿀 수 있습니다.', source: '- 하프라이프2 -' },
+      { text: '게임 크리에이터는 플레이어의 상상력을 자극하는 사람이어야 한다.', source: '- 이이노 겐지 -' },
+      { text: '현재 불가능이라고 느끼고 있는 것들의 90%는 사실 가능한 것들이다. 나머지 10% 역시 기술과 시간을 통해 가능하다.', source: '- 코지마 히데오 -' },
+      { text: '우리는 모두 선택을 하지만, 결국 그 선택이 우리를 만든다.', source: '- 켄 레빈 -' },
+      { text: '즐겁게 만든 게임은 자연스럽게 멋진 게임으로 탄생한다', source: '- 스즈키 유 -' },
+      { text: '중요한 것에 충실해라.', source: '- 레드데드리뎀션2 -' },
+      { text: '사람들이 진심으로 즐겁게 느끼는 것이 무엇인지를 생각하고 제품을 만든다면 세계 어디에서도 팔 수 있다.', source: '- 미야모토 시게루 -' },
     ];
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -3032,6 +3065,143 @@
         ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
         ctx.fillStyle = `rgba(224,43,32,${alpha})`; // ~ var(--red), ties back to the brand accent
         ctx.fill();
+      }
+
+      requestAnimationFrame(frame);
+    }
+
+    window.addEventListener('resize', resize);
+    resize();
+    requestAnimationFrame(frame);
+  })();
+
+  // ---------------- place the rolling quote as high as the sun allows ----------------
+  // ideal spot = midway between the nav row and the "Since 2009" line, but the sun disc reaches its
+  // highest point at solar noon and its underside sits below that midpoint on most screens — so the
+  // block is clamped to just under the disc instead of overlapping it. The hero is a vertically
+  // centred flex column, so both references move with viewport height: measure, don't hardcode.
+  (function(){
+    const quote = document.querySelector('.hero-quote');
+    const nav = document.getElementById('nav');
+    const hero = document.getElementById('hero');
+    const eyebrow = document.querySelector('.hero-eyebrow');
+    const circle = document.querySelector('.hero-circle');
+    if(!quote || !nav || !hero || !eyebrow || !circle) return;
+
+    const SUN_PEAK_RATIO = 0.08;   // DAY_PEAK_Y in the sun-arc code: disc centre at solar noon, as a % of hero height
+    const SUN_MAX_SCALE  = 1.05;   // the largest --sscale in the midday colour stop
+    const SUN_GAP        = 8;      // breathing room under the disc
+
+    function place(){
+      if(window.innerWidth <= 640){ quote.style.top = ''; return; }  // mobile keeps the bottom-anchored rule
+      if(nav.classList.contains('scrolled')) return;                 // compact nav ≠ the geometry we measure against
+      const heroRect = hero.getBoundingClientRect();
+      const heroTop = heroRect.top + window.scrollY;
+      const navCenter = nav.offsetHeight / 2;                        // nav is fixed at top:0, links are centred in it
+      const eyeRect = eyebrow.getBoundingClientRect();
+      const eyeCenter = eyeRect.top + window.scrollY + eyeRect.height / 2;
+
+      // offsetHeight ignores the transform, so this is the disc's unscaled layout size
+      const sunBottom = heroRect.height * SUN_PEAK_RATIO + (circle.offsetHeight * SUN_MAX_SCALE) / 2;
+      const balancedTop = (navCenter + eyeCenter) / 2 - quote.offsetHeight / 2;
+      quote.style.top = (Math.max(balancedTop, sunBottom + SUN_GAP) - heroTop) + 'px';
+    }
+
+    place();
+    window.addEventListener('resize', place);
+    window.addEventListener('scroll', () => { if(window.scrollY < 4) place(); }, { passive: true });
+    // webfonts land after first paint and shift the eyebrow, so re-measure once they're ready
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(place);
+  })();
+
+  // ---------------- red pixel follower + pencil trail ----------------
+  // the native mouse cursor is left untouched; a red square pixel eases toward it with a slight
+  // lag, and that lagging pixel is what "draws" the pencil stroke. The stroke is suppressed inside
+  // the hero, which keeps its own dot-shatter effect above instead.
+  (function(){
+    const canvas = document.getElementById('cursorTrail');
+    const hero = document.getElementById('hero');
+    if(!canvas || !hero) return;
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const ctx = canvas.getContext('2d');
+    const MAX_AGE = 480;      // ms a trail point stays visible before fading out
+    const MAX_POINTS = 90;    // safety cap on the point buffer
+    const EASE = 0.17;        // how fast the red pixel catches up — lower = more lag
+    const DOT = 9;            // red pixel size (px)
+
+    let W = 0, H = 0, DPR = 1;
+    let points = [];
+    let target = null;        // latest real cursor position
+    let follow = null;        // the lagging red pixel
+    let visible = false;
+
+    function resize(){
+      W = window.innerWidth; H = window.innerHeight;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = Math.max(1, Math.round(W * DPR));
+      canvas.height = Math.max(1, Math.round(H * DPR));
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+    }
+
+    function inHero(y){
+      const r = hero.getBoundingClientRect();
+      return y >= r.top && y <= r.bottom;
+    }
+
+    window.addEventListener('pointermove', (e) => {
+      if(e.pointerType === 'touch') return;   // pointer flourish, skip on touch
+      target = { x: e.clientX, y: e.clientY };
+      if(!follow) follow = { x: e.clientX, y: e.clientY };   // first move: start where the cursor is
+      visible = true;
+    }, { passive: true });
+
+    document.addEventListener('pointerleave', () => { visible = false; });
+    window.addEventListener('blur', () => { visible = false; });
+
+    function frame(now){
+      ctx.clearRect(0, 0, W, H);
+
+      if(target && follow){
+        const px = follow.x, py = follow.y;
+        follow.x += (target.x - follow.x) * EASE;
+        follow.y += (target.y - follow.y) * EASE;
+        // only lay down pencil once the pixel has actually travelled a bit, and never inside the hero
+        const moved = Math.hypot(follow.x - px, follow.y - py);
+        if(visible && moved > 0.35 && !inHero(follow.y)){
+          points.push({ x: follow.x, y: follow.y, t: now });
+          if(points.length > MAX_POINTS) points.shift();
+        }
+      }
+
+      points = points.filter(p => now - p.t < MAX_AGE);
+
+      // one continuous stroke: each span is a quadratic curve from the midpoint of (i-1,i) to the
+      // midpoint of (i,i+1) with the point itself as the control handle, so the corners between
+      // samples round off instead of reading as a polyline. Width and alpha taper toward the tail.
+      if(points.length > 2){
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        for(let i = 1; i < points.length - 1; i++){
+          const p0 = points[i - 1], p1 = points[i], p2 = points[i + 1];
+          const k = 1 - (now - p1.t) / MAX_AGE;   // 1 = just drawn, 0 = about to vanish
+          if(k <= 0) continue;
+          const e = k * k * (3 - 2 * k);          // smoothstep, so the tail thins out gently
+          ctx.beginPath();
+          ctx.moveTo((p0.x + p1.x) / 2, (p0.y + p1.y) / 2);
+          ctx.quadraticCurveTo(p1.x, p1.y, (p1.x + p2.x) / 2, (p1.y + p2.y) / 2);
+          ctx.strokeStyle = `rgba(224,43,32,${0.5 * e})`;   // var(--red)
+          ctx.lineWidth = 0.5 + e * 2.1;
+          ctx.stroke();
+        }
+      }
+
+      // the red pixel itself, drawn last so it always sits on top of its own stroke
+      if(visible && follow){
+        ctx.fillStyle = '#E02B20';
+        ctx.fillRect(Math.round(follow.x - DOT / 2), Math.round(follow.y - DOT / 2), DOT, DOT);
       }
 
       requestAnimationFrame(frame);
