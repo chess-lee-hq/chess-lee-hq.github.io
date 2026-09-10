@@ -3127,7 +3127,7 @@
     // opens half-off the bottom of the screen and forces a manual scroll ---
     let hoverTimer = null;
     let suppressUntil = 0;
-    let settleTimer = null;
+    let animId = 0;
     let px = 0, py = 0;                                   // last known cursor position
     window.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive:true });
 
@@ -3144,40 +3144,59 @@
       setFocus(el ? el.closest('.proj-row') : null);
     }
 
+    // Bottom-align rather than centre. Centring looked right but broke when moving DOWN the list:
+    // the row you leave collapses at the same moment, so the page jumps up by that panel's height,
+    // the row you wanted lands far above the cursor, and whatever row IS under the cursor opens and
+    // repeats — an endless chain. Bottom-aligning keeps the cursor deep inside the row it opened.
     function park(row){
       const detail = row.querySelector('.proj-detail');
       const main = row.querySelector('.proj-main');
       if(!detail) return;
-      // the panel is still animating open, so measure the height it is heading for:
-      // scrollHeight ignores the max-height cap that is mid-transition
+      // the panel is mid-animation, so measure the height it is heading for: scrollHeight ignores
+      // the max-height cap that is still transitioning
       const openH = (main ? main.offsetHeight : 0) + detail.scrollHeight + 24;
       const navH = nav ? nav.offsetHeight : 0;
       const vh = window.innerHeight;
-      const rowTop = row.getBoundingClientRect().top;
+      const topLimit = navH + 12, botLimit = vh - 12;
+      const rect0 = row.getBoundingClientRect();
 
-      // nothing to fix if the panel already sits fully clear of the nav and the bottom edge
-      if(rowTop >= navH + 8 && rowTop + openH <= vh - 8) return;
+      // already fully on screen? leave it alone
+      if(rect0.top >= topLimit && rect0.top + openH <= botLimit) return;
 
-      const top = Math.max(navH + 16, (vh - openH) / 2);
-      const maxScroll = document.documentElement.scrollHeight - vh;
-      let target = Math.max(0, Math.min(rowTop + window.scrollY - top, maxScroll));
+      // taller than the screen: pin it under the nav and let the reader scroll the rest,
+      // otherwise sit the panel on the bottom edge
+      const desiredTop = openH > (botLimit - topLimit) ? topLimit : botLimit - openH;
 
-      // never scroll so far that the row slides out from under the cursor — that would drop the
-      // hover and shut the panel the moment it arrived. Short panels simply move less.
-      const cursorInRow = py - rowTop;                     // how far into the row the cursor sits
-      const maxDown = openH - cursorInRow - 24;            // room before the cursor falls off the bottom
-      const maxUp = cursorInRow - 8;                       // room before it falls off the top
-      const delta = Math.max(-maxUp, Math.min(target - window.scrollY, maxDown));
-      target = window.scrollY + delta;
+      setFocus(row);                                       // JS owns "open" for the whole trip
+      cancelAnimationFrame(animId);
+      const started = performance.now();
+      // ignore the mouseenter/mouseleave storm the scrolling itself causes
+      suppressUntil = started + 1400;
 
-      if(Math.abs(target - window.scrollY) < 24) return;   // near enough already — don't nudge
-      // the scroll slides other rows under the cursor, which fires more mouseenters; ignore those
-      // for a beat so one hover can never cascade into a chain of scrolls
-      suppressUntil = performance.now() + 900;
-      setFocus(row);                                       // keep it open for the whole trip
-      window.scrollTo({ top: target, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
-      clearTimeout(settleTimer);
-      settleTimer = setTimeout(reconcile, 950);
+      let stalled = 0;
+      (function step(){
+        const rect = row.getBoundingClientRect();
+        let move = (rect.top - desiredTop) * (reduceMotion.matches ? 1 : 0.22);  // >0 → row must rise → scroll down
+        // Re-measured every frame, so the collapse of the row we just left (and this row's own
+        // expansion) are absorbed as they happen instead of throwing the target off.
+        const into = py - rect.top;                        // how far into the row the cursor sits
+        // never move so far that the cursor ends up outside this row — that is what let the next
+        // row steal the hover and start the chain
+        move = Math.max(10 - into, Math.min(move, openH - 20 - into));
+
+        const before = window.scrollY;
+        window.scrollTo({ top: Math.max(0, before + move), behavior: 'instant' });
+        stalled = Math.abs(window.scrollY - before) < 0.5 ? stalled + 1 : 0;
+
+        const done = Math.abs(rect.top - desiredTop) < 1 || stalled > 3
+                     || performance.now() - started > 1100;
+        if(done){
+          suppressUntil = performance.now() + 120;
+          reconcile();                                     // hand control back to the real cursor
+        } else {
+          animId = requestAnimationFrame(step);
+        }
+      })();
     }
 
     rows.forEach(row => {
