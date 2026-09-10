@@ -3167,34 +3167,42 @@
       // otherwise sit the panel on the bottom edge
       const desiredTop = openH > (botLimit - topLimit) ? topLimit : botLimit - openH;
 
+      const startTop = rect0.top;
       setFocus(row);                                       // JS owns "open" for the whole trip
       cancelAnimationFrame(animId);
       const started = performance.now();
+      const GLIDE = reduceMotion.matches ? 0 : 500;        // time to slide into place
+      const HOLD = 980;                                    // keep correcting until the .85s collapse above finishes
       // ignore the mouseenter/mouseleave storm the scrolling itself causes
-      suppressUntil = started + 1400;
+      suppressUntil = started + HOLD + 160;
 
-      let stalled = 0;
+      // Drive the row's top along a fixed path rather than easing the scroll toward a target.
+      // Chasing the target reacted only AFTER the row above collapsed and yanked the layout up,
+      // so the row shot past its mark (looking like it centred) and got pulled back down — the
+      // two-stage clunk. Snapping to the scripted position each frame cancels that shift in the
+      // same frame, so it reads as one continuous move straight to the bottom edge.
       (function step(){
+        const now = performance.now();
+        const t = GLIDE ? Math.min(1, (now - started) / GLIDE) : 1;
+        const ease = 1 - Math.pow(1 - t, 3);
+        const wantTop = startTop + (desiredTop - startTop) * ease;
+
         const rect = row.getBoundingClientRect();
-        let move = (rect.top - desiredTop) * (reduceMotion.matches ? 1 : 0.22);  // >0 → row must rise → scroll down
-        // Re-measured every frame, so the collapse of the row we just left (and this row's own
-        // expansion) are absorbed as they happen instead of throwing the target off.
+        let move = rect.top - wantTop;                     // >0 → row sits too low → scroll down
         const into = py - rect.top;                        // how far into the row the cursor sits
-        // never move so far that the cursor ends up outside this row — that is what let the next
-        // row steal the hover and start the chain
-        move = Math.max(10 - into, Math.min(move, openH - 20 - into));
+        // Keep the cursor inside this row (otherwise the next row steals the hover and the endless
+        // chain starts) — but only ever SHRINK the move toward zero. Clamping to a signed bound
+        // could flip the move's direction: mid-expansion the cursor sits below the row's not-yet-
+        // full height, which forced a scroll back down and produced a visible bounce.
+        if(move > 0) move = Math.min(move, Math.max(0, openH - 20 - into));
+        else if(move < 0) move = Math.max(move, Math.min(0, 10 - into));
+        window.scrollTo({ top: Math.max(0, window.scrollY + move), behavior: 'instant' });
 
-        const before = window.scrollY;
-        window.scrollTo({ top: Math.max(0, before + move), behavior: 'instant' });
-        stalled = Math.abs(window.scrollY - before) < 0.5 ? stalled + 1 : 0;
-
-        const done = Math.abs(rect.top - desiredTop) < 1 || stalled > 3
-                     || performance.now() - started > 1100;
-        if(done){
+        if(now - started < HOLD){
+          animId = requestAnimationFrame(step);            // hold the row put while the panels finish animating
+        } else {
           suppressUntil = performance.now() + 120;
           reconcile();                                     // hand control back to the real cursor
-        } else {
-          animId = requestAnimationFrame(step);
         }
       })();
     }
