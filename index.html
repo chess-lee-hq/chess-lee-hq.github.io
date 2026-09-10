@@ -163,9 +163,9 @@
     background:var(--red); transform:translate(-50%,-50%); transition:left 1.4s linear;
   }
   @media(max-width:640px){
-    .hero-clock{top:74px; left:18px; padding:11px 15px; min-width:120px; border-radius:11px;}
-    .hc-time{font-size:17px;}
-    .hc-sun{margin-top:10px;}
+    /* phones: the clock card crowds the top of the hero and pushes the quote down onto the year
+       bar — drop it entirely here (desktop keeps it) */
+    .hero-clock{display:none;}
   }
 
   /* ---------------- HERO ROLLING QUOTE (independent absolute block in the empty gap above the eyebrow —
@@ -202,9 +202,9 @@
     .hq-char.out, .hq-char.in{animation:none !important;}
   }
   @media(max-width:640px){
-    /* not enough headroom between the clock card and the name block on small screens —
-       anchor the quote near the bottom of the hero instead, clear of the scroll indicator */
-    .hero-quote{top:auto; bottom:30px; padding:0 24px; transform:translateX(-50%);}
+    /* with the clock card gone the top of the hero is free, so phones use the same measured
+       centring as desktop instead of the old bottom anchor (which sat right on the year bar) */
+    .hero-quote{padding:0 24px;}
     .hq-text{font-size:13.5px;}
   }
 
@@ -302,6 +302,8 @@
   .about-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:70px; align-items:start;}
   .about-bio p{font-size:19px; line-height:1.75; color:var(--ink); margin-bottom:18px; max-width:560px;}
   .about-bio p:last-child{margin-bottom:0;}
+  /* phones only: the bio runs long and wraps awkwardly at 19px on a narrow screen */
+  @media(max-width:640px){ .about-bio p{font-size:14px;} }
   .stat-row{display:grid; grid-template-columns:repeat(2,1fr); gap:28px 20px; margin-top:14px;}
   .stat{border-top:1px solid var(--line); padding-top:16px;}
   .stat .num{font-family:"Poppins",sans-serif; font-weight:800; font-size:38px; color:var(--red); letter-spacing:-0.02em;}
@@ -342,23 +344,23 @@
     transition:background .3s;
   }
   .company-list .proj-row:first-child{border-top:1px solid var(--line);}
-  .proj-row:hover{background:rgba(224,43,32,0.04);}
+  .proj-row:hover, .proj-row.focus{background:rgba(224,43,32,0.04);}
   .proj-main{
     display:flex; align-items:center; gap:20px; padding:16px 0;
     transition:padding-left .3s var(--ease);
   }
-  .proj-row:hover .proj-main{padding-left:10px;}
+  .proj-row:hover .proj-main, .proj-row.focus .proj-main{padding-left:10px;}
   .proj-thumb{
     width:60px; height:60px; border-radius:4px; flex-shrink:0;
     transition:transform .4s var(--ease);
   }
-  .proj-row:hover .proj-thumb{transform:scale(1.08);}
+  .proj-row:hover .proj-thumb, .proj-row.focus .proj-thumb{transform:scale(1.08);}
   .proj-info{flex:1; min-width:0;}
   .proj-title{
     display:inline-flex; align-items:center; flex-wrap:wrap; gap:7px;
     font-size:15px; font-weight:700; line-height:1.35; transition:font-size .3s var(--ease);
   }
-  .proj-row:hover .proj-title{font-size:16px;}
+  .proj-row:hover .proj-title, .proj-row.focus .proj-title{font-size:16px;}
   .proj-link-badge{
     display:inline-flex; align-items:center; flex-shrink:0; cursor:pointer;
     font-family:"Poppins",sans-serif; font-size:10.5px; font-weight:700; letter-spacing:.02em;
@@ -368,7 +370,7 @@
   .proj-link-badge:hover{background:var(--red); color:var(--white);}
   .proj-meta{font-family:"Poppins",sans-serif; font-size:11.5px; color:var(--gray); margin-top:5px; letter-spacing:.02em;}
   .proj-arrow{font-size:15px; color:var(--gray); flex-shrink:0; transition:transform .3s var(--ease), color .3s;}
-  .proj-row:hover .proj-arrow{transform:translateX(4px) rotate(45deg); color:var(--ink);}
+  .proj-row:hover .proj-arrow, .proj-row.focus .proj-arrow{transform:translateX(4px) rotate(45deg); color:var(--ink);}
   .proj-empty .proj-title{color:var(--gray); font-weight:500;}
   .proj-detail{
     max-height:0; opacity:0; overflow:hidden;
@@ -379,7 +381,7 @@
        finishes opening, instead of popping in before the space for it exists. */
     transition:max-height .85s cubic-bezier(.4,0,.2,1), opacity .7s cubic-bezier(.4,0,.2,1) .08s, padding-bottom .85s cubic-bezier(.4,0,.2,1);
   }
-  .proj-row:hover .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
+  .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
   .proj-detail .rl{font-family:"Poppins",sans-serif; font-size:11px; color:var(--gray); margin:0 0 14px; letter-spacing:.02em;}
   .proj-detail .rl b{
     color:var(--red); font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:10px; margin-right:8px;
@@ -400,16 +402,25 @@
   .dt-list li::before{content:"–"; position:absolute; left:0; top:0; color:var(--gray);}
   @media(max-width:1240px){
     .dt-grid{grid-template-columns:repeat(2,minmax(0,1fr)); max-width:560px;}
-    .proj-row:hover .proj-detail{max-height:1300px;}
+    .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:1300px;}
   }
   @media(max-width:900px){
     .company-inner{flex-direction:column; gap:26px;}
     .company-head{position:static; flex:none;}
+    /* touch layout: every project starts closed and opens on tap (.open is set by JS).
+       Details used to be permanently expanded here, which made the page enormous — and made the
+       이노션 chapter tall enough to break the reveal observer. `max-height:none` when open rather
+       than a big pixel cap, so nothing can get clipped. */
     .proj-detail{
-      max-height:none; opacity:1; overflow:visible;
-      padding-left:0; padding-right:0; padding-bottom:16px;
+      max-height:0; opacity:0; overflow:hidden;
+      padding-left:0; padding-right:0; padding-bottom:0;
+      transition:opacity .3s var(--ease);
     }
-    .proj-row:hover .proj-main{padding-left:0;}
+    .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:0; opacity:0; padding-bottom:0;}  /* sticky hover/focus on touch must not open it */
+    .proj-row.open .proj-detail{max-height:none; opacity:1; overflow:visible; padding-bottom:16px;}
+    .proj-row:hover .proj-main, .proj-row.focus .proj-main{padding-left:0;}
+    .proj-arrow{transition:transform .3s var(--ease);}
+    .proj-row.open .proj-arrow{transform:rotate(90deg);}
     .dt-grid{grid-template-columns:1fr; max-width:none; gap:16px;}
   }
 
@@ -527,7 +538,7 @@
   }
   #statement .wrap{padding:0 40px;}
   .statement-text{
-    font-family:"Poppins",sans-serif; font-weight:600; font-size:clamp(24px,4vw,46px);
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:clamp(22px,3.8vw,44px);
     line-height:1.35; letter-spacing:-0.01em; max-width:900px; margin:0 auto; color:var(--ink);
   }
   .statement-text .accent{color:var(--red);}
@@ -543,6 +554,25 @@
     transition:color .3s, border-color .3s, gap .3s;
   }
   .contact-email:hover{color:var(--red); border-color:var(--red); gap:22px;}
+  /* ---------------- resume downloads (Contact) ---------------- */
+  .resume-row{display:flex; flex-wrap:wrap; gap:12px; margin-top:38px;}
+  .resume-btn{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:12px 20px; border:1px solid var(--ink); border-radius:999px;
+    font-family:"Poppins",sans-serif; font-weight:600; font-size:13px; letter-spacing:.02em;
+    color:var(--ink); background:none;
+    transition:background .25s var(--ease), color .25s var(--ease), border-color .25s var(--ease);
+  }
+  .resume-btn:hover{background:var(--ink); color:var(--bg); border-color:var(--ink);}
+  .resume-btn .rb-icon{
+    font-size:13px; line-height:1; transition:transform .25s var(--ease);
+  }
+  .resume-btn:hover .rb-icon{transform:translateY(2px);}
+  @media(max-width:640px){
+    .resume-row{gap:10px;}
+    .resume-btn{padding:11px 17px; font-size:12.5px;}
+  }
+
   .contact-grid{display:flex; justify-content:space-between; align-items:flex-end; margin-top:90px; padding-top:26px; border-top:1px solid var(--line); flex-wrap:wrap; gap:20px;}
   .contact-col{font-size:13px; color:var(--gray); line-height:1.8;}
   .contact-col b{color:var(--ink); display:block; font-family:"Poppins",sans-serif; font-weight:700; font-size:11px; letter-spacing:.12em; margin-bottom:8px; text-transform:uppercase;}
@@ -2517,6 +2547,14 @@
     <div class="eyebrow">04 — Contact</div>
     <h2 class="contact-head reveal">LET'S MAKE<br>SOMETHING.</h2>
     <a href="mailto:adflash14@gmail.com" class="contact-email reveal">adflash14@gmail.com <span>↗</span></a>
+    <div class="resume-row reveal">
+      <a class="resume-btn" href="files/resume-kr.pdf" download="이채승_이력서_국문.pdf">
+        <span class="rb-icon" aria-hidden="true">↓</span>Resume 국문
+      </a>
+      <a class="resume-btn" href="files/resume-en.pdf" download="Chaeseung_Lee_Resume_EN.pdf">
+        <span class="rb-icon" aria-hidden="true">↓</span>Resume 영문
+      </a>
+    </div>
     <div class="contact-grid">
       <div class="contact-col"><b>Based in</b>Seoul, Korea</div>
       <div class="contact-col"><b>Currently</b>Chapter 09 — 아하앤컴퍼니 / 브랜드마케터</div>
@@ -2572,7 +2610,10 @@
         revealObserver.unobserve(entry.target);
       }
     });
-  }, { threshold:0.15 });
+    // threshold:0 + a bottom margin, NOT a percentage threshold: a percentage can never be met by a
+    // block taller than the viewport (the 이노션 chapter on a phone is many screens tall), which left
+    // that whole section stuck at opacity:0
+  }, { threshold:0, rootMargin:'0px 0px -60px 0px' });
   revealEls.forEach(el => revealObserver.observe(el));
 
   // ---------------- copy modal ----------------
@@ -3064,6 +3105,97 @@
     requestAnimationFrame(frame);
   })();
 
+  // ---------------- project rows: tap-to-open on touch layouts, auto-centre on hover on desktop ----------------
+  (function(){
+    const rows = Array.from(document.querySelectorAll('.proj-row'));
+    if(!rows.length) return;
+    const nav = document.getElementById('nav');
+    const touchLayout = window.matchMedia('(max-width:900px)');
+    const fineHover = window.matchMedia('(hover: hover) and (pointer: fine)');
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    // --- touch layout: the row is closed until tapped ---
+    rows.forEach(row => {
+      row.addEventListener('click', (e) => {
+        if(!touchLayout.matches) return;                  // desktop keeps pure hover
+        if(e.target.closest('a, button')) return;          // link badges / 카피 전문 보기 keep their own behaviour
+        row.classList.toggle('open');
+      });
+    });
+
+    // --- desktop: park the row that just expanded in the same spot every time, so the panel never
+    // opens half-off the bottom of the screen and forces a manual scroll ---
+    let hoverTimer = null;
+    let suppressUntil = 0;
+    let settleTimer = null;
+    let px = 0, py = 0;                                   // last known cursor position
+    window.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive:true });
+
+    // the scroll slides the row out from under the cursor, which would drop :hover and snap the
+    // panel shut mid-move — so JS owns "which row is open" via .focus while that happens
+    function setFocus(row){
+      rows.forEach(r => { if(r !== row) r.classList.remove('focus'); });
+      if(row) row.classList.add('focus');
+    }
+
+    // once the scroll has settled, hand control back to whatever the cursor is actually over
+    function reconcile(){
+      const el = document.elementFromPoint(px, py);
+      setFocus(el ? el.closest('.proj-row') : null);
+    }
+
+    function park(row){
+      const detail = row.querySelector('.proj-detail');
+      const main = row.querySelector('.proj-main');
+      if(!detail) return;
+      // the panel is still animating open, so measure the height it is heading for:
+      // scrollHeight ignores the max-height cap that is mid-transition
+      const openH = (main ? main.offsetHeight : 0) + detail.scrollHeight + 24;
+      const navH = nav ? nav.offsetHeight : 0;
+      const vh = window.innerHeight;
+      const rowTop = row.getBoundingClientRect().top;
+
+      // nothing to fix if the panel already sits fully clear of the nav and the bottom edge
+      if(rowTop >= navH + 8 && rowTop + openH <= vh - 8) return;
+
+      const top = Math.max(navH + 16, (vh - openH) / 2);
+      const maxScroll = document.documentElement.scrollHeight - vh;
+      let target = Math.max(0, Math.min(rowTop + window.scrollY - top, maxScroll));
+
+      // never scroll so far that the row slides out from under the cursor — that would drop the
+      // hover and shut the panel the moment it arrived. Short panels simply move less.
+      const cursorInRow = py - rowTop;                     // how far into the row the cursor sits
+      const maxDown = openH - cursorInRow - 24;            // room before the cursor falls off the bottom
+      const maxUp = cursorInRow - 8;                       // room before it falls off the top
+      const delta = Math.max(-maxUp, Math.min(target - window.scrollY, maxDown));
+      target = window.scrollY + delta;
+
+      if(Math.abs(target - window.scrollY) < 24) return;   // near enough already — don't nudge
+      // the scroll slides other rows under the cursor, which fires more mouseenters; ignore those
+      // for a beat so one hover can never cascade into a chain of scrolls
+      suppressUntil = performance.now() + 900;
+      setFocus(row);                                       // keep it open for the whole trip
+      window.scrollTo({ top: target, behavior: reduceMotion.matches ? 'auto' : 'smooth' });
+      clearTimeout(settleTimer);
+      settleTimer = setTimeout(reconcile, 950);
+    }
+
+    rows.forEach(row => {
+      row.addEventListener('mouseenter', () => {
+        if(touchLayout.matches || !fineHover.matches) return;
+        if(performance.now() < suppressUntil) return;
+        setFocus(row);
+        clearTimeout(hoverTimer);
+        hoverTimer = setTimeout(() => park(row), 180);     // brief hold, so passing the cursor over rows does nothing
+      });
+      row.addEventListener('mouseleave', () => {
+        clearTimeout(hoverTimer);
+        if(performance.now() < suppressUntil) return;      // mid-scroll: the cursor "leaving" is the page moving
+        row.classList.remove('focus');
+      });
+    });
+  })();
+
   // ---------------- centre the rolling quote between the nav row and the "Since 2009" line ----------------
   // the hero is a vertically centred flex column, so the eyebrow moves with viewport height and a
   // hardcoded `top` would only be centred at one window size. Measure and place instead.
@@ -3075,7 +3207,6 @@
     if(!quote || !nav || !hero || !eyebrow) return;
 
     function place(){
-      if(window.innerWidth <= 640){ quote.style.top = ''; return; }  // mobile keeps the bottom-anchored rule
       if(nav.classList.contains('scrolled')) return;                 // compact nav ≠ the geometry we measure against
       const heroTop = hero.getBoundingClientRect().top + window.scrollY;
       const navCenter = nav.offsetHeight / 2;                        // nav is fixed at top:0, links are centred in it
