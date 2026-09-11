@@ -5,9 +5,33 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>이채승 — Brand Marketer · Copywriter · Creative Director</title>
 <meta name="description" content="이채승 포트폴리오. 2009년부터 16년+ 카피라이터, 브랜드/콘텐츠 마케터, 크리에이티브 디렉터로 일하며 삼성전자/현대카드/SK텔레콤 등 대기업 캠페인부터 스타트업 브랜드 전략까지 수행했습니다.">
+<link rel="canonical" href="https://chess-lee-hq.github.io/">
+
+<!-- tab icon: the site's red cursor pixel -->
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#DADAD8">
+
+<!-- link preview (KakaoTalk, Slack, X, LinkedIn…) -->
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="이채승 포트폴리오">
+<meta property="og:locale" content="ko_KR">
+<meta property="og:url" content="https://chess-lee-hq.github.io/">
+<meta property="og:title" content="이채승 — Brand Marketer · Copywriter · Creative Director">
+<meta property="og:description" content="2009년부터 16년+, 9개의 챕터에 담은 41개의 캠페인. 삼성전자/현대카드/SK텔레콤 등 대기업 캠페인부터 스타트업 브랜드 전략까지.">
+<meta property="og:image" content="https://chess-lee-hq.github.io/og-preview.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="이채승 포트폴리오 — Brand Marketer / Copywriter / Creative Director">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="이채승 — Brand Marketer · Copywriter · Creative Director">
+<meta name="twitter:description" content="2009년부터 16년+, 9개의 챕터에 담은 41개의 캠페인.">
+<meta name="twitter:image" content="https://chess-lee-hq.github.io/og-preview.png">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Noto+Sans+KR:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,400;0,500;0,600;0,700;0,800;1,500&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#DADAD8;
@@ -98,8 +122,7 @@
   /* hero-circle doubles as a "sun/moon" whose position/color track real Seoul sunrise/sunset — see JS below */
   .hero-circle{
     --sx:72%; --sy:14%; --sscale:1; --sop:.9;
-    --sc1:#ff5648; --sc2:var(--red); --sc3:#a01f16;
-    --sglow:rgba(255,86,72,.35); --sblur:60px;
+    --sc2:var(--red);
     position:absolute; left:var(--sx); top:var(--sy); z-index:0;
     width:220px; height:220px; border-radius:50%;
     transform:translate(-50%,-50%) scale(var(--sscale));
@@ -275,28 +298,6 @@
   }
   .sec-sub{max-width:440px; color:var(--gray); font-size:14.5px; line-height:1.75;}
 
-  /* ---------------- LATEST ---------------- */
-  #latest{background:var(--bg-soft);}
-  .latest-list{border-top:1px solid var(--line);}
-  .latest-row{
-    display:flex; align-items:baseline; gap:28px; padding:26px 0;
-    border-bottom:1px solid var(--line);
-    transition:padding-left .3s var(--ease), background .3s;
-  }
-  .latest-row:hover{padding-left:10px; background:rgba(224,43,32,0.04);}
-  .latest-date{
-    font-family:"Poppins",sans-serif; font-weight:600; font-size:13px; color:var(--red);
-    width:120px; flex-shrink:0;
-  }
-  .latest-text{font-size:16px; flex:1;}
-  .latest-arrow{font-family:"Poppins",sans-serif; color:var(--gray); font-size:16px; transition:transform .3s var(--ease), color .3s;}
-  .latest-row:hover .latest-arrow{transform:translateX(4px); color:var(--ink);}
-  .latest-more{
-    display:inline-flex; align-items:center; gap:8px; margin-top:30px;
-    font-family:"Poppins",sans-serif; font-weight:600; font-size:12.5px; letter-spacing:.06em;
-    color:var(--ink); border-bottom:1.5px solid var(--ink); padding-bottom:3px;
-  }
-
   /* ---------------- ABOUT ---------------- */
   #about{background:var(--bg);}
   .about-grid{display:grid; grid-template-columns:1.1fr 0.9fr; gap:70px; align-items:start;}
@@ -315,7 +316,6 @@
   .company-block{
     padding:64px 0; border-top:1px solid var(--line);
   }
-  .company-block:first-of-type{border-top:1px solid var(--line);}
   .company-inner{display:flex; gap:60px; align-items:flex-start;}
   .company-head{flex:0 0 300px; position:sticky; top:96px;}
   .company-chp{
@@ -371,7 +371,6 @@
   .proj-meta{font-family:"Poppins",sans-serif; font-size:11.5px; color:var(--gray); margin-top:5px; letter-spacing:.02em;}
   .proj-arrow{font-size:15px; color:var(--gray); flex-shrink:0; transition:transform .3s var(--ease), color .3s;}
   .proj-row:hover .proj-arrow, .proj-row.focus .proj-arrow{transform:translateX(4px) rotate(45deg); color:var(--ink);}
-  .proj-empty .proj-title{color:var(--gray); font-weight:500;}
   .proj-detail{
     max-height:0; opacity:0; overflow:hidden;
     padding-left:80px; padding-right:64px;
@@ -382,14 +381,13 @@
     transition:max-height .85s cubic-bezier(.4,0,.2,1), opacity .7s cubic-bezier(.4,0,.2,1) .08s, padding-bottom .85s cubic-bezier(.4,0,.2,1);
   }
   .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
+  /* keyboard users have no hover: Enter/Space toggles .open, which must work at every width */
+  .proj-row.open .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
+  .proj-row:focus-visible{outline:2px solid var(--red); outline-offset:-2px;}
   .proj-detail .rl{font-family:"Poppins",sans-serif; font-size:11px; color:var(--gray); margin:0 0 14px; letter-spacing:.02em;}
   .proj-detail .rl b{
     color:var(--red); font-weight:700; text-transform:uppercase; letter-spacing:.1em; font-size:10px; margin-right:8px;
   }
-  .dt-grid{
-    display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:20px 32px; max-width:860px;
-  }
-  .dt-col{min-width:0; display:flex; flex-direction:column;}
   .dt-label{
     font-family:"Poppins",sans-serif; font-size:10px; font-weight:700; letter-spacing:.12em;
     text-transform:uppercase; color:var(--red); margin:0 0 9px;
@@ -401,7 +399,6 @@
   .dt-list li:last-child{margin-bottom:0;}
   .dt-list li::before{content:"–"; position:absolute; left:0; top:0; color:var(--gray);}
   @media(max-width:1240px){
-    .dt-grid{grid-template-columns:repeat(2,minmax(0,1fr)); max-width:560px;}
     .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:1300px;}
   }
   @media(max-width:900px){
@@ -421,7 +418,6 @@
     .proj-row:hover .proj-main, .proj-row.focus .proj-main{padding-left:0;}
     .proj-arrow{transition:transform .3s var(--ease);}
     .proj-row.open .proj-arrow{transform:rotate(90deg);}
-    .dt-grid{grid-template-columns:1fr; max-width:none; gap:16px;}
   }
 
   .dt-img-slot{
@@ -434,6 +430,9 @@
      because the background painting area extends under the border, the gaps between dashes showed a
      wrapped-around sliver of the opposite edge of the same image (hence `no-repeat` on each slot too) */
   .dt-img-slot.has-img{ border:none; overflow:hidden; }
+  /* the wide image lives in data-bg and is painted in by JS when the panel first opens — otherwise
+     all 41 of them (≈4MB) download on first paint for panels nobody has opened yet */
+  .dt-img-slot.has-img[data-bg]{ background:rgba(0,0,0,.045); }
   /* ---------------- SAMPLE: stacked (horizontal-band) detail layout ---------------- */
   .dt-stack{display:flex; flex-direction:column; gap:22px; max-width:900px;}
   .dt-sec .dt-label{margin:0 0 10px;}
@@ -592,6 +591,9 @@
   @media(prefers-reduced-motion:reduce){
     #cursorTrail{ display:none; }
   }
+  /* the trail canvas sits above everything (z-index 99999), so it would otherwise scribble across
+     an open copy modal */
+  body.modal-open #cursorTrail{ display:none; }
 </style>
 </head>
 <body>
@@ -777,7 +779,7 @@
       <div class="company-count">4 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/01_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -815,12 +817,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/01_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/01_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/02_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -856,12 +858,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/02_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/02_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/03_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -900,12 +902,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/03_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/03_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/04_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -941,7 +943,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/04_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/04_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -960,7 +962,7 @@
       <div class="company-count">3 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/05_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -995,12 +997,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/05_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/05_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/06_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1035,12 +1037,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/06_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/06_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/07_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1075,7 +1077,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/07_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/07_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1094,7 +1096,7 @@
       <div class="company-count">3 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/08_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1130,12 +1132,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/08_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/08_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/09_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1172,12 +1174,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/09_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/09_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/10_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1214,7 +1216,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/10_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/10_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1233,7 +1235,7 @@
       <div class="company-count">1 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/11_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1268,7 +1270,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/11_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/11_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1287,7 +1289,7 @@
       <div class="company-count">3 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/12_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1321,12 +1323,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/12_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/12_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/13_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1360,12 +1362,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/13_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/13_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/14_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1400,7 +1402,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/14_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/14_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1419,7 +1421,7 @@
       <div class="company-count">2 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/15_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1453,12 +1455,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/15_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/15_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/16_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1491,7 +1493,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/16_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/16_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1510,7 +1512,7 @@
       <div class="company-count">5 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/17_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1541,14 +1543,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/17_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/17_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_a8">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/18_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1579,14 +1581,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/18_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/18_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_s9">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/19_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1620,12 +1622,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/19_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/19_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/20_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1657,7 +1659,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/20_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/20_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -1665,7 +1667,7 @@
 
 
 
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/21_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1698,7 +1700,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/21_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/21_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="cheil_boltev">카피 전문 보기 <span>&#8599;</span></button>
@@ -1719,7 +1721,7 @@
       <div class="company-count">18 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/22_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1753,12 +1755,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/22_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/22_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/23_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1790,14 +1792,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/23_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/23_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm1">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/24_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1828,14 +1830,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/24_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/24_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcfilm2">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/25_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1868,14 +1870,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/25_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/25_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt1">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/26_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1906,14 +1908,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/26_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/26_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_skt2">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/27_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1945,12 +1947,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/27_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/27_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/28_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -1981,14 +1983,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/28_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/28_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hdcmymenu">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/29_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2020,14 +2022,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/29_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/29_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardtvc">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/30_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2053,12 +2055,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/30_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/30_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/31_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2091,12 +2093,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/31_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/31_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/32_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2128,7 +2130,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/32_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/32_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_musiclib">카피 전문 보기 <span>&#8599;</span></button>
@@ -2136,7 +2138,7 @@
         </div>
       </div>
 
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/33_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2169,12 +2171,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/33_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/33_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/34_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2206,7 +2208,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/34_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/34_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_xcardcashback">카피 전문 보기 <span>&#8599;</span></button>
@@ -2214,7 +2216,7 @@
         </div>
       </div>
 
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/35_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2246,14 +2248,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/35_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/35_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_hcapital">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/36_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2285,14 +2287,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/36_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/36_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_vega">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/37_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2324,7 +2326,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/37_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/37_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="innocean_woongjin">카피 전문 보기 <span>&#8599;</span></button>
@@ -2332,7 +2334,7 @@
         </div>
       </div>
 
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/38_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2364,12 +2366,12 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/38_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/38_wide.jpg"></div>
             </div>
           </div>
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/39_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2402,7 +2404,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/39_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/39_wide.jpg"></div>
             </div>
           </div>
         </div>
@@ -2424,7 +2426,7 @@
       <div class="company-count">2 PROJECTS</div>
     </div>
     <div class="company-list reveal-stagger">
-      <div class="proj-row">
+      <div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/40_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2455,14 +2457,14 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/40_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/40_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_corp">카피 전문 보기 <span>&#8599;</span></button>
         
         </div>
       </div>
-<div class="proj-row">
+<div class="proj-row" role="button" tabindex="0" aria-expanded="false">
         <div class="proj-main">
           <div class="proj-thumb" style="background:url('images/41_cover.jpg') center/cover no-repeat;"></div>
           <div class="proj-info">
@@ -2493,7 +2495,7 @@
               </ul>
             </div>
             <div class="dt-img-row">
-              <div class="dt-img-slot has-img" style="background:url('images/41_wide.jpg') center/cover no-repeat;"></div>
+              <div class="dt-img-slot has-img" data-bg="images/41_wide.jpg"></div>
             </div>
           </div>
           <button type="button" class="dt-copy-btn" data-copy-key="origicom_doosan_public">카피 전문 보기 <span>&#8599;</span></button>
@@ -2803,13 +2805,6 @@
       const bl = Math.round(lerp(a[2], b[2], t));
       return `rgb(${r}, ${g}, ${bl})`;
     }
-    function lerpRgba(strA, strB, t){
-      const parse = s => s.match(/[\d.]+/g).map(Number);
-      const a = parse(strA), b = parse(strB);
-      const vals = a.map((v,i) => i < 3 ? Math.round(lerp(v, b[i], t)) : lerp(v, b[i], t).toFixed(2));
-      return `rgba(${vals[0]}, ${vals[1]}, ${vals[2]}, ${vals[3]})`;
-    }
-
     // ---- night-sky stars: generated once, faded in/out via a CSS var on the container ----
     const starsContainer = document.getElementById('heroStars');
     if(starsContainer){
@@ -2851,11 +2846,7 @@
       sunEl.style.setProperty('--sy', pos.y + '%');
       sunEl.style.setProperty('--sscale', lerp(s0[1], s1[1], t).toFixed(3));
       sunEl.style.setProperty('--sop', lerp(s0[2], s1[2], t).toFixed(3));
-      sunEl.style.setProperty('--sc1', lerpColor(s0[3], s1[3], t));
       sunEl.style.setProperty('--sc2', lerpColor(s0[4], s1[4], t));
-      sunEl.style.setProperty('--sc3', lerpColor(s0[5], s1[5], t));
-      sunEl.style.setProperty('--sglow', lerpRgba(s0[6], s1[6], t));
-      sunEl.style.setProperty('--sblur', lerp(s0[7], s1[7], t).toFixed(1) + 'px');
 
       if(starsContainer){
         starsContainer.style.setProperty('--star-op', starOpacity(hour, DAWN, DUSK).toFixed(3));
@@ -3097,12 +3088,25 @@
         ctx.fill();
       }
 
-      requestAnimationFrame(frame);
+      if(running) requestAnimationFrame(frame);
     }
+
+    // Only draw while the hero is actually on screen. This grid is ~1,200 dots redrawn every
+    // frame; left unguarded it kept painting (~72,000 arcs/second) all the way down at the contact
+    // section, burning battery on something nobody can see.
+    let running = false;
+    function start(){ if(running) return; running = true; prevT = 0; requestAnimationFrame(frame); }
+    function stop(){ if(!running) return; running = false; ctx.clearRect(0, 0, W, H); }
 
     window.addEventListener('resize', resize);
     resize();
-    requestAnimationFrame(frame);
+    new IntersectionObserver((entries) => {
+      entries[0].isIntersecting ? start() : stop();
+    }, { threshold: 0 }).observe(hero);
+    document.addEventListener('visibilitychange', () => {
+      if(document.hidden) stop();
+      else if(hero.getBoundingClientRect().bottom > 0) start();
+    });
   })();
 
   // ---------------- project rows: tap-to-open on touch layouts, auto-centre on hover on desktop ----------------
@@ -3114,14 +3118,37 @@
     const fineHover = window.matchMedia('(hover: hover) and (pointer: fine)');
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+    // paint the wide image in the first time a panel is opened (it is held in data-bg so the
+    // browser does not fetch all 41 of them on page load)
+    function loadWide(row){
+      const slot = row.querySelector('.dt-img-slot[data-bg]');
+      if(!slot) return;
+      slot.style.background = "url('" + slot.dataset.bg + "') center/cover no-repeat";
+      slot.removeAttribute('data-bg');
+    }
+
     // --- touch layout: the row is closed until tapped ---
     rows.forEach(row => {
       row.addEventListener('click', (e) => {
         if(!touchLayout.matches) return;                  // desktop keeps pure hover
         if(e.target.closest('a, button')) return;          // link badges / 카피 전문 보기 keep their own behaviour
-        row.classList.toggle('open');
+        toggle(row);
+      });
+      // keyboard: the row is a role="button", so Enter and Space must open it — there is no hover
+      row.addEventListener('keydown', (e) => {
+        if(e.key !== 'Enter' && e.key !== ' ' && e.key !== 'Spacebar') return;
+        if(e.target.closest('a, button')) return;         // let links and the copy button act normally
+        e.preventDefault();                                // Space would otherwise scroll the page
+        toggle(row);
       });
     });
+
+    function toggle(row){
+      const open = !row.classList.contains('open');
+      row.classList.toggle('open', open);
+      row.setAttribute('aria-expanded', open ? 'true' : 'false');
+      if(open) loadWide(row);
+    }
 
     // --- desktop: park the row that just expanded in the same spot every time, so the panel never
     // opens half-off the bottom of the screen and forces a manual scroll ---
@@ -3210,6 +3237,7 @@
     rows.forEach(row => {
       row.addEventListener('mouseenter', () => {
         if(touchLayout.matches || !fineHover.matches) return;
+        loadWide(row);                                     // the panel is already opening on :hover
         if(performance.now() < suppressUntil) return;
         setFocus(row);
         clearTimeout(hoverTimer);
@@ -3270,6 +3298,7 @@
     let target = null;        // latest real cursor position
     let follow = null;        // the lagging red pixel
     let visible = false;
+    let rafId = 0;            // 0 = loop parked
 
     function resize(){
       W = window.innerWidth; H = window.innerHeight;
@@ -3291,10 +3320,11 @@
       target = { x: e.clientX, y: e.clientY };
       if(!follow) follow = { x: e.clientX, y: e.clientY };   // first move: start where the cursor is
       visible = true;
+      wake();
     }, { passive: true });
 
-    document.addEventListener('pointerleave', () => { visible = false; });
-    window.addEventListener('blur', () => { visible = false; });
+    document.addEventListener('pointerleave', () => { visible = false; wake(); });
+    window.addEventListener('blur', () => { visible = false; wake(); });
 
     function frame(now){
       ctx.clearRect(0, 0, W, H);
@@ -3339,12 +3369,19 @@
         ctx.fillRect(Math.round(follow.x - DOT / 2), Math.round(follow.y - DOT / 2), DOT, DOT);
       }
 
-      requestAnimationFrame(frame);
+      // stop once there is nothing left to animate — the canvas keeps the last painted frame, so
+      // the red pixel stays put while the mouse is still. wake() restarts it on the next move.
+      const caughtUp = !target || !follow ||
+        (Math.abs(target.x - follow.x) < 0.4 && Math.abs(target.y - follow.y) < 0.4);
+      if(points.length === 0 && caughtUp){ rafId = 0; return; }
+      rafId = requestAnimationFrame(frame);
     }
 
-    window.addEventListener('resize', resize);
+    function wake(){ if(!rafId) rafId = requestAnimationFrame(frame); }
+
+    window.addEventListener('resize', () => { resize(); wake(); });
     resize();
-    requestAnimationFrame(frame);
+    wake();
   })();
 </script>
 </body>
