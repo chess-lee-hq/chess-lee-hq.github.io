@@ -3429,19 +3429,27 @@
   // Reference: heronaiapp.com's footer headline. The letters sit hollow and a single patch of ink
   // rides along with the cursor, showing only where it overlaps a letterform.
   //
-  // The important property, checked frame-by-frame against the reference recording: it is STATIC
-  // unless the cursor is actually moving. Long stretches of that recording are pixel-identical
-  // while the cursor rests. So there is no per-frame randomness, no lifetime, no decay — the blot
-  // is one fixed shape that is only ever translated, and the rAF loop parks itself the instant
-  // the chase catches up. An earlier version regenerated blots on a timer, which made the ink
-  // churn and crawl even with the mouse held still; that is exactly what this avoids.
+  // Two properties of the reference matter, and they pull in opposite directions. Checked
+  // frame-by-frame against the recording: (a) the ink visibly SPREADS — black creeps outward from
+  // where the cursor is and pulls back out of where it has left, with a damp front running ahead
+  // of it; but (b) it is completely STATIC unless the cursor is moving — long stretches of the
+  // recording are pixel-identical while the cursor rests.
   //
-  // Two layers do the work: a solid core that chases the cursor hard, and a slightly larger, much
-  // lazier halo at low alpha behind it. Moving, the halo lags out into a trailing smudge; at rest
-  // it settles under the core and leaves only a faint rim. Both are hard-edged irregular curves
-  // rather than soft radial gradients, which is what reads as ink rather than airbrush. The
-  // canvas paints the hollow outline AND the ink from one set of coordinates, so the two layers
-  // can never sit a pixel apart and read as an embossed / 3D double image.
+  // So it is modelled as a field that relaxes toward a target rather than as a shape that moves.
+  // The cursor drops "sources" along its path, each pinned to the page where it landed with its
+  // own blot outline generated once at that moment. A source eases open while the cursor is
+  // within reach of it and eases shut again once the cursor has moved on, and the visible ink is
+  // the union of all of them — which is what makes the boundary creep and retreat organically
+  // instead of a rigid shape sliding around. Because nothing is randomised per frame and every
+  // radius reaches its target exactly (then snaps and retires), a resting cursor still settles
+  // into a mark that does not move at all.
+  //
+  // Each source opens as two rings: the saturated black, and a wider, faster-spreading damp bleed
+  // at low alpha, so the bleed front always runs ahead of the black and a faint rim survives at
+  // rest. Both are hard-edged irregular curves rather than soft radial gradients, which is what
+  // reads as ink rather than airbrush. The canvas paints the hollow outline AND the ink from one
+  // set of coordinates, so the two layers can never sit a pixel apart and read as an embossed /
+  // 3D double image.
   //
   // The real DOM heading is still there underneath, just transparent, so it stays selectable and
   // readable to assistive tech; touch / reduced-motion visitors never get .ink-fx at all and see
@@ -3458,54 +3466,55 @@
 
     const ctx = canvas.getContext('2d');
 
-    const EASE_INK    = 0.30;  // how hard the ink core chases the cursor each frame
-    const EASE_HALO   = 0.13;  // the halo is lazier, so it lags out behind on a fast move
-    const HALO_SCALE  = 1.20;  // ...and slightly bigger, leaving a faint rim even at rest
-    const HALO_ALPHA  = 0.17;
-    const SETTLE_PX   = 0.25;  // once this close to the cursor, snap and stop animating entirely
-    const RETRACT_MS  = 320;   // ink pulls back in over this long when the cursor leaves
+    const SEED_MAX   = 26;     // ring buffer of ink sources; plenty for the reach below
+    const SPAWN_K    = 0.32;   // drop a fresh source once the cursor has moved this x brushR
+    const REACH_K    = 1.15;   // sources further than this x brushR from the cursor dry back up
+    const GROW_CORE  = 0.09;   // how fast the saturated black creeps out to its full extent
+    const GROW_BLEED = 0.185;  // the damp halo spreads faster, so it runs ahead as a bleed front
+    const BLEED_SCALE = 1.34;  // ...and ends up wider, leaving a faint rim even at rest
+    const BLEED_ALPHA = 0.17;
+    const SETTLE_PX  = 0.3;    // within this of its target a source snaps and stops animating
 
     let W = 0, H = 0, DPR = 1;
     let fontSpec = '', letterSp = '0px', inkColor = '#151514';
     let brushR = 40, strokeW = 1.6;
     let lines = [];                       // [{text, x, baseline}] measured off the real DOM text
 
-    // One blot shape, generated once and then simply moved around. Regenerating it per frame is
-    // what made the previous version look alive and restless; a fixed shape means a parked cursor
-    // leaves a completely motionless mark.
-    let shapeInk = null, shapeHalo = null;
+    // Ink sources. Each one is pinned to the spot on the page where the cursor dropped it, owns a
+    // blot outline generated once at that moment, and has a radius that eases open while the
+    // cursor is near it and eases shut again once the cursor has moved on. The visible ink is the
+    // union of them all — so the black creeps outward and pulls back organically, instead of a
+    // rigid shape sliding around. Nothing is randomised per frame and every radius reaches its
+    // target exactly, so a resting cursor still ends up perfectly motionless.
+    const seeds = [];                     // {x, y, shape, rMax, r, rb}
 
     let target = null;                    // where the cursor is (null once it has left)
-    let pInk = null, pHalo = null;        // where each layer actually is, chasing `target`
-    let prevInk = null, prevHalo = null;  // last frame's positions — used to smear across the gap
-    let scale = 1, retractAt = 0;
     let rafId = 0;
 
-    const mask = document.createElement('canvas');    // alpha here = how inked each spot is
+    const mask = document.createElement('canvas');     // alpha here = how inked each spot is
     const mctx = mask.getContext('2d');
-    const haloBuf = document.createElement('canvas'); // the halo is composited in one pass so its
-    const hctx = haloBuf.getContext('2d');            // smear steps union instead of stacking up
+    const bleedBuf = document.createElement('canvas'); // the bleed is composited in one pass so
+    const bctx = bleedBuf.getContext('2d');            // overlapping sources union, not stack up
 
     function layout(){
       const hr = head.getBoundingClientRect();
       W = hr.width; H = hr.height;
       DPR = Math.min(window.devicePixelRatio || 1, 2);
       const pw = Math.max(1, Math.round(W * DPR)), ph = Math.max(1, Math.round(H * DPR));
-      canvas.width = mask.width = haloBuf.width = pw;
-      canvas.height = mask.height = haloBuf.height = ph;
+      canvas.width = mask.width = bleedBuf.width = pw;
+      canvas.height = mask.height = bleedBuf.height = ph;
       canvas.style.width = W + 'px';
       canvas.style.height = H + 'px';
-      [ctx, mctx, hctx].forEach(c => c.setTransform(DPR, 0, 0, DPR, 0, 0));
+      [ctx, mctx, bctx].forEach(c => c.setTransform(DPR, 0, 0, DPR, 0, 0));
 
       const cs = getComputedStyle(outline);
       const fontPx = parseFloat(cs.fontSize);
       fontSpec = `${cs.fontWeight || 800} ${fontPx}px "Poppins", sans-serif`;
       letterSp = (cs.letterSpacing && cs.letterSpacing !== 'normal') ? cs.letterSpacing : '0px';
       inkColor = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#151514';
-      brushR  = Math.max(32, fontPx * 0.50);   // ~a letter and a half across, like the reference
+      brushR  = Math.max(34, fontPx * 0.55);   // ~two letters across once open, like the reference
       strokeW = Math.max(1.3, fontPx * 0.012);
-      shapeInk  = makeShape(brushR);
-      shapeHalo = makeShape(brushR * HALO_SCALE);
+      seeds.length = 0;
 
       // Measure each line off the real (transparent) DOM text rather than guessing line boxes —
       // an approximated baseline is exactly what made the previous version look embossed.
@@ -3533,14 +3542,15 @@
       c.textAlign = 'left';
     }
 
-    // The blot: one closed curve through jittered radii, centred on the origin, so the edge is
-    // torn rather than round. Built once per layout and then only ever translated — nothing about
-    // it is recomputed per frame, which is what keeps a resting mark perfectly still.
-    function makeShape(r){
+    // A blot outline: one closed curve through jittered radii, centred on the origin at unit
+    // radius, so scaling it by a source's radius grows the same torn edge outward rather than
+    // reshaping it. Generated once per source and never touched again — no per-frame randomness,
+    // which is what lets a resting cursor sit completely motionless.
+    function makeShape(){
       const N = 15, pts = [];
       for(let i = 0; i < N; i++){
         const a = (i / N) * Math.PI * 2;
-        const rad = r * (0.70 + Math.random() * 0.46);
+        const rad = 0.72 + Math.random() * 0.44;
         pts.push({ x: Math.cos(a) * rad, y: Math.sin(a) * rad * 0.88 });
       }
       const p = new Path2D();
@@ -3553,67 +3563,83 @@
       return p;
     }
 
-    // Stamp the shape along the gap this layer covered since the last frame, so a fast flick
-    // smears into a streak instead of leaving a dotted line. At rest the gap is zero, so this is
-    // a single stamp in a fixed place — the whole mark stops dead.
-    function smear(c, shape, from, to){
-      const dx = to.x - from.x, dy = to.y - from.y;
-      const steps = Math.min(12, Math.floor(Math.hypot(dx, dy) / (brushR * 0.3)));
-      for(let i = 0; i <= steps; i++){
-        const t = steps ? i / steps : 1;
+    function inReach(s){
+      return !!target && Math.hypot(target.x - s.x, target.y - s.y) < brushR * REACH_K;
+    }
+
+    function seed(x, y){
+      seeds.push({ x, y, shape: makeShape(), rMax: brushR * (0.85 + Math.random() * 0.38), r: 0, rb: 0 });
+      while(seeds.length > SEED_MAX){
+        // Retire the oldest source that has already dried out AND is out of the cursor's reach.
+        // Dropping one that is still open would make its patch of ink vanish in a single frame
+        // instead of closing up; dropping one that is merely *not open yet* would silently cull
+        // the sources just laid down along the cursor's path, before they ever get to bleed.
+        let i = seeds.findIndex(s => s.r < 0.5 && s.rb < 0.5 && !inReach(s));
+        seeds.splice(i < 0 ? 0 : i, 1);
+      }
+    }
+
+    // Lay sources along the gap the cursor covered since the last event, so a fast flick bleeds
+    // as a continuous streak rather than a row of disconnected blots.
+    function seedAlong(x, y){
+      const last = seeds[seeds.length - 1];
+      const step = brushR * SPAWN_K;
+      if(!last){ seed(x, y); return; }
+      const dx = x - last.x, dy = y - last.y, dist = Math.hypot(dx, dy);
+      if(dist <= step) return;
+      const n = Math.min(10, Math.round(dist / step));
+      for(let i = 1; i <= n; i++) seed(last.x + dx * (i / n), last.y + dy * (i / n));
+    }
+
+    function paint(c, key, scaleK){
+      for(let i = 0; i < seeds.length; i++){
+        const s = seeds[i], rad = s[key] * scaleK;
+        if(rad < 0.5) continue;
         c.save();
-        c.translate(from.x + dx * t, from.y + dy * t);
-        if(scale !== 1) c.scale(scale, scale);
-        c.fill(shape);
+        c.translate(s.x, s.y);
+        c.scale(rad, rad);
+        c.fill(s.shape);
         c.restore();
       }
     }
 
     function buildMask(){
       mctx.clearRect(0, 0, W, H);
-      if(!pInk || scale <= 0) return;
-      // Halo first, through its own buffer so the smear steps read as one soft rim rather than
-      // stacking into a darker streak where they overlap.
-      hctx.clearRect(0, 0, W, H);
-      hctx.fillStyle = '#fff';
-      smear(hctx, shapeHalo, prevHalo || pHalo, pHalo);
+      if(!seeds.length) return;
+      // The damp bleed goes down first, through its own buffer so overlapping sources read as one
+      // wet area rather than stacking into darker seams where they cross.
+      bctx.clearRect(0, 0, W, H);
+      bctx.fillStyle = '#fff';
+      paint(bctx, 'rb', 1);
       mctx.save();
-      mctx.globalAlpha = HALO_ALPHA;
+      mctx.globalAlpha = BLEED_ALPHA;
       mctx.setTransform(1, 0, 0, 1, 0, 0);
-      mctx.drawImage(haloBuf, 0, 0);
+      mctx.drawImage(bleedBuf, 0, 0);
       mctx.restore();
-      // ...then the solid core on top.
+      // ...then the saturated black on top, always a little inside the bleed front.
       mctx.fillStyle = '#fff';
-      smear(mctx, shapeInk, prevInk || pInk, pInk);
+      paint(mctx, 'r', 1);
     }
 
-    // Advance both layers toward the cursor. Returns false once everything has come to rest, so
-    // the loop can park and the mark simply stays where it is.
-    function advance(now){
-      if(target){
-        if(!pInk){ pInk = { x: target.x, y: target.y }; pHalo = { x: target.x, y: target.y }; }
-        prevInk = { x: pInk.x, y: pInk.y };
-        prevHalo = { x: pHalo.x, y: pHalo.y };
-        pInk.x += (target.x - pInk.x) * EASE_INK;
-        pInk.y += (target.y - pInk.y) * EASE_INK;
-        pHalo.x += (target.x - pHalo.x) * EASE_HALO;
-        pHalo.y += (target.y - pHalo.y) * EASE_HALO;
-        const rest = Math.hypot(target.x - pInk.x, target.y - pInk.y) < SETTLE_PX &&
-                     Math.hypot(target.x - pHalo.x, target.y - pHalo.y) < SETTLE_PX;
-        if(rest){   // snap, so there is no sub-pixel crawl left to redraw
-          pInk.x = pHalo.x = target.x;
-          pInk.y = pHalo.y = target.y;
-          prevInk = { x: pInk.x, y: pInk.y };
-          prevHalo = { x: pHalo.x, y: pHalo.y };
+    // Open up the sources the cursor is currently over and close the ones it has left behind.
+    // Returns false once every radius has reached its target, so the loop can park.
+    function advance(){
+      let moving = false;
+      for(let i = seeds.length - 1; i >= 0; i--){
+        const s = seeds[i];
+        const near = inReach(s);
+        const tr = near ? s.rMax : 0;
+        const tb = near ? s.rMax * BLEED_SCALE : 0;
+        s.r  += (tr - s.r)  * GROW_CORE;
+        s.rb += (tb - s.rb) * GROW_BLEED;
+        if(Math.abs(tr - s.r) > SETTLE_PX || Math.abs(tb - s.rb) > SETTLE_PX){
+          moving = true;
+        } else {                       // snap, so no sub-pixel crawl is left to redraw
+          s.r = tr; s.rb = tb;
+          if(!near) seeds.splice(i, 1);   // fully dried out and out of reach — retire it
         }
-        return !rest;
       }
-      // cursor gone: pull the ink back in, then clear out
-      const k = Math.min(1, (now - retractAt) / RETRACT_MS);
-      scale = 1 - k;
-      prevInk = pInk; prevHalo = pHalo;
-      if(k >= 1){ pInk = pHalo = prevInk = prevHalo = null; scale = 1; return false; }
-      return true;
+      return moving;
     }
 
     function render(){
@@ -3641,8 +3667,8 @@
       });
     }
 
-    function frame(now){
-      const moving = advance(now);
+    function frame(){
+      const moving = advance();
       buildMask();
       render();
       // Self-driven: tick only while something is actually in motion, then park — a resting mark
@@ -3658,13 +3684,12 @@
       const x = e.clientX - r.left, y = e.clientY - r.top;
       if(target && target.x === x && target.y === y) return;   // no move, no work
       target = { x, y };
-      scale = 1;
+      seedAlong(x, y);
       wake();
     });
     head.addEventListener('pointerleave', () => {
-      if(!pInk) return;
+      if(!seeds.length) return;
       target = null;
-      retractAt = performance.now();
       wake();
     });
 
