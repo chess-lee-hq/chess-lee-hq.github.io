@@ -546,6 +546,19 @@
   /* ---------------- CONTACT ---------------- */
   #contact{background:var(--bg); padding-top:140px; padding-bottom:90px;}
   .contact-head{font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(40px,7vw,92px); line-height:1.0; letter-spacing:-0.02em; margin-bottom:44px;}
+  /* ---------------- "ink fill" hover effect on the contact headline (see JS) ----------------
+     Hollow wireframe letters that fill solid as the cursor brushes over them, like the
+     reference site's footer headline. Only ever active on fine-pointer/hover devices with
+     motion allowed (the JS below adds .ink-fx to <html> once it confirms that) — touch visitors
+     and reduced-motion visitors just get the plain solid heading, unchanged. The bigger size is
+     scoped the same way, so mobile layout/wrapping is untouched. */
+  .ink-head{position:relative;}
+  .ink-outline{display:block;}
+  .ink-canvas{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; display:block;}
+  html.ink-fx .ink-outline{color:transparent; -webkit-text-stroke:1.5px var(--ink);}
+  @media (hover:hover) and (pointer:fine){
+    html.ink-fx .contact-head{font-size:clamp(56px,9.6vw,140px); margin-bottom:68px;}
+  }
   .contact-email{
     display:inline-flex; align-items:center; gap:16px;
     font-family:"Poppins",sans-serif; font-weight:600; font-size:clamp(20px,3vw,32px);
@@ -567,6 +580,13 @@
     font-size:13px; line-height:1; transition:transform .25s var(--ease);
   }
   .resume-btn:hover .rb-icon{transform:translateY(2px);}
+  /* the headline gets a lot bigger on hover-capable devices (see .ink-head above) — give the
+     resume buttons a touch more room and weight too, so they read as a deliberate next beat
+     rather than shrinking into the giant heading's shadow */
+  @media (hover:hover) and (pointer:fine){
+    html.ink-fx .resume-row{margin-top:46px; gap:14px;}
+    html.ink-fx .resume-btn{padding:14px 24px; font-size:14px;}
+  }
   @media(max-width:640px){
     .resume-row{gap:10px;}
     .resume-btn{padding:11px 17px; font-size:12.5px;}
@@ -2547,7 +2567,10 @@
 <section id="contact">
   <div class="wrap">
     <div class="eyebrow">04 — Contact</div>
-    <h2 class="contact-head reveal">LET'S MAKE<br>SOMETHING.</h2>
+    <h2 class="contact-head reveal ink-head" id="inkHead">
+      <span class="ink-outline">LET'S MAKE<br>SOMETHING.</span>
+      <canvas class="ink-canvas" id="inkCanvas" aria-hidden="true"></canvas>
+    </h2>
     <a href="mailto:adflash14@gmail.com" class="contact-email reveal">adflash14@gmail.com <span>↗</span></a>
     <div class="resume-row reveal">
       <a class="resume-btn" href="files/resume-kr.pdf" download="이채승_이력서_국문.pdf">
@@ -3046,7 +3069,17 @@
     hero.addEventListener('pointerleave', () => { mouse.x = -9999; mouse.y = -9999; });
 
     let prevT = 0;
+    let visible = true;
     function frame(t){
+      // Keep the rAF loop itself always ticking (an idle callback that does nothing costs
+      // effectively nothing) — only the expensive part (clearing + redrawing ~1,200 dots) is
+      // skipped while off-screen. This is deliberately decoupled from the IntersectionObserver
+      // below: if a single spurious/late "not intersecting" callback ever fired (e.g. a layout
+      // shift from a webfont finishing load), a start/stop-gated rAF chain would stop
+      // rescheduling itself and freeze forever, since nothing would ever call it again until the
+      // next real threshold crossing. Ticking unconditionally means the very next intersection
+      // update self-corrects it instead of leaving the animation permanently stuck.
+      if(!visible){ requestAnimationFrame(frame); return; }
       const dt = prevT ? Math.min(40, t - prevT) : 16;
       prevT = t;
       ctx.clearRect(0, 0, W, H);
@@ -3088,24 +3121,28 @@
         ctx.fill();
       }
 
-      if(running) requestAnimationFrame(frame);
+      requestAnimationFrame(frame);
     }
 
     // Only draw while the hero is actually on screen. This grid is ~1,200 dots redrawn every
     // frame; left unguarded it kept painting (~72,000 arcs/second) all the way down at the contact
-    // section, burning battery on something nobody can see.
-    let running = false;
-    function start(){ if(running) return; running = true; prevT = 0; requestAnimationFrame(frame); }
-    function stop(){ if(!running) return; running = false; ctx.clearRect(0, 0, W, H); }
+    // section, burning battery on something nobody can see. The rAF chain above always keeps
+    // rescheduling itself — only the `visible` flag (set here) decides whether frame() actually
+    // does any work, so this can never get permanently stuck off.
+    function setVisible(v){
+      if(v === visible) return;
+      visible = v;
+      if(visible) prevT = 0; else ctx.clearRect(0, 0, W, H);
+    }
 
     window.addEventListener('resize', resize);
     resize();
+    requestAnimationFrame(frame);
     new IntersectionObserver((entries) => {
-      entries[0].isIntersecting ? start() : stop();
+      setVisible(entries[0].isIntersecting);
     }, { threshold: 0 }).observe(hero);
     document.addEventListener('visibilitychange', () => {
-      if(document.hidden) stop();
-      else if(hero.getBoundingClientRect().bottom > 0) start();
+      setVisible(!document.hidden && hero.getBoundingClientRect().bottom > 0);
     });
   })();
 
@@ -3382,6 +3419,135 @@
     window.addEventListener('resize', () => { resize(); wake(); });
     resize();
     wake();
+  })();
+
+  // ---------------- contact headline: "ink fill" hover effect ----------------
+  // Reference: heronaiapp.com's footer headline — hollow/outline letters that fill in solid as
+  // the cursor brushes across them, with an irregular (not perfectly round) edge, and drain back
+  // to hollow once the cursor leaves. Two layers: a real DOM heading rendered as a stroke-only
+  // "wireframe" underneath (so no-JS/touch/reduced-motion visitors just see the actual heading,
+  // unchanged — see the html.ink-fx CSS gating), and a canvas on top that paints the SAME text
+  // solid, then keeps only the part covered by an accumulated ink mask (destination-in).
+  (function(){
+    const head = document.getElementById('inkHead');
+    const canvas = document.getElementById('inkCanvas');
+    const outline = head ? head.querySelector('.ink-outline') : null;
+    if(!head || !canvas || !outline) return;
+    if(!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;   // touch: leave the plain heading alone
+    if(window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    document.documentElement.classList.add('ink-fx');
+
+    const ctx = canvas.getContext('2d');
+    const LINES = ["LET'S MAKE", "SOMETHING."];
+    const DRAIN_MS = 950;   // how long the ink takes to fade back to hollow once the cursor leaves
+
+    let W = 0, H = 0, DPR = 1;
+    let brushR = 34;
+    let lastPt = null;      // last stamped point — fast strokes get bridged, not left with gaps
+    let draining = false, drainStart = 0;
+    let rafId = 0;
+
+    const mask = document.createElement('canvas');   // offscreen: alpha = how "inked" a spot is
+    const mctx = mask.getContext('2d');
+
+    function layout(){
+      const r = head.getBoundingClientRect();
+      W = r.width; H = r.height;
+      DPR = Math.min(window.devicePixelRatio || 1, 2);
+      canvas.width = mask.width = Math.max(1, Math.round(W * DPR));
+      canvas.height = mask.height = Math.max(1, Math.round(H * DPR));
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      mctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      brushR = Math.max(26, parseFloat(getComputedStyle(outline).fontSize) * 0.3);
+      draw();
+    }
+
+    function stampAt(x, y, r){
+      for(let i = 0; i < 5; i++){
+        const ang = Math.random() * Math.PI * 2;
+        const dist = Math.random() * r * 0.5;
+        const rr = r * (0.55 + Math.random() * 0.55);
+        const bx = x + Math.cos(ang) * dist, by = y + Math.sin(ang) * dist;
+        const g = mctx.createRadialGradient(bx, by, 0, bx, by, rr);
+        g.addColorStop(0, 'rgba(255,255,255,1)');
+        g.addColorStop(1, 'rgba(255,255,255,0)');
+        mctx.fillStyle = g;
+        mctx.beginPath();
+        mctx.arc(bx, by, rr, 0, Math.PI * 2);
+        mctx.fill();
+      }
+    }
+
+    function stampStroke(x, y){
+      if(lastPt){
+        const dist = Math.hypot(x - lastPt.x, y - lastPt.y);
+        const steps = Math.max(1, Math.min(24, Math.round(dist / 8)));
+        for(let i = 1; i <= steps; i++){
+          const t = i / steps;
+          stampAt(lastPt.x + (x - lastPt.x) * t, lastPt.y + (y - lastPt.y) * t, brushR);
+        }
+      } else {
+        stampAt(x, y, brushR);
+      }
+      lastPt = { x, y };
+    }
+
+    function drawText(){
+      ctx.clearRect(0, 0, W, H);
+      const cs = getComputedStyle(outline);
+      ctx.font = `800 ${parseFloat(cs.fontSize)}px "Poppins", sans-serif`;
+      if('letterSpacing' in ctx) ctx.letterSpacing = cs.letterSpacing !== 'normal' ? cs.letterSpacing : '0px';
+      ctx.textBaseline = 'middle';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#151514';
+      const lineH = H / LINES.length;
+      LINES.forEach((line, i) => ctx.fillText(line, 0, lineH * (i + 0.5)));
+    }
+
+    function draw(){
+      drawText();
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.drawImage(mask, 0, 0, W, H);
+      ctx.globalCompositeOperation = 'source-over';
+    }
+
+    function frame(t){
+      let alive = false;
+      if(draining){
+        const k = Math.min(1, (t - drainStart) / DRAIN_MS);
+        mctx.save();
+        mctx.setTransform(1, 0, 0, 1, 0, 0);
+        mctx.globalCompositeOperation = 'destination-out';
+        mctx.fillStyle = `rgba(0,0,0,${0.06 + k * 0.1})`;
+        mctx.fillRect(0, 0, mask.width, mask.height);
+        mctx.restore();
+        if(k >= 1) draining = false; else alive = true;
+      }
+      draw();
+      rafId = alive ? requestAnimationFrame(frame) : 0;
+    }
+
+    function wake(){ if(!rafId) rafId = requestAnimationFrame(frame); }
+
+    head.addEventListener('pointermove', (e) => {
+      draining = false;
+      const r = head.getBoundingClientRect();
+      stampStroke(e.clientX - r.left, e.clientY - r.top);
+      wake();
+    });
+    head.addEventListener('pointerleave', () => {
+      lastPt = null;
+      draining = true;
+      drainStart = performance.now();
+      wake();
+    });
+
+    window.addEventListener('resize', layout);
+    if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
+    layout();
   })();
 </script>
 </body>
