@@ -547,15 +547,19 @@
   #contact{background:var(--bg); padding-top:140px; padding-bottom:90px;}
   .contact-head{font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(40px,7vw,92px); line-height:1.0; letter-spacing:-0.02em; margin-bottom:44px;}
   /* ---------------- "ink fill" hover effect on the contact headline (see JS) ----------------
-     Hollow wireframe letters that fill solid as the cursor brushes over them, like the
-     reference site's footer headline. Only ever active on fine-pointer/hover devices with
-     motion allowed (the JS below adds .ink-fx to <html> once it confirms that) — touch visitors
-     and reduced-motion visitors just get the plain solid heading, unchanged. The bigger size is
-     scoped the same way, so mobile layout/wrapping is untouched. */
+     Hollow wireframe letters that soak up ink only where the cursor has just passed — the ink
+     bleeds in around the cursor and dries out again a beat later, so it reads as a wet trail
+     rather than a bucket fill. Only ever active on fine-pointer/hover devices with motion
+     allowed (the JS below adds .ink-fx to <html> once it confirms that) — touch visitors and
+     reduced-motion visitors just get the plain solid heading, unchanged. The bigger size is
+     scoped the same way, so mobile layout/wrapping is untouched.
+     Note the DOM text goes fully transparent rather than getting a -webkit-text-stroke: the
+     canvas paints BOTH the hollow outline and the ink, from one set of coordinates, so the two
+     can never sit a pixel or two apart and read as an embossed/3D double image. */
   .ink-head{position:relative;}
   .ink-outline{display:block;}
   .ink-canvas{position:absolute; inset:0; width:100%; height:100%; pointer-events:none; display:block;}
-  html.ink-fx .ink-outline{color:transparent; -webkit-text-stroke:1.5px var(--ink);}
+  html.ink-fx .ink-outline{color:transparent;}
   @media (hover:hover) and (pointer:fine){
     html.ink-fx .contact-head{font-size:clamp(56px,9.6vw,140px); margin-bottom:68px;}
   }
@@ -2568,7 +2572,7 @@
   <div class="wrap">
     <div class="eyebrow">04 — Contact</div>
     <h2 class="contact-head reveal ink-head" id="inkHead">
-      <span class="ink-outline">LET'S MAKE<br>SOMETHING.</span>
+      <span class="ink-outline"><span class="ink-line">LET'S MAKE</span><br><span class="ink-line">SOMETHING.</span></span>
       <canvas class="ink-canvas" id="inkCanvas" aria-hidden="true"></canvas>
     </h2>
     <a href="mailto:adflash14@gmail.com" class="contact-email reveal">adflash14@gmail.com <span>↗</span></a>
@@ -3421,13 +3425,22 @@
     wake();
   })();
 
-  // ---------------- contact headline: "ink fill" hover effect ----------------
-  // Reference: heronaiapp.com's footer headline — hollow/outline letters that fill in solid as
-  // the cursor brushes across them, with an irregular (not perfectly round) edge, and drain back
-  // to hollow once the cursor leaves. Two layers: a real DOM heading rendered as a stroke-only
-  // "wireframe" underneath (so no-JS/touch/reduced-motion visitors just see the actual heading,
-  // unchanged — see the html.ink-fx CSS gating), and a canvas on top that paints the SAME text
-  // solid, then keeps only the part covered by an accumulated ink mask (destination-in).
+  // ---------------- contact headline: "ink bleed" hover trail ----------------
+  // Reference: heronaiapp.com's footer headline. The letters sit hollow; wherever the cursor
+  // passes, ink soaks into just that patch of the letterforms and then dries out again a beat
+  // later. So it is a *trail*, not a fill: only ever a couple of letters are wet at once, and
+  // nothing accumulates — sweep back and forth and the earlier strokes are already gone.
+  //
+  // Three things give it the ink (rather than airbrush) character:
+  //   1. every blot is a hard-edged irregular closed curve, not a soft radial gradient, so the
+  //      boundary is torn/organic the way a wet mark bleeding into paper is;
+  //   2. each blot dries in quantised steps (solid -> mid -> faint -> gone) rather than on a
+  //      smooth alpha ramp, which is what produces the grey remnants trailing the cursor;
+  //   3. the canvas paints the hollow outline AND the ink from one set of coordinates, so the
+  //      two layers can never sit a pixel apart and read as an embossed / 3D double image.
+  // The real DOM heading is still there underneath, just transparent, so it stays selectable and
+  // readable to assistive tech; touch / reduced-motion visitors never get .ink-fx at all and see
+  // the ordinary solid heading (see the CSS gating above).
   (function(){
     const head = document.getElementById('inkHead');
     const canvas = document.getElementById('inkCanvas');
@@ -3439,111 +3452,202 @@
     document.documentElement.classList.add('ink-fx');
 
     const ctx = canvas.getContext('2d');
-    const LINES = ["LET'S MAKE", "SOMETHING."];
-    const DRAIN_MS = 950;   // how long the ink takes to fade back to hollow once the cursor leaves
+
+    const LIFE_MS   = 470;   // how long one blot takes to dry out completely — short on purpose,
+                             // so only a letter or two behind the cursor is ever still wet
+    const MAX_BLOTS = 110;   // hard ceiling, so a frantic cursor can't grow the per-frame cost
+    const STEP_K    = 0.32;  // re-ink once the cursor has moved this fraction of a brush radius
+    const IDLE_MS   = 80;    // ...or this often, so a parked cursor stays wet instead of drying
+    // Drying steps: [age fraction reached, alpha from there on]. Quantised on purpose.
+    const TIERS = [[0.40, 1], [0.66, 0.30], [1, 0.11]];
 
     let W = 0, H = 0, DPR = 1;
-    let brushR = 34;
-    let lastPt = null;      // last stamped point — fast strokes get bridged, not left with gaps
-    let draining = false, drainStart = 0;
+    let fontSpec = '', letterSp = '0px', inkColor = '#151514';
+    let brushR = 40, strokeW = 1.6;
+    let lines = [];                       // [{text, x, baseline}] measured off the real DOM text
+
+    const blots = [];                     // {path, born}
+    let lastPt = null;                    // last inked point — fast sweeps get bridged, not dotted
+    let cur = null;                       // where the cursor is now (null once it has left)
+    let lastStampAt = 0;
     let rafId = 0;
 
-    const mask = document.createElement('canvas');   // offscreen: alpha = how "inked" a spot is
+    const mask = document.createElement('canvas');    // alpha here = how wet each spot is
     const mctx = mask.getContext('2d');
+    const tierBuf = document.createElement('canvas'); // one drying step at a time, so overlapping
+    const tctx = tierBuf.getContext('2d');            // blots union instead of double-darkening
 
     function layout(){
-      const r = head.getBoundingClientRect();
-      W = r.width; H = r.height;
+      const hr = head.getBoundingClientRect();
+      W = hr.width; H = hr.height;
       DPR = Math.min(window.devicePixelRatio || 1, 2);
-      canvas.width = mask.width = Math.max(1, Math.round(W * DPR));
-      canvas.height = mask.height = Math.max(1, Math.round(H * DPR));
+      const pw = Math.max(1, Math.round(W * DPR)), ph = Math.max(1, Math.round(H * DPR));
+      canvas.width = mask.width = tierBuf.width = pw;
+      canvas.height = mask.height = tierBuf.height = ph;
       canvas.style.width = W + 'px';
       canvas.style.height = H + 'px';
-      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      mctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-      brushR = Math.max(26, parseFloat(getComputedStyle(outline).fontSize) * 0.3);
-      draw();
+      [ctx, mctx, tctx].forEach(c => c.setTransform(DPR, 0, 0, DPR, 0, 0));
+
+      const cs = getComputedStyle(outline);
+      const fontPx = parseFloat(cs.fontSize);
+      fontSpec = `${cs.fontWeight || 800} ${fontPx}px "Poppins", sans-serif`;
+      letterSp = (cs.letterSpacing && cs.letterSpacing !== 'normal') ? cs.letterSpacing : '0px';
+      inkColor = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#151514';
+      brushR  = Math.max(34, fontPx * 0.55);   // ~a letter and a half across, like the reference
+      strokeW = Math.max(1.3, fontPx * 0.012);
+
+      // Measure each line off the real (transparent) DOM text rather than guessing line boxes —
+      // an approximated baseline is exactly what made the previous version look embossed.
+      applyFont(ctx);
+      let ascent = null;
+      try {
+        const m = ctx.measureText('H');
+        if(typeof m.fontBoundingBoxAscent === 'number') ascent = m.fontBoundingBoxAscent;
+      } catch(e){ /* older engines: fall back to centring below */ }
+      lines = Array.prototype.map.call(outline.querySelectorAll('.ink-line'), (el) => {
+        const r = el.getBoundingClientRect();
+        return {
+          text: el.textContent,
+          x: r.left - hr.left,
+          baseline: ascent !== null ? (r.top - hr.top) + ascent : (r.top - hr.top) + r.height / 2,
+          centred: ascent === null
+        };
+      });
+      render();
     }
 
-    function stampAt(x, y, r){
-      for(let i = 0; i < 5; i++){
-        const ang = Math.random() * Math.PI * 2;
-        const dist = Math.random() * r * 0.5;
-        const rr = r * (0.55 + Math.random() * 0.55);
-        const bx = x + Math.cos(ang) * dist, by = y + Math.sin(ang) * dist;
-        const g = mctx.createRadialGradient(bx, by, 0, bx, by, rr);
-        g.addColorStop(0, 'rgba(255,255,255,1)');
-        g.addColorStop(1, 'rgba(255,255,255,0)');
-        mctx.fillStyle = g;
-        mctx.beginPath();
-        mctx.arc(bx, by, rr, 0, Math.PI * 2);
-        mctx.fill();
-      }
+    function applyFont(c){
+      c.font = fontSpec;
+      if('letterSpacing' in c) c.letterSpacing = letterSp;
+      c.textAlign = 'left';
     }
 
-    function stampStroke(x, y){
-      if(lastPt){
-        const dist = Math.hypot(x - lastPt.x, y - lastPt.y);
-        const steps = Math.max(1, Math.min(24, Math.round(dist / 8)));
-        for(let i = 1; i <= steps; i++){
-          const t = i / steps;
-          stampAt(lastPt.x + (x - lastPt.x) * t, lastPt.y + (y - lastPt.y) * t, brushR);
-        }
-      } else {
-        stampAt(x, y, brushR);
+    // One blot: a closed curve through jittered radii, so the edge is torn rather than round.
+    function makeBlot(x, y, r){
+      const N = 14, pts = [];
+      for(let i = 0; i < N; i++){
+        const a = (i / N) * Math.PI * 2;
+        const rad = r * (0.66 + Math.random() * 0.54);
+        pts.push({ x: x + Math.cos(a) * rad, y: y + Math.sin(a) * rad * 0.92 });
       }
+      const p = new Path2D();
+      let m0 = { x: (pts[N - 1].x + pts[0].x) / 2, y: (pts[N - 1].y + pts[0].y) / 2 };
+      p.moveTo(m0.x, m0.y);
+      for(let i = 0; i < N; i++){
+        const c = pts[i], n = pts[(i + 1) % N];
+        p.quadraticCurveTo(c.x, c.y, (c.x + n.x) / 2, (c.y + n.y) / 2);
+      }
+      p.closePath();
+      return p;
+    }
+
+    function ink(x, y, now){
+      blots.push({ path: makeBlot(x, y, brushR), born: now });
+      if(Math.random() < 0.55){   // a stray speck off the edge, like ink spitting off a nib
+        const a = Math.random() * Math.PI * 2, d = brushR * (0.85 + Math.random() * 0.5);
+        blots.push({ path: makeBlot(x + Math.cos(a) * d, y + Math.sin(a) * d, brushR * 0.3), born: now });
+      }
+      while(blots.length > MAX_BLOTS) blots.shift();
+      lastStampAt = now;
       lastPt = { x, y };
     }
 
-    function drawText(){
-      ctx.clearRect(0, 0, W, H);
-      const cs = getComputedStyle(outline);
-      ctx.font = `800 ${parseFloat(cs.fontSize)}px "Poppins", sans-serif`;
-      if('letterSpacing' in ctx) ctx.letterSpacing = cs.letterSpacing !== 'normal' ? cs.letterSpacing : '0px';
-      ctx.textBaseline = 'middle';
-      ctx.textAlign = 'left';
-      ctx.fillStyle = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#151514';
-      const lineH = H / LINES.length;
-      LINES.forEach((line, i) => ctx.fillText(line, 0, lineH * (i + 0.5)));
-    }
-
-    function draw(){
-      drawText();
-      ctx.globalCompositeOperation = 'destination-in';
-      ctx.drawImage(mask, 0, 0, W, H);
-      ctx.globalCompositeOperation = 'source-over';
-    }
-
-    function frame(t){
-      let alive = false;
-      if(draining){
-        const k = Math.min(1, (t - drainStart) / DRAIN_MS);
-        mctx.save();
-        mctx.setTransform(1, 0, 0, 1, 0, 0);
-        mctx.globalCompositeOperation = 'destination-out';
-        mctx.fillStyle = `rgba(0,0,0,${0.06 + k * 0.1})`;
-        mctx.fillRect(0, 0, mask.width, mask.height);
-        mctx.restore();
-        if(k >= 1) draining = false; else alive = true;
+    function inkStroke(x, y, now){
+      if(lastPt){
+        const dx = x - lastPt.x, dy = y - lastPt.y;
+        const dist = Math.hypot(dx, dy);
+        const steps = Math.min(14, Math.floor(dist / (brushR * STEP_K)));
+        // Below one step the cursor has barely moved — leave lastPt where it is so the distance
+        // keeps accumulating, rather than resetting it and never reaching the threshold.
+        for(let i = 1; i <= steps; i++){
+          const t = i / steps;
+          ink(lastPt.x + dx * t, lastPt.y + dy * t, now);
+        }
+      } else {
+        ink(x, y, now);
       }
-      draw();
-      rafId = alive ? requestAnimationFrame(frame) : 0;
+    }
+
+    function buildMask(now){
+      mctx.clearRect(0, 0, W, H);
+      let alive = 0;
+      for(let ti = TIERS.length - 1; ti >= 0; ti--){
+        const [, alpha] = TIERS[ti];
+        const lo = ti === 0 ? 0 : TIERS[ti - 1][0], hi = TIERS[ti][0];
+        const group = [];
+        for(let i = 0; i < blots.length; i++){
+          const k = (now - blots[i].born) / LIFE_MS;
+          if(k >= lo && k < hi) group.push(blots[i].path);
+        }
+        if(!group.length) continue;
+        alive += group.length;
+        if(alpha >= 1){
+          mctx.fillStyle = '#fff';
+          group.forEach(p => mctx.fill(p));
+        } else {
+          // Route partial steps through a buffer so overlapping blots read as one wet patch
+          // instead of stacking into a darker seam where they cross.
+          tctx.clearRect(0, 0, W, H);
+          tctx.fillStyle = '#fff';
+          group.forEach(p => tctx.fill(p));
+          mctx.save();
+          mctx.globalAlpha = alpha;
+          mctx.setTransform(1, 0, 0, 1, 0, 0);
+          mctx.drawImage(tierBuf, 0, 0);
+          mctx.restore();
+        }
+      }
+      // Drop anything fully dry (cheap: they age in order, so trim from the front).
+      while(blots.length && (now - blots[0].born) >= LIFE_MS) blots.shift();
+      return alive;
+    }
+
+    function render(){
+      ctx.clearRect(0, 0, W, H);
+      applyFont(ctx);
+      ctx.fillStyle = inkColor;
+      // 1) the ink: solid letters, then cut back to only the wet patches
+      lines.forEach(l => {
+        ctx.textBaseline = l.centred ? 'middle' : 'alphabetic';
+        ctx.fillText(l.text, l.x, l.baseline);
+      });
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.drawImage(mask, 0, 0);
+      ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
+      ctx.globalCompositeOperation = 'source-over';
+      // 2) the hollow outline, over the top — same coordinates, so it can never double up
+      applyFont(ctx);
+      ctx.strokeStyle = inkColor;
+      ctx.lineWidth = strokeW;
+      ctx.lineJoin = 'round';
+      lines.forEach(l => {
+        ctx.textBaseline = l.centred ? 'middle' : 'alphabetic';
+        ctx.strokeText(l.text, l.x, l.baseline);
+      });
+    }
+
+    function frame(now){
+      // A parked cursor should stay wet, so keep feeding the same spot while it sits there.
+      if(cur && now - lastStampAt >= IDLE_MS) ink(cur.x, cur.y, now);
+      const alive = buildMask(now);
+      render();
+      // Self-driven: keep ticking while there is ink or a cursor on the heading, then park. Any
+      // pointer event calls wake(), so a parked loop always gets restarted — it can never end up
+      // waiting on a signal that already fired.
+      rafId = (alive || cur) ? requestAnimationFrame(frame) : 0;
     }
 
     function wake(){ if(!rafId) rafId = requestAnimationFrame(frame); }
 
     head.addEventListener('pointermove', (e) => {
-      draining = false;
       const r = head.getBoundingClientRect();
-      stampStroke(e.clientX - r.left, e.clientY - r.top);
+      const x = e.clientX - r.left, y = e.clientY - r.top;
+      cur = { x, y };
+      inkStroke(x, y, performance.now());
       wake();
     });
-    head.addEventListener('pointerleave', () => {
-      lastPt = null;
-      draining = true;
-      drainStart = performance.now();
-      wake();
-    });
+    head.addEventListener('pointerleave', () => { cur = null; lastPt = null; wake(); });
 
     window.addEventListener('resize', layout);
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
