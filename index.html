@@ -547,9 +547,9 @@
   #contact{background:var(--bg); padding-top:140px; padding-bottom:90px;}
   .contact-head{font-family:"Poppins",sans-serif; font-weight:800; font-size:clamp(40px,7vw,92px); line-height:1.0; letter-spacing:-0.02em; margin-bottom:44px;}
   /* ---------------- "ink fill" hover effect on the contact headline (see JS) ----------------
-     Hollow wireframe letters that soak up ink only where the cursor has just passed — the ink
-     bleeds in around the cursor and dries out again a beat later, so it reads as a wet trail
-     rather than a bucket fill. Only ever active on fine-pointer/hover devices with motion
+     Hollow wireframe letters with a patch of ink riding along under the cursor — it shows only
+     where it overlaps a letterform, and it holds perfectly still whenever the cursor does.
+     Only ever active on fine-pointer/hover devices with motion
      allowed (the JS below adds .ink-fx to <html> once it confirms that) — touch visitors and
      reduced-motion visitors just get the plain solid heading, unchanged. The bigger size is
      scoped the same way, so mobile layout/wrapping is untouched.
@@ -3425,19 +3425,24 @@
     wake();
   })();
 
-  // ---------------- contact headline: "ink bleed" hover trail ----------------
-  // Reference: heronaiapp.com's footer headline. The letters sit hollow; wherever the cursor
-  // passes, ink soaks into just that patch of the letterforms and then dries out again a beat
-  // later. So it is a *trail*, not a fill: only ever a couple of letters are wet at once, and
-  // nothing accumulates — sweep back and forth and the earlier strokes are already gone.
+  // ---------------- contact headline: "ink blot" cursor ----------------
+  // Reference: heronaiapp.com's footer headline. The letters sit hollow and a single patch of ink
+  // rides along with the cursor, showing only where it overlaps a letterform.
   //
-  // Three things give it the ink (rather than airbrush) character:
-  //   1. every blot is a hard-edged irregular closed curve, not a soft radial gradient, so the
-  //      boundary is torn/organic the way a wet mark bleeding into paper is;
-  //   2. each blot dries in quantised steps (solid -> mid -> faint -> gone) rather than on a
-  //      smooth alpha ramp, which is what produces the grey remnants trailing the cursor;
-  //   3. the canvas paints the hollow outline AND the ink from one set of coordinates, so the
-  //      two layers can never sit a pixel apart and read as an embossed / 3D double image.
+  // The important property, checked frame-by-frame against the reference recording: it is STATIC
+  // unless the cursor is actually moving. Long stretches of that recording are pixel-identical
+  // while the cursor rests. So there is no per-frame randomness, no lifetime, no decay — the blot
+  // is one fixed shape that is only ever translated, and the rAF loop parks itself the instant
+  // the chase catches up. An earlier version regenerated blots on a timer, which made the ink
+  // churn and crawl even with the mouse held still; that is exactly what this avoids.
+  //
+  // Two layers do the work: a solid core that chases the cursor hard, and a slightly larger, much
+  // lazier halo at low alpha behind it. Moving, the halo lags out into a trailing smudge; at rest
+  // it settles under the core and leaves only a faint rim. Both are hard-edged irregular curves
+  // rather than soft radial gradients, which is what reads as ink rather than airbrush. The
+  // canvas paints the hollow outline AND the ink from one set of coordinates, so the two layers
+  // can never sit a pixel apart and read as an embossed / 3D double image.
+  //
   // The real DOM heading is still there underneath, just transparent, so it stays selectable and
   // readable to assistive tech; touch / reduced-motion visitors never get .ink-fx at all and see
   // the ordinary solid heading (see the CSS gating above).
@@ -3453,48 +3458,54 @@
 
     const ctx = canvas.getContext('2d');
 
-    const LIFE_MS   = 470;   // how long one blot takes to dry out completely — short on purpose,
-                             // so only a letter or two behind the cursor is ever still wet
-    const MAX_BLOTS = 110;   // hard ceiling, so a frantic cursor can't grow the per-frame cost
-    const STEP_K    = 0.32;  // re-ink once the cursor has moved this fraction of a brush radius
-    const IDLE_MS   = 80;    // ...or this often, so a parked cursor stays wet instead of drying
-    // Drying steps: [age fraction reached, alpha from there on]. Quantised on purpose.
-    const TIERS = [[0.40, 1], [0.66, 0.30], [1, 0.11]];
+    const EASE_INK    = 0.30;  // how hard the ink core chases the cursor each frame
+    const EASE_HALO   = 0.13;  // the halo is lazier, so it lags out behind on a fast move
+    const HALO_SCALE  = 1.20;  // ...and slightly bigger, leaving a faint rim even at rest
+    const HALO_ALPHA  = 0.17;
+    const SETTLE_PX   = 0.25;  // once this close to the cursor, snap and stop animating entirely
+    const RETRACT_MS  = 320;   // ink pulls back in over this long when the cursor leaves
 
     let W = 0, H = 0, DPR = 1;
     let fontSpec = '', letterSp = '0px', inkColor = '#151514';
     let brushR = 40, strokeW = 1.6;
     let lines = [];                       // [{text, x, baseline}] measured off the real DOM text
 
-    const blots = [];                     // {path, born}
-    let lastPt = null;                    // last inked point — fast sweeps get bridged, not dotted
-    let cur = null;                       // where the cursor is now (null once it has left)
-    let lastStampAt = 0;
+    // One blot shape, generated once and then simply moved around. Regenerating it per frame is
+    // what made the previous version look alive and restless; a fixed shape means a parked cursor
+    // leaves a completely motionless mark.
+    let shapeInk = null, shapeHalo = null;
+
+    let target = null;                    // where the cursor is (null once it has left)
+    let pInk = null, pHalo = null;        // where each layer actually is, chasing `target`
+    let prevInk = null, prevHalo = null;  // last frame's positions — used to smear across the gap
+    let scale = 1, retractAt = 0;
     let rafId = 0;
 
-    const mask = document.createElement('canvas');    // alpha here = how wet each spot is
+    const mask = document.createElement('canvas');    // alpha here = how inked each spot is
     const mctx = mask.getContext('2d');
-    const tierBuf = document.createElement('canvas'); // one drying step at a time, so overlapping
-    const tctx = tierBuf.getContext('2d');            // blots union instead of double-darkening
+    const haloBuf = document.createElement('canvas'); // the halo is composited in one pass so its
+    const hctx = haloBuf.getContext('2d');            // smear steps union instead of stacking up
 
     function layout(){
       const hr = head.getBoundingClientRect();
       W = hr.width; H = hr.height;
       DPR = Math.min(window.devicePixelRatio || 1, 2);
       const pw = Math.max(1, Math.round(W * DPR)), ph = Math.max(1, Math.round(H * DPR));
-      canvas.width = mask.width = tierBuf.width = pw;
-      canvas.height = mask.height = tierBuf.height = ph;
+      canvas.width = mask.width = haloBuf.width = pw;
+      canvas.height = mask.height = haloBuf.height = ph;
       canvas.style.width = W + 'px';
       canvas.style.height = H + 'px';
-      [ctx, mctx, tctx].forEach(c => c.setTransform(DPR, 0, 0, DPR, 0, 0));
+      [ctx, mctx, hctx].forEach(c => c.setTransform(DPR, 0, 0, DPR, 0, 0));
 
       const cs = getComputedStyle(outline);
       const fontPx = parseFloat(cs.fontSize);
       fontSpec = `${cs.fontWeight || 800} ${fontPx}px "Poppins", sans-serif`;
       letterSp = (cs.letterSpacing && cs.letterSpacing !== 'normal') ? cs.letterSpacing : '0px';
       inkColor = getComputedStyle(document.documentElement).getPropertyValue('--ink').trim() || '#151514';
-      brushR  = Math.max(34, fontPx * 0.55);   // ~a letter and a half across, like the reference
+      brushR  = Math.max(32, fontPx * 0.50);   // ~a letter and a half across, like the reference
       strokeW = Math.max(1.3, fontPx * 0.012);
+      shapeInk  = makeShape(brushR);
+      shapeHalo = makeShape(brushR * HALO_SCALE);
 
       // Measure each line off the real (transparent) DOM text rather than guessing line boxes —
       // an approximated baseline is exactly what made the previous version look embossed.
@@ -3522,17 +3533,18 @@
       c.textAlign = 'left';
     }
 
-    // One blot: a closed curve through jittered radii, so the edge is torn rather than round.
-    function makeBlot(x, y, r){
-      const N = 14, pts = [];
+    // The blot: one closed curve through jittered radii, centred on the origin, so the edge is
+    // torn rather than round. Built once per layout and then only ever translated — nothing about
+    // it is recomputed per frame, which is what keeps a resting mark perfectly still.
+    function makeShape(r){
+      const N = 15, pts = [];
       for(let i = 0; i < N; i++){
         const a = (i / N) * Math.PI * 2;
-        const rad = r * (0.66 + Math.random() * 0.54);
-        pts.push({ x: x + Math.cos(a) * rad, y: y + Math.sin(a) * rad * 0.92 });
+        const rad = r * (0.70 + Math.random() * 0.46);
+        pts.push({ x: Math.cos(a) * rad, y: Math.sin(a) * rad * 0.88 });
       }
       const p = new Path2D();
-      let m0 = { x: (pts[N - 1].x + pts[0].x) / 2, y: (pts[N - 1].y + pts[0].y) / 2 };
-      p.moveTo(m0.x, m0.y);
+      p.moveTo((pts[N - 1].x + pts[0].x) / 2, (pts[N - 1].y + pts[0].y) / 2);
       for(let i = 0; i < N; i++){
         const c = pts[i], n = pts[(i + 1) % N];
         p.quadraticCurveTo(c.x, c.y, (c.x + n.x) / 2, (c.y + n.y) / 2);
@@ -3541,65 +3553,67 @@
       return p;
     }
 
-    function ink(x, y, now){
-      blots.push({ path: makeBlot(x, y, brushR), born: now });
-      if(Math.random() < 0.55){   // a stray speck off the edge, like ink spitting off a nib
-        const a = Math.random() * Math.PI * 2, d = brushR * (0.85 + Math.random() * 0.5);
-        blots.push({ path: makeBlot(x + Math.cos(a) * d, y + Math.sin(a) * d, brushR * 0.3), born: now });
-      }
-      while(blots.length > MAX_BLOTS) blots.shift();
-      lastStampAt = now;
-      lastPt = { x, y };
-    }
-
-    function inkStroke(x, y, now){
-      if(lastPt){
-        const dx = x - lastPt.x, dy = y - lastPt.y;
-        const dist = Math.hypot(dx, dy);
-        const steps = Math.min(14, Math.floor(dist / (brushR * STEP_K)));
-        // Below one step the cursor has barely moved — leave lastPt where it is so the distance
-        // keeps accumulating, rather than resetting it and never reaching the threshold.
-        for(let i = 1; i <= steps; i++){
-          const t = i / steps;
-          ink(lastPt.x + dx * t, lastPt.y + dy * t, now);
-        }
-      } else {
-        ink(x, y, now);
+    // Stamp the shape along the gap this layer covered since the last frame, so a fast flick
+    // smears into a streak instead of leaving a dotted line. At rest the gap is zero, so this is
+    // a single stamp in a fixed place — the whole mark stops dead.
+    function smear(c, shape, from, to){
+      const dx = to.x - from.x, dy = to.y - from.y;
+      const steps = Math.min(12, Math.floor(Math.hypot(dx, dy) / (brushR * 0.3)));
+      for(let i = 0; i <= steps; i++){
+        const t = steps ? i / steps : 1;
+        c.save();
+        c.translate(from.x + dx * t, from.y + dy * t);
+        if(scale !== 1) c.scale(scale, scale);
+        c.fill(shape);
+        c.restore();
       }
     }
 
-    function buildMask(now){
+    function buildMask(){
       mctx.clearRect(0, 0, W, H);
-      let alive = 0;
-      for(let ti = TIERS.length - 1; ti >= 0; ti--){
-        const [, alpha] = TIERS[ti];
-        const lo = ti === 0 ? 0 : TIERS[ti - 1][0], hi = TIERS[ti][0];
-        const group = [];
-        for(let i = 0; i < blots.length; i++){
-          const k = (now - blots[i].born) / LIFE_MS;
-          if(k >= lo && k < hi) group.push(blots[i].path);
+      if(!pInk || scale <= 0) return;
+      // Halo first, through its own buffer so the smear steps read as one soft rim rather than
+      // stacking into a darker streak where they overlap.
+      hctx.clearRect(0, 0, W, H);
+      hctx.fillStyle = '#fff';
+      smear(hctx, shapeHalo, prevHalo || pHalo, pHalo);
+      mctx.save();
+      mctx.globalAlpha = HALO_ALPHA;
+      mctx.setTransform(1, 0, 0, 1, 0, 0);
+      mctx.drawImage(haloBuf, 0, 0);
+      mctx.restore();
+      // ...then the solid core on top.
+      mctx.fillStyle = '#fff';
+      smear(mctx, shapeInk, prevInk || pInk, pInk);
+    }
+
+    // Advance both layers toward the cursor. Returns false once everything has come to rest, so
+    // the loop can park and the mark simply stays where it is.
+    function advance(now){
+      if(target){
+        if(!pInk){ pInk = { x: target.x, y: target.y }; pHalo = { x: target.x, y: target.y }; }
+        prevInk = { x: pInk.x, y: pInk.y };
+        prevHalo = { x: pHalo.x, y: pHalo.y };
+        pInk.x += (target.x - pInk.x) * EASE_INK;
+        pInk.y += (target.y - pInk.y) * EASE_INK;
+        pHalo.x += (target.x - pHalo.x) * EASE_HALO;
+        pHalo.y += (target.y - pHalo.y) * EASE_HALO;
+        const rest = Math.hypot(target.x - pInk.x, target.y - pInk.y) < SETTLE_PX &&
+                     Math.hypot(target.x - pHalo.x, target.y - pHalo.y) < SETTLE_PX;
+        if(rest){   // snap, so there is no sub-pixel crawl left to redraw
+          pInk.x = pHalo.x = target.x;
+          pInk.y = pHalo.y = target.y;
+          prevInk = { x: pInk.x, y: pInk.y };
+          prevHalo = { x: pHalo.x, y: pHalo.y };
         }
-        if(!group.length) continue;
-        alive += group.length;
-        if(alpha >= 1){
-          mctx.fillStyle = '#fff';
-          group.forEach(p => mctx.fill(p));
-        } else {
-          // Route partial steps through a buffer so overlapping blots read as one wet patch
-          // instead of stacking into a darker seam where they cross.
-          tctx.clearRect(0, 0, W, H);
-          tctx.fillStyle = '#fff';
-          group.forEach(p => tctx.fill(p));
-          mctx.save();
-          mctx.globalAlpha = alpha;
-          mctx.setTransform(1, 0, 0, 1, 0, 0);
-          mctx.drawImage(tierBuf, 0, 0);
-          mctx.restore();
-        }
+        return !rest;
       }
-      // Drop anything fully dry (cheap: they age in order, so trim from the front).
-      while(blots.length && (now - blots[0].born) >= LIFE_MS) blots.shift();
-      return alive;
+      // cursor gone: pull the ink back in, then clear out
+      const k = Math.min(1, (now - retractAt) / RETRACT_MS);
+      scale = 1 - k;
+      prevInk = pInk; prevHalo = pHalo;
+      if(k >= 1){ pInk = pHalo = prevInk = prevHalo = null; scale = 1; return false; }
+      return true;
     }
 
     function render(){
@@ -3628,14 +3642,13 @@
     }
 
     function frame(now){
-      // A parked cursor should stay wet, so keep feeding the same spot while it sits there.
-      if(cur && now - lastStampAt >= IDLE_MS) ink(cur.x, cur.y, now);
-      const alive = buildMask(now);
+      const moving = advance(now);
+      buildMask();
       render();
-      // Self-driven: keep ticking while there is ink or a cursor on the heading, then park. Any
-      // pointer event calls wake(), so a parked loop always gets restarted — it can never end up
-      // waiting on a signal that already fired.
-      rafId = (alive || cur) ? requestAnimationFrame(frame) : 0;
+      // Self-driven: tick only while something is actually in motion, then park — a resting mark
+      // costs nothing and, more to the point, cannot twitch. Every pointer event calls wake(), so
+      // a parked loop always gets restarted; it can never end up waiting on a signal that fired.
+      rafId = moving ? requestAnimationFrame(frame) : 0;
     }
 
     function wake(){ if(!rafId) rafId = requestAnimationFrame(frame); }
@@ -3643,11 +3656,17 @@
     head.addEventListener('pointermove', (e) => {
       const r = head.getBoundingClientRect();
       const x = e.clientX - r.left, y = e.clientY - r.top;
-      cur = { x, y };
-      inkStroke(x, y, performance.now());
+      if(target && target.x === x && target.y === y) return;   // no move, no work
+      target = { x, y };
+      scale = 1;
       wake();
     });
-    head.addEventListener('pointerleave', () => { cur = null; lastPt = null; wake(); });
+    head.addEventListener('pointerleave', () => {
+      if(!pInk) return;
+      target = null;
+      retractAt = performance.now();
+      wake();
+    });
 
     window.addEventListener('resize', layout);
     if(document.fonts && document.fonts.ready) document.fonts.ready.then(layout);
