@@ -383,20 +383,6 @@
   .proj-row:hover .proj-detail, .proj-row.focus .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
   /* keyboard users have no hover: Enter/Space toggles .open, which must work at every width */
   .proj-row.open .proj-detail{max-height:1050px; opacity:1; padding-bottom:24px;}
-  /* while the reader is actively spinning the wheel, a row passing under a stationary cursor
-     still fires :hover — opening it mid-scroll. That panel's own max-height animation then
-     resizes content above the viewport's anchor point, and the browser's native scroll-anchoring
-     nudges scrollY to compensate, which is what actually produces the "드드득" judder (confirmed
-     with the page's own JS never touching scrollY during it — see the .proj-row JS below). Rather
-     than fight the browser's anchoring after the fact, don't let panels open in the first place
-     while a real scroll gesture is in progress: html.wheeling is toggled by that same JS. Once
-     scrolling settles, hovering opens a panel exactly as before. */
-  html.wheeling .proj-row:hover .proj-detail, html.wheeling .proj-row.focus .proj-detail{
-    max-height:0; opacity:0; padding-bottom:0;
-  }
-  html.wheeling .proj-row:hover .proj-arrow, html.wheeling .proj-row.focus .proj-arrow{
-    transform:none; color:var(--gray);
-  }
   .proj-row:focus-visible{outline:2px solid var(--red); outline-offset:-2px;}
   .proj-detail .rl{font-family:"Poppins",sans-serif; font-size:11px; color:var(--gray); margin:0 0 14px; letter-spacing:.02em;}
   .proj-detail .rl b{
@@ -3213,38 +3199,6 @@
     let px = 0, py = 0;                                   // last known cursor position
     window.addEventListener('pointermove', (e) => { px = e.clientX; py = e.clientY; }, { passive:true });
 
-    // park() forces the page to a scripted scroll position every frame for up to ~1.1s (see HOLD
-    // below), so it can hand-off from wherever the panel opened to wherever it wants to park it.
-    // If the reader spins the wheel WHILE that is running, the two fight over scrollY frame by
-    // frame — the wheel's delta lands, then the very next rAF snaps it back onto the scripted
-    // path, over and over. That is the "드드득" stutter: not a rendering hiccup, a tug-of-war
-    // between the reader's own scroll and this animation. The fix is to never contest a real
-    // scroll gesture — bail out of park() the instant one is detected, and don't even start it if
-    // one just happened, so the browser's native (smooth) scroll always wins.
-    // Root cause, confirmed by instrumenting window.scrollTo during a repro: this page's own JS
-    // never calls it while the judder happens. What's actually moving scrollY is the *browser's*
-    // native scroll anchoring reacting to .proj-detail's own max-height transition — a row passing
-    // under a parked cursor mid-scroll still satisfies :hover, opens, and its growth shifts layout
-    // near the viewport's anchor node, which the browser then compensates for. html.wheeling (see
-    // the CSS above) keeps panels from opening at all while that's happening, which removes the
-    // layout shift at its source instead of trying to out-fight the browser's own compensation.
-    let lastManualScroll = 0;
-    let wheelingTimer = null;
-    const WHEELING_MS = 160;   // a bit past the normal gap between wheel/trackpad events, so the
-                               // lock only lifts once scrolling has actually stopped
-    function markManualScroll(){
-      lastManualScroll = performance.now();
-      document.documentElement.classList.add('wheeling');
-      clearTimeout(wheelingTimer);
-      wheelingTimer = setTimeout(() => document.documentElement.classList.remove('wheeling'), WHEELING_MS);
-    }
-    window.addEventListener('wheel', markManualScroll, { passive:true });
-    window.addEventListener('touchmove', markManualScroll, { passive:true });
-    window.addEventListener('keydown', (e) => {
-      if(e.key === 'PageUp' || e.key === 'PageDown' || e.key === 'Home' || e.key === 'End' ||
-         e.key === ' ' || e.key === 'ArrowUp' || e.key === 'ArrowDown') markManualScroll();
-    });
-
     // the scroll slides the row out from under the cursor, which would drop :hover and snap the
     // panel shut mid-move — so JS owns "which row is open" via .focus while that happens
     function setFocus(row){
@@ -3296,15 +3250,6 @@
       // two-stage clunk. Snapping to the scripted position each frame cancels that shift in the
       // same frame, so it reads as one continuous move straight to the bottom edge.
       (function step(){
-        // the reader scrolled for real since this animation started — stop contesting it and let
-        // go immediately, rather than holding the scripted position for the rest of HOLD
-        if(lastManualScroll > started){
-          cancelAnimationFrame(animId);
-          animId = 0;
-          suppressUntil = performance.now() + 120;
-          reconcile();
-          return;
-        }
         const now = performance.now();
         const t = GLIDE ? Math.min(1, (now - started) / GLIDE) : 1;
         const ease = 1 - Math.pow(1 - t, 3);
@@ -3337,12 +3282,7 @@
         if(performance.now() < suppressUntil) return;
         setFocus(row);
         clearTimeout(hoverTimer);
-        hoverTimer = setTimeout(() => {
-          // wheeling/scrolling moves rows past a stationary cursor, which fires this same
-          // mouseenter — don't start a scroll fight over a row the reader is only scrolling past
-          if(performance.now() - lastManualScroll < 400) return;
-          park(row);
-        }, 180);                                           // brief hold, so passing the cursor over rows does nothing
+        hoverTimer = setTimeout(() => park(row), 180);     // brief hold, so passing the cursor over rows does nothing
       });
       row.addEventListener('mouseleave', () => {
         clearTimeout(hoverTimer);
