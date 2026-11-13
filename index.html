@@ -13,6 +13,12 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <meta name="theme-color" content="#DADAD8">
 
+<!-- ====== 콘텐츠 모드 스위치 ======
+     'game' = 게임업계 지원용 (게임 명언 세트 + "마음속엔 게이머" 카피)
+     'biz'  = 금융/브랜드·마케팅 지원용 (브랜딩/마케팅 명언 세트 + 브랜드빌더 카피)
+     이 값만 바꾸면 사이트 전체 문구가 전환됩니다. 두 세트 모두 파일 안에 보존되어 있어 언제든 되돌릴 수 있습니다. -->
+<script>window.SITE_CONTENT_MODE = 'biz';</script>
+
 <!-- link preview (KakaoTalk, Slack, X, LinkedIn…) -->
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="이채승 포트폴리오">
@@ -790,7 +796,7 @@
     <div class="eyebrow">03 — Career</div>
     <div class="sec-head reveal">
       <h2 class="sec-title">CAREER.</h2>
-      <p class="sec-sub">"현재 명함 속에서 저는 브랜드 마케터입니다. 머릿속의 저는 카피라이터이자 스토리텔러입니다. 하지만 제 마음속의 저는 언제나 게이머입니다."<br>2009년 AE로 시작해 지금에 이르기까지, 9개의 챕터로 기록된 16년+의 플레이 타임입니다. 최신 챕터부터 거슬러 올라가며, 스크롤을 내릴 때마다 그 시기에 클리어한 프로젝트들이 아래로 채워집니다.<br><br>*기간내 주요 프로젝트만 정리했음을 참고바랍니다.</p>
+      <p class="sec-sub" id="careerSub">"현재 명함 속에서 저는 브랜드 마케터입니다. 머릿속의 저는 카피라이터이자 스토리텔러입니다. 하지만 제 마음속의 저는 언제나 게이머입니다."<br>2009년 AE로 시작해 지금에 이르기까지, 9개의 챕터로 기록된 16년+의 플레이 타임입니다. 최신 챕터부터 거슬러 올라가며, 스크롤을 내릴 때마다 그 시기에 클리어한 프로젝트들이 아래로 채워집니다.<br><br>*기간내 주요 프로젝트만 정리했음을 참고바랍니다.</p>
     </div>
 
 <div class="company-block current" id="chp-09">
@@ -2918,15 +2924,22 @@
     setInterval(() => applySunState(new Date()), 60 * 1000);
   })();
 
+  // ---------------- career 섹션 인트로 문구: 콘텐츠 모드에 따라 게임/비즈니스 버전 중 하나를 표시 ----------------
+  (function(){
+    const el = document.getElementById('careerSub');
+    if(!el) return;
+    if(window.SITE_CONTENT_MODE === 'game') return; // 원본 HTML이 이미 게임 버전이라 그대로 둠
+    el.innerHTML = '"현재 명함 속에서 저는 브랜드 마케터입니다. 머릿속의 저는 카피라이터이자 스토리텔러입니다. 하지만 제 마음속의 저는 언제나 아직 없는 길을 먼저 걷는 사람입니다."<br>2009년 AE로 시작해 지금에 이르기까지, 9개의 챕터로 기록된 16년+의 시간입니다. 최신 챕터부터 거슬러 올라가며, 스크롤을 내릴 때마다 그 시기에 완성한 프로젝트들이 아래로 채워집니다.<br><br>*기간내 주요 프로젝트만 정리했음을 참고바랍니다.';
+  })();
+
   // ---------------- hero rolling quote: swaps every ~7s with a per-character "dust" dissolve/reform ----------------
   (function(){
     const textEl = document.getElementById('hqText');
     const sourceEl = document.getElementById('hqSource');
     if(!textEl) return;
 
-    // 데모용 더미 문구(게임 명언 세트) — text/source 둘 다 더미이며, 이 배열만 통째로 교체하면 문구+출처가 바뀝니다.
-    // 나중에 직군별로 다른 버전을 보내고 싶으면, 이 배열만 그 직군용 문구로 바꾼 index.html을 따로 저장해두면 됩니다.
-    const QUOTES = [
+    // 게임업계 지원용 명언 세트 — SITE_CONTENT_MODE가 'game'일 때 사용됩니다. 지우지 말고 보존해두세요.
+    const QUOTES_GAME = [
       { text: '우리는 소니와 마이크로소프트와 경쟁하지 않는다. 우리는 게임에 흥미를 느끼지 못 하는 사람들의 무관심과 싸운다', source: '- 이와타 사토루 -' },
       { text: '정말로 중요한 건... 어떻게 끝으로 가는가.', source: '- 산나비 -' },
       { text: '미안해하지 마라. 더 나아져라.', source: '- 갓오브워 -' },
@@ -2940,6 +2953,25 @@
       { text: '중요한 것에 충실해라.', source: '- 레드데드리뎀션2 -' },
       { text: '사람들이 진심으로 즐겁게 느끼는 것이 무엇인지를 생각하고 제품을 만든다면 세계 어디에서도 팔 수 있다.', source: '- 미야모토 시게루 -' },
     ];
+
+    // 금융/브랜드·마케팅 지원용 명언 세트 — SITE_CONTENT_MODE가 'biz'일 때 사용됩니다.
+    const QUOTES_BIZ = [
+      { text: '소비자는 바보가 아니다. 당신의 아내다.', source: '- 데이비드 오길비 -' },
+      { text: '브랜드란, 당신이 그 자리에 없을 때 사람들이 당신에 대해 하는 말이다.', source: '- 제프 베조스 -' },
+      { text: '마케팅은 더 이상 당신이 만든 물건이 아니라, 당신이 들려주는 이야기에 관한 것이다.', source: '- 세스 고딘 -' },
+      { text: '브랜드는 회사가 말하는 것이 아니라, 고객이 말하는 것이다.', source: '- 마티 뉴마이어 -' },
+      { text: '사람들은 당신이 무엇을 하는지가 아니라, 왜 그것을 하는지에 끌린다.', source: '- 사이먼 시넥 -' },
+      { text: '마케팅의 목표는 세일즈를 불필요하게 만드는 것이다.', source: '- 피터 드러커 -' },
+      { text: '평판을 쌓는 데는 20년이 걸리지만, 무너뜨리는 데는 5분이면 충분하다.', source: '- 워런 버핏 -' },
+      { text: '우리는 커피를 파는 게 아니라, 사람과 사람 사이의 경험을 판다.', source: '- 하워드 슐츠 -' },
+      { text: '브랜드를 소중히 하라. 그것이 다른 모든 이들과 당신을 구별 짓는 유일한 것이다.', source: '- 리처드 브랜슨 -' },
+      { text: '대체 불가능한 존재가 되려면, 늘 달라야 한다.', source: '- 코코 샤넬 -' },
+      { text: '훌륭한 일을 하는 유일한 방법은, 당신이 하는 일을 사랑하는 것이다.', source: '- 스티브 잡스 -' },
+      { text: '사람들은 당신이 한 말은 잊어도, 당신이 그들에게 느끼게 한 감정은 잊지 않는다.', source: '- 마야 안젤루 -' },
+    ];
+
+    // 콘텐츠 모드 스위치(head의 SITE_CONTENT_MODE)에 따라 실제 사용할 세트를 고릅니다.
+    const QUOTES = (window.SITE_CONTENT_MODE === 'game') ? QUOTES_GAME : QUOTES_BIZ;
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     let current = -1;
